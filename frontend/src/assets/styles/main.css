@@ -1,1 +1,9 @@
 @import url('libs/tailwind.css');
+
+@import url('./variables.css');
+@import url('./fonts.css');
+
+html {
+  font-family: 'JetBrains Mono';
+  font-weight: 400;
+}
