@@ -67,6 +67,15 @@ const router = createRouter({
       }
     },
     {
+      path: '/users',
+      name: 'users',
+      component: () => import('@/views/users/view.vue'),
+      meta: {
+        secure: true,
+        layout: 'main',
+      }
+    },
+    {
       path: '/:notFound',
       name: 'not-found',
       component: () => import('@/views/404/view.vue'),

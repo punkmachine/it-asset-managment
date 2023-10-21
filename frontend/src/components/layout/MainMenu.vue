@@ -23,6 +23,17 @@
           Филиалы
         </span>
       </RouterLink>
+      <RouterLink
+        to="/users"
+        class="main-menu__item"
+      >
+        <svg class="main-menu__item-icon">
+          <use xlink:href="@/assets/icons/sprites/main-menu.svg#users"></use>
+        </svg>
+        <span class="main-menu__item-text">
+          Админы
+        </span>
+      </RouterLink>
     </nav>
   </aside>
 </template>
