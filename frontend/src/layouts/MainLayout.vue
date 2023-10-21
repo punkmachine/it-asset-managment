@@ -23,7 +23,6 @@ import MainMenu from '@/components/layout/MainMenu.vue';
 
 main {
   background-color: var(--bg-secondary);
-  display: flex;
   width: 100%;
   min-height: calc(100vh - var(--header-height));
   margin: var(--header-height) 0 0 0;
