@@ -1,17 +1,21 @@
 import type { Directive } from 'vue';
 
 const clickOutside = <Directive>{
-  mounted(element, { value }) {
+  mounted(element, binding) {
+    const { value } = binding;
+
     element.clickOutside = function(event: Event) {
-      if (!(element == event.target || element.contains(event.target))) {
-        value(event);
+      if (!element || element === event.target || event.composedPath().includes(element)) {
+        return;
       }
+
+      value(event);
     }
 
-    document.body.addEventListener('click', element.clickOutside);
+    window.addEventListener('click', element.clickOutside, { passive: true, capture: true });
   },
   unmounted(element) {
-    document.body.addEventListener('click', element.clickOutside);
+    window.removeEventListener('click', element.clickOutside);
   }
 };
 
