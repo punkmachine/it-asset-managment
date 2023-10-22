@@ -1,0 +1,8 @@
+.select {
+  padding: 8px 12px;
+  width: 100%;
+  border: 1px solid var(--border-input);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 18px;
+}

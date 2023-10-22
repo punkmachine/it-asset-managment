@@ -3,6 +3,11 @@
 @import url('./variables.css');
 @import url('./fonts.css');
 
+@import url('./blocks/buttons.css');
+@import url('./blocks/input.css');
+@import url('./blocks/select.css');
+@import url('./blocks/divider.css');
+
 html {
   font-family: 'JetBrains Mono';
   font-weight: 400;
