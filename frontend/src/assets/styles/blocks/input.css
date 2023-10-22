@@ -1,0 +1,31 @@
+.input__label {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  padding: 10px 12px;
+  width: 100%;
+  border: 1px solid var(--border-input);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.input:focus {
+  @apply shadow-lg;
+  outline: 2px solid var(--outline-input);
+}
+
+.input__icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input--with-icon {
+  padding-left: 32px;
+}
