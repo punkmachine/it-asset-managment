@@ -99,6 +99,7 @@ import DeleteModalFooter from '@/views/users/components/DeleteModalFooter.vue';
 import EditModalFooter from '@/views/users/components/EditModalFooter.vue';
 import FormEditUser from '@/views/users/components/FormEditUser.vue';
 import FormAddUser from '@/views/users/components/FormAddUser.vue';
+import AddModalFooter from '@/views/users/components/AddModalFooter.vue';
 
 import { fetchUsers, deleteUser, editUser } from '@/api/users';
 import { getTableRows } from '@/utils/adapters/usersAdapterFromTable';
@@ -192,7 +193,7 @@ function saveEditUserClick() {
 }
 
 function saveAddUserClick() {
-
+  
 }
 
 function keyDownExpress(event: KeyboardEvent) {
