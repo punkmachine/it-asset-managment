@@ -1,0 +1,6 @@
+import type { IColumn } from '@/entities/types/UI/table'
+
+export const columnsSettings: IColumn[] = [
+  { key: 'id', title: 'id', width: '120px' },
+  { key: 'FIO', title: 'ФИО' },
+];

@@ -1,23 +1,32 @@
 :root {
+  /* Задний фон */
   --bg-main: #fff;
   --bg-secondary: #EEF2F7;
   --bg-hover-main: #f2f2f2;
 
+  /* Текста */
   --text-main: #334155;
   --text-secondary: #9EA6B4;
   --text-white: #fff;
 
+  /* Бордеры */
   --border-standard: #e7ebee;
   --border-secondary: #9EA6B4;
-
   --border-input: #DADFE5;
   --outline-input: #082f49;
 
+  /* Ссылки */
   --link-color: #1d4ed8;
   --link-hover-color: #3730a3;
 
+  /* Кнопки */
   --main-accent: #4CAF50;
   --secondary-accent: #218D1F;
+  --main-red: #ef4444;
+  --main-red-hover: #dc2626;
+  --main-secondary: #9ca3af;
+  --main-secondary-hover: #6b7280;
 
+  /* Тени */
   --shadow-standard: 0 6px 12px #11183826, 0 0 1px #00000040;
 }

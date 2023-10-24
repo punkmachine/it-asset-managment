@@ -1,7 +1,6 @@
 .button {
   @apply transition-colors;
 
-  font-weight: 500;
   color: var(--text-white);
   background-color: var(--main-accent);
   padding: 8px 12px;
@@ -56,4 +55,20 @@
 
 .button--text:hover::before {
   transform: scaleX(1);
+}
+
+.button--red {
+  background-color: var(--main-red);
+}
+
+.button--red:hover {
+  background-color: var(--main-red-hover);
+}
+
+.button--gray {
+  background-color: var(--main-secondary);
+}
+
+.button--gray:hover {
+  background-color: var(--main-secondary-hover);
 }
