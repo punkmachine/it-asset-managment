@@ -5,15 +5,15 @@ const clickOutside = <Directive>{
     const { value } = binding;
 
     element.clickOutside = function(event: Event) {
-      if (!(element == event.target || element.contains(event.target))) {
+      if (element != event.target && !element.contains(event.target) && !event.composedPath().includes(element)) {
         value(event);
       }
     }
 
-    window.addEventListener('click', element.clickOutside, { capture: true });
+    document.body.addEventListener('click', element.clickOutside, { capture: true, passive: true });
   },
   unmounted(element) {
-    window.removeEventListener('click', element.clickOutside);
+    document.body.removeEventListener('click', element.clickOutside);
   }
 };
 

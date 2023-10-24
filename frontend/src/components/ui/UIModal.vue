@@ -3,8 +3,9 @@
     <div
       v-if="visible"
       class="modal__mask"
+      @click="visible = false"
     >
-      <div class="modal__container" v-click-outside="hide">
+      <div class="modal__container" @click.stop>
         <div class="modal__body">
           <slot name="body"></slot>
         </div>
@@ -19,9 +20,7 @@
 
 <script lang="ts" setup>
 import { ref, defineExpose } from 'vue';
-import { clickOutside } from '@/vue-features/directives/clickOutside';
 
-const vClickOutside = clickOutside;
 const visible = ref<boolean>(false);
 
 function show(): void {
@@ -36,7 +35,6 @@ defineExpose({
   show, hide
 });
 </script>
-
 <style scoped>
 .modal__mask {
   position: fixed;
@@ -51,7 +49,8 @@ defineExpose({
 }
 
 .modal__container {
-  max-width: 36%;
+  z-index: 9999;
+  width: 360px;
   margin: auto;
   background-color: var(--bg-main);
   border-radius: 8px;
