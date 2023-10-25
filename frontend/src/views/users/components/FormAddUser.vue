@@ -1,54 +1,39 @@
 <template>
   <div class="flex flex-col gap-3 w-full">
-    <label class="input__label">
-      <span class="text-sm">Имя</span>
-      <input
-        v-model="user.firstName"
-        type="text"
-        class="input"
-        required
-        autocomplete="name"
-      />
-    </label>
+    <UIInput
+      label="Имя"
+      v-model="user.firstName"
+      required
+      autocomplete="name"
+    />
 
-    <label class="input__label">
-      <span class="text-sm">Фамилия</span>
-      <input
-        v-model="user.lastName"
-        type="text"
-        class="input"
-        required
-        autocomplete="family-name"
-      />
-    </label>
+    <UIInput
+      label="Фамилия"
+      v-model="user.lastName"
+      required
+      autocomplete="family-name"
+    />
 
-    <label class="input__label">
-      <span class="text-sm">Логин</span>
-      <input
-        v-model="user.login"
-        type="text"
-        class="input"
-        required
-        autocomplete="username"
-      />
-    </label>
+    <UIInput
+      label="Логин"
+      v-model="user.login"
+      required
+      autocomplete="username"
+    />
 
-    <label class="input__label">
-      <span class="text-sm">Пароль</span>
-      <input
-        v-model="user.password"
-        type="password"
-        class="input"
-        required
-        autocomplete="current-password"
-      />
-    </label>
+    <UIInput
+      label="Пароль"
+      v-model="user.password"
+      required
+      autocomplete="current-password"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
 import type { INewUser } from '@/views/users/types';
+import UIInput from '@/components/ui/UIInput.vue';
 
 interface IProps {
   addedUser: INewUser,

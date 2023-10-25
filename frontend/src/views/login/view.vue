@@ -4,26 +4,20 @@
       <h1 class="auth__title">Авторизация</h1>
 
       <div class="flex flex-col gap-3 w-full">
-        <label class="input__label">
-          <span class="text-sm">Логин</span>
-          <input
-            type="text"
-            class="input"
-            required
-            autocomplete="username"
-            autofocus
-          />
-        </label>
+        <UIInput
+          v-model="login"
+          label="Логин"
+          required
+          autocomplete="username"
+          autofocus
+        />
 
-        <label class="input__label">
-          <span class="text-sm">Пароль</span>
-          <input
-            type="password"
-            class="input"
-            required
-            autocomplete="current-password"
-          />
-        </label>
+        <UIInput
+          v-model="password"
+          label="Пароль"
+          required
+          autocomplete="current-password"
+        />
       </div>
 
       <button
@@ -37,9 +31,14 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import UIInput from '@/components/ui/UIInput.vue';
 
 const router = useRouter();
+
+const login = ref<string>('');
+const password = ref<string>('');
 
 function authorization() {
   router.push('/')
