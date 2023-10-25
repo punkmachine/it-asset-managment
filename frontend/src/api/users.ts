@@ -1,4 +1,5 @@
-import type { IUser } from '@/entities/types/backend/user';
+import type { IUser, IProfile } from '@/entities/types/backend/user';
+import { UserState, UserRoles } from '@/entities/types/backend/user';
 
 export function fetchUsers(): Promise<IUser[]> {
   return new Promise((resolve, reject) => {
@@ -11,6 +12,9 @@ export function fetchUsers(): Promise<IUser[]> {
         lastName: 'Рассудихин',
         login: 'alex',
         password: 'hash',
+        state: UserState.active,
+        role: UserRoles.superAdmin,
+        avatar: '',
       },
       {
         id: 2,
@@ -20,6 +24,9 @@ export function fetchUsers(): Promise<IUser[]> {
         lastName: 'Бурленхан',
         login: 'almas',
         password: 'hash',
+        state: UserState.active,
+        role: UserRoles.admin,
+        avatar: '',
       },
     ]);
   });
@@ -32,7 +39,38 @@ export function deleteUser(): Promise<boolean> {
 }
 
 export function editUser(editedUser: IUser): Promise<IUser> {
-  return new Promise((resolve, rejects) => {
+  return new Promise((resolve, reject) => {
     resolve(editedUser);
+  });
+}
+
+export function getUserById(id: number): Promise<IUser> {
+  return new Promise((resolve, reject) => {
+    resolve({
+      id,
+      createdDate: '2023-10-22T04:55:58.867Z',
+      updatedDate: '2023-10-22T04:55:58.867Z',
+      firstName: 'Александр',
+      lastName: 'Рассудихин',
+      login: 'alex',
+      password: 'hash',
+      state: UserState.active,
+      role: UserRoles.superAdmin,
+      avatar: '',
+    });
+  });
+}
+
+export function saveProfile(profile: IProfile) {
+  return new Promise((resolve, reject) => {
+    resolve({
+      createdDate: '2023-10-22T04:55:58.867Z',
+      updatedDate: '2023-10-22T04:55:58.867Z',
+      login: 'alex',
+      password: 'hash',
+      state: UserState.active,
+      role: UserRoles.superAdmin,
+      ...profile,
+    });
   });
 }
