@@ -48,6 +48,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 
+import type { Ref } from 'vue';
 import type { IUser } from '@/entities/types/backend/user';
 
 import HeadPage from '@/components/HeadPage.vue';
@@ -55,7 +56,7 @@ import UIInput from '@/components/ui/UIInput.vue';
 
 import { getUserById, saveProfile } from '@/api/users';
 
-const userData = ref<IUser | null>(null);
+const userData: Ref<IUser | null> = ref(null);
 let backupUserData: IUser | null = null;
 
 async function fetchUserData() {

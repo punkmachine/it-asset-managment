@@ -106,13 +106,13 @@ import { getTableRows } from '@/utils/adapters/usersAdapterFromTable';
 
 import { columnsSettings } from './settings';
 
-const deleteModal = ref<InstanceType<typeof UIModal> | null>(null);
-const editModal = ref<InstanceType<typeof UIModal> | null>(null);
-const addModal = ref<InstanceType<typeof UIModal> | null>(null);
+const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
-const currentUser = ref<IUser | null>(null);
-const users = ref<IUser[]>([]);
-const newUser = ref<INewUser>({
+const currentUser: Ref<IUser | null> = ref(null);
+const users: Ref<IUser[]> = ref([]);
+const newUser: Ref<INewUser> = ref({
   firstName: '',
   lastName: '',
   login: '',
@@ -192,9 +192,7 @@ function saveEditUserClick() {
   }
 }
 
-function saveAddUserClick() {
-  
-}
+function saveAddUserClick() {}
 
 function keyDownExpress(event: KeyboardEvent) {
   if (event.key === 'Escape') {

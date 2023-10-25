@@ -33,6 +33,7 @@
 <script lang="ts" setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
 import type { IUser } from '@/entities/types/backend/user';
+import type { Ref } from 'vue';
 import UIInput from '@/components/ui/UIInput.vue';
 
 interface IProps {
@@ -46,7 +47,7 @@ interface IEmits {
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
 
-const user = ref<IUser>(props.editedUser);
+const user: Ref<IUser> = ref(props.editedUser);
 
 watch(user.value, (newUser) => {
   emit('editUser', newUser);

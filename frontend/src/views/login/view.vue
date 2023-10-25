@@ -33,12 +33,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+
+import type { Ref } from 'vue';
+
 import UIInput from '@/components/ui/UIInput.vue';
 
 const router = useRouter();
 
-const login = ref<string>('');
-const password = ref<string>('');
+const login: Ref<string> = ref('');
+const password: Ref<string> = ref('');
 
 function authorization() {
   router.push('/')

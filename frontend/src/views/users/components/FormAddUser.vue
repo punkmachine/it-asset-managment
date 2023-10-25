@@ -32,6 +32,7 @@
 
 <script lang="ts" setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
+import type { Ref } from 'vue';
 import type { INewUser } from '@/views/users/types';
 import UIInput from '@/components/ui/UIInput.vue';
 
@@ -46,7 +47,7 @@ interface IEmits {
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
 
-const user = ref<INewUser>(props.addedUser);
+const user: Ref<INewUser> = ref(props.addedUser);
 
 watch(user.value, (newUser) => {
   emit('updateAddedUser', newUser);
