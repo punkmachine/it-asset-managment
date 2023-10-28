@@ -16,3 +16,9 @@ export interface IUserInTable {
   id: string,
   fio: string,
 };
+
+export interface IBranchInTable {
+  id: string,
+  description: string,
+  title: string,
+};
