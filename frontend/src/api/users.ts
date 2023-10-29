@@ -1,5 +1,6 @@
 import type { IUser, IProfile } from '@/entities/types/backend/user';
 import { UserState, UserRoles } from '@/entities/types/backend/user';
+import type { INewUser } from '@/views/users/types';
 
 export function fetchUsers(): Promise<IUser[]> {
   return new Promise((resolve, reject) => {
@@ -72,5 +73,19 @@ export function saveProfile(profile: IProfile) {
       role: UserRoles.superAdmin,
       ...profile,
     });
+  });
+}
+
+export function postUser(newUser: INewUser): Promise<IUser> {
+  return new Promise((resolve, reject) => {
+    resolve({
+      ...newUser,
+      id: 3,
+      createdDate: '2023-10-22T04:55:58.867Z',
+      updatedDate: '2023-10-22T04:55:58.867Z',
+      state: UserState.active,
+      avatar: '',
+      role: UserRoles.admin,
+    })
   });
 }

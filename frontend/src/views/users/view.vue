@@ -101,7 +101,7 @@ import FormEditUser from '@/views/users/components/FormEditUser.vue';
 import FormAddUser from '@/views/users/components/FormAddUser.vue';
 import AddModalFooter from '@/views/users/components/AddModalFooter.vue';
 
-import { fetchUsers, deleteUser, editUser } from '@/api/users';
+import { fetchUsers, deleteUser, editUser, postUser } from '@/api/users';
 import { getTableRows } from '@/utils/adapters/usersAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
@@ -190,12 +190,33 @@ function saveEditUserClick() {
   }
 }
 
-function saveAddUserClick() {}
+function saveAddUserClick() {
+  if (newUser.value.firstName && newUser.value.lastName) {
+    postUser(newUser.value)
+      .then(data => {
+        users.value = [
+          ...users.value,
+          data
+        ];
+
+        rows.value = getTableRows(users.value);
+
+        newUser.value = {
+          firstName: '',
+          lastName: '',
+          login: '',
+          password: '',
+        };
+
+        addModal.value?.hide();
+      });
+  }
+}
 
 function keyDownEscape() {
-    deleteModal.value?.hide();
-    editModal.value?.hide();
-    addModal.value?.hide();
+  deleteModal.value?.hide();
+  editModal.value?.hide();
+  addModal.value?.hide();
 }
 
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
