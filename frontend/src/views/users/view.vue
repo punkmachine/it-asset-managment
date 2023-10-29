@@ -104,6 +104,8 @@ import AddModalFooter from '@/views/users/components/AddModalFooter.vue';
 import { fetchUsers, deleteUser, editUser } from '@/api/users';
 import { getTableRows } from '@/utils/adapters/usersAdapterFromTable';
 
+import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
+
 import { columnsSettings } from './settings';
 
 const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
@@ -130,7 +132,7 @@ function handleEdit(id: string) {
   currentUser.value = getCurrentUserById(id);
 
   if (editModal.value) {
-    window.addEventListener('keydown', keyDownEscape);
+    addEventEscape();
     editModal.value.show();
   }
 }
@@ -139,14 +141,14 @@ function handleDelete(id: string) {
   currentUser.value = getCurrentUserById(id);
 
   if (deleteModal.value) {
-    window.addEventListener('keydown', keyDownEscape);
+    addEventEscape();
     deleteModal.value.show();
   }
 }
 
 function handleAdd() {
   if (addModal.value) {
-    window.addEventListener('keydown', keyDownEscape);
+    addEventEscape();
     addModal.value.show();
   }
 }
@@ -165,9 +167,7 @@ function deleteUserClick() {
       getUsersAndRowsTable();
       currentUser.value = null;
 
-      if (deleteModal.value) {
-        deleteModal.value.hide();
-      }
+      deleteModal.value?.hide();
     });
 }
 
@@ -185,30 +185,27 @@ function saveEditUserClick() {
           return user;
         });
 
-        if (editModal.value) {
-          editModal.value.hide();
-        }
+        editModal.value?.hide();
       });
   }
 }
 
 function saveAddUserClick() {}
 
-function keyDownEscape(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
+function keyDownEscape() {
     deleteModal.value?.hide();
     editModal.value?.hide();
     addModal.value?.hide();
-    window.removeEventListener('keydown', keyDownEscape);
-  }
 }
+
+const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 onMounted(() => {
   getUsersAndRowsTable();
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', keyDownEscape);
+  removeEventEscape();
 });
 </script>
 

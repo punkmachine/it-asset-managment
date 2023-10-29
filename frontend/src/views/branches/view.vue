@@ -111,6 +111,8 @@ import {
 } from '@/api/branches';
 import { getTableRows } from '@/utils/adapters/branchesAdapterFromTable';
 
+import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
+
 import { columnsSettings } from '@/views/branches/settings';
 
 const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
@@ -131,7 +133,7 @@ async function handleDelete(id: string) {
   currentBranch.value = await getCurrentBranchById(id);
 
   if (deleteModal.value) {
-    window.addEventListener('keydown', keyDownEscape);
+    addEventEscape();
     deleteModal.value.show();
   }
 }
@@ -140,14 +142,14 @@ async function handleEdit(id: string) {
   currentBranch.value = await getCurrentBranchById(id);
 
   if (editModal.value) {
-    window.addEventListener('keydown', keyDownEscape);
+    addEventEscape();
     editModal.value.show();
   }
 }
 
 function handleAdd() {
   if (addModal.value) {
-    window.addEventListener('keydown', keyDownEscape);
+    addEventEscape();
     addModal.value.show();
   }
 }
@@ -166,9 +168,7 @@ function deleteBranchClick() {
       getBranchesAndRowsTable();
       currentBranch.value = null;
 
-      if (deleteModal.value) {
-        deleteModal.value.hide();
-      }
+      deleteModal.value?.hide();
     });
 }
 
@@ -186,9 +186,7 @@ function saveEditBranchClick() {
           return branch;
         });
 
-        if (editModal.value) {
-          editModal.value.hide();
-        }
+        editModal.value?.hide();
       });
   }
 }
@@ -214,21 +212,20 @@ function saveAddBranchClick() {
   }
 }
 
-function keyDownEscape(event: KeyboardEvent) {
-  if (event.key === 'Escape') {
-    deleteModal.value?.hide();
-    editModal.value?.hide();
-    addModal.value?.hide();
-    window.removeEventListener('keydown', keyDownEscape);
-  }
+function keyDownEscape() {
+  deleteModal.value?.hide();
+  editModal.value?.hide();
+  addModal.value?.hide();
 }
+
+const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 onMounted(() => {
   getBranchesAndRowsTable();
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', keyDownEscape);
+  removeEventEscape();
 });
 </script>
 
