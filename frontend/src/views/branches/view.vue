@@ -104,7 +104,7 @@ import FormAddBranch from '@/views/branches/components/FormAddBranch.vue';
 
 import {
   fetchBranches,
-  getCurrentBranchById,
+  getBranchById,
   deleteBranch,
   editBranch,
   postBranch,
@@ -129,8 +129,12 @@ const newBranch: Ref<INewBranch> = ref({
 const rows: Ref<TRows[]> = ref([]);
 const columns: Ref<IColumn[]> = ref(columnsSettings);
 
-async function handleDelete(id: string) {
-  currentBranch.value = await getCurrentBranchById(id);
+function getCurrentBranchById(id: string): IBranch | null {
+  return branches.value.find(branch => branch.id.toString() === id) ?? null;
+}
+
+function handleDelete(id: string) {
+  currentBranch.value = getCurrentBranchById(id);
 
   if (deleteModal.value) {
     addEventEscape();
@@ -138,8 +142,8 @@ async function handleDelete(id: string) {
   }
 }
 
-async function handleEdit(id: string) {
-  currentBranch.value = await getCurrentBranchById(id);
+function handleEdit(id: string) {
+  currentBranch.value = getCurrentBranchById(id);
 
   if (editModal.value) {
     addEventEscape();

@@ -25,7 +25,7 @@ export function fetchBranches(): Promise<IBranch[]> {
   });
 }
 
-export function getCurrentBranchById(id: string | number): Promise<IBranch> {
+export function getBranchById(id: string | number): Promise<IBranch> {
   return new Promise((resolve, reject) => {
     resolve({
       id: +id,
