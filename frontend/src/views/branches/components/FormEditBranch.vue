@@ -1,0 +1,42 @@
+<template>
+  <div class="flex flex-col gap-3 w-full">
+    <UIInput
+      label="Название"
+      v-model="branch.title"
+      required
+    />
+
+    <!-- @todo: textarea -->
+    <UIInput
+      label="Описание"
+      v-model="branch.description"
+      required
+    />
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { ref, defineProps, defineEmits, watch } from 'vue';
+import type { IBranch } from '@/entities/types/backend/branches';
+import type { Ref } from 'vue';
+import UIInput from '@/components/ui/UIInput.vue';
+
+interface IProps {
+  editedBranch: IBranch,
+};
+
+interface IEmits {
+  (e: 'editBranch', user: IBranch): void,
+}
+
+const props = defineProps<IProps>();
+const emit = defineEmits<IEmits>();
+
+const branch: Ref<IBranch> = ref(props.editedBranch);
+
+watch(branch.value, (newBranch) => {
+  emit('editBranch', newBranch);
+});
+</script>
+
+<style scoped></style>

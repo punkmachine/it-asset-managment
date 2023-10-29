@@ -1,10 +1,253 @@
 <template>
-  Страница всех филиалов
+  <div class="branches">
+    <HeadBranchesPage @addBranch="handleAdd" />
+
+    <div class="branches__content">
+      <SearchBranch />
+
+      <div class="divider"></div>
+
+      <div class="branches__table-wrapper">
+        <UITable
+          :columns="columns"
+          :rows="rows"
+          actions-col-visible
+          @edit="handleEdit"
+          @delete="handleDelete"
+        />
+
+        <div class="flex justify-end mt-5 mr-5">
+          <UIPagination :count="rows.length" />
+        </div>
+      </div>
+
+      <UIModal ref="deleteModal">
+        <template #body>
+          Вы точно хотите удалить сотрудника "{{ currentBranch?.title }}"?
+        </template>
+
+        <template #footer>
+          <DeleteModalFooter
+            @cancel="deleteModal?.hide()"
+            @delete="deleteBranchClick"
+          />
+        </template>
+      </UIModal>
+
+      <UIModal ref="editModal">
+        <template #body>
+          <h2 class="users__modal-title">
+            Редактирование филиала "{{ currentBranch?.title }}"
+          </h2>
+          <!--
+            @todo: костыль с currentBranch, потому что он технически может быть null,
+            но физически в этой форме ну реально никак, а TS ругается
+          -->
+          <form v-if="currentBranch">
+            <FormEditBranch
+              :edited-branch="currentBranch"
+              @edit-branch="(newBranch) => currentBranch = newBranch"
+            />
+          </form>
+        </template>
+
+        <template #footer>
+          <EditModalFooter
+            @cancel="editModal?.hide()"
+            @save="saveEditBranchClick"
+          />
+        </template>
+      </UIModal>
+
+      <UIModal ref="addModal">
+        <template #body>
+          <h2 class="users__modal-title">
+            Создание филиала
+          </h2>
+          <form>
+            <FormAddBranch
+              :added-branch="newBranch"
+              @updateAddedBranch="(branch) => newBranch = branch"
+            />
+          </form>
+        </template>
+
+        <template #footer>
+          <AddModalFooter
+            @cancel="addModal?.hide()"
+            @add="saveAddBranchClick"
+          />
+        </template>
+      </UIModal>
+    </div>
+  </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
+import type { Ref } from 'vue'
+import type { IBranch } from '@/entities/types/backend/branches';
+import type { IColumn, TRows } from '@/entities/types/UI/table';
+import type { INewBranch } from './types';
+
+import UIPagination from '@/components/ui/UIPagination.vue';
+import UITable from '@/components/ui/UITable.vue';
+import UIModal from '@/components/ui/UIModal.vue';
+import HeadBranchesPage from '@/views/branches/components/HeadBranchesPage.vue';
+import SearchBranch from '@/views/branches/components/SearchBranch.vue';
+import DeleteModalFooter from '@/views/branches/components/DeleteModalFooter.vue';
+import EditModalFooter from '@/views/branches/components/EditModalFooter.vue';
+import AddModalFooter from '@/views/branches/components/AddModalFooter.vue';
+import FormEditBranch from '@/views/branches/components/FormEditBranch.vue';
+import FormAddBranch from '@/views/branches/components/FormAddBranch.vue';
+
+import {
+  fetchBranches,
+  getCurrentBranchById,
+  deleteBranch,
+  editBranch,
+  postBranch,
+} from '@/api/branches';
+import { getTableRows } from '@/utils/adapters/branchesAdapterFromTable';
+
+import { columnsSettings } from '@/views/branches/settings';
+
+const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+
+const currentBranch: Ref<IBranch | null> = ref(null);
+const branches: Ref<IBranch[]> = ref([]);
+const newBranch: Ref<INewBranch> = ref({
+  title: '',
+  description: '',
+});
+
+const rows: Ref<TRows[]> = ref([]);
+const columns: Ref<IColumn[]> = ref(columnsSettings);
+
+async function handleDelete(id: string) {
+  currentBranch.value = await getCurrentBranchById(id);
+
+  if (deleteModal.value) {
+    window.addEventListener('keydown', keyDownEscape);
+    deleteModal.value.show();
+  }
+}
+
+async function handleEdit(id: string) {
+  currentBranch.value = await getCurrentBranchById(id);
+
+  if (editModal.value) {
+    window.addEventListener('keydown', keyDownEscape);
+    editModal.value.show();
+  }
+}
+
+function handleAdd() {
+  if (addModal.value) {
+    window.addEventListener('keydown', keyDownEscape);
+    addModal.value.show();
+  }
+}
+
+function getBranchesAndRowsTable() {
+  fetchBranches()
+    .then(data => {
+      branches.value = [...data];
+      rows.value = getTableRows(branches.value);
+    });
+}
+
+function deleteBranchClick() {
+  deleteBranch()
+    .then(() => {
+      getBranchesAndRowsTable();
+      currentBranch.value = null;
+
+      if (deleteModal.value) {
+        deleteModal.value.hide();
+      }
+    });
+}
+
+function saveEditBranchClick() {
+  if (currentBranch.value) {
+    editBranch(currentBranch.value)
+      .then(data => {
+        branches.value = branches.value.map(branch => {
+          if (branch.id === data.id) {
+            return {
+              ...data,
+            };
+          }
+
+          return branch;
+        });
+
+        if (editModal.value) {
+          editModal.value.hide();
+        }
+      });
+  }
+}
+
+function saveAddBranchClick() {
+  if (newBranch.value.title && newBranch.value.description) {
+    postBranch(newBranch.value)
+      .then(data => {
+        branches.value = [
+          ...branches.value,
+          data
+        ];
+
+        rows.value = getTableRows(branches.value);
+
+        newBranch.value = {
+          title: '',
+          description: '',
+        };
+
+        addModal.value?.hide();
+      });
+  }
+}
+
+function keyDownEscape(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    deleteModal.value?.hide();
+    editModal.value?.hide();
+    addModal.value?.hide();
+    window.removeEventListener('keydown', keyDownEscape);
+  }
+}
+
+onMounted(() => {
+  getBranchesAndRowsTable();
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', keyDownEscape);
+});
 </script>
 
 <style scoped>
+.branches {
+  /* 100vh - header height - search section - .users__head */
+  --height-table-wrapper: calc(100vh - var(--header-height) - 74px - 72px);
+}
 
+.branches__content {
+  background-color: var(--bg-main);
+}
+
+.branches__table-wrapper {
+  position: relative;
+  overflow-x: auto;
+  padding-top: 12px;
+  min-height: var(--height-table-wrapper);
+  max-height: var(--height-table-wrapper);
+  max-width: calc(100vw - var(--menu-width));
+}
 </style>
