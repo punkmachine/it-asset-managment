@@ -130,7 +130,7 @@ function handleEdit(id: string) {
   currentUser.value = getCurrentUserById(id);
 
   if (editModal.value) {
-    window.addEventListener('keydown', keyDownExpress);
+    window.addEventListener('keydown', keyDownEscape);
     editModal.value.show();
   }
 }
@@ -139,14 +139,14 @@ function handleDelete(id: string) {
   currentUser.value = getCurrentUserById(id);
 
   if (deleteModal.value) {
-    window.addEventListener('keydown', keyDownExpress);
+    window.addEventListener('keydown', keyDownEscape);
     deleteModal.value.show();
   }
 }
 
 function handleAdd() {
   if (addModal.value) {
-    window.addEventListener('keydown', keyDownExpress);
+    window.addEventListener('keydown', keyDownEscape);
     addModal.value.show();
   }
 }
@@ -194,11 +194,12 @@ function saveEditUserClick() {
 
 function saveAddUserClick() {}
 
-function keyDownExpress(event: KeyboardEvent) {
+function keyDownEscape(event: KeyboardEvent) {
   if (event.key === 'Escape') {
     deleteModal.value?.hide();
     editModal.value?.hide();
-    window.removeEventListener('keydown', keyDownExpress);
+    addModal.value?.hide();
+    window.removeEventListener('keydown', keyDownEscape);
   }
 }
 
@@ -207,7 +208,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('keydown', keyDownExpress);
+  window.removeEventListener('keydown', keyDownEscape);
 });
 </script>
 
