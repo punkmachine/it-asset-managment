@@ -112,7 +112,7 @@ import { getTableRows } from '@/utils/adapters/branchesAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
 
-import { columnsSettings } from '@/views/branches/settings';
+import { columnsSettings, initialBranch } from '@/views/branches/settings';
 
 const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
@@ -120,10 +120,7 @@ const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentBranch: Ref<IBranch | null> = ref(null);
 const branches: Ref<IBranch[]> = ref([]);
-const newBranch: Ref<INewBranch> = ref({
-  title: '',
-  description: '',
-});
+const newBranch: Ref<INewBranch> = ref({ ...initialBranch });
 
 const rows: Ref<TRows[]> = ref([]);
 const columns: Ref<IColumn[]> = ref(columnsSettings);
@@ -202,11 +199,7 @@ function saveAddBranchClick() {
         ];
 
         rows.value = getTableRows(branches.value);
-
-        newBranch.value = {
-          title: '',
-          description: '',
-        };
+        newBranch.value = { ...initialBranch };
 
         addModal.value?.hide();
       });

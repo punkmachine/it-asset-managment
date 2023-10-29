@@ -106,7 +106,7 @@ import { getTableRows } from '@/utils/adapters/usersAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
 
-import { columnsSettings } from './settings';
+import { columnsSettings, initialUser } from './settings';
 
 const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
@@ -114,12 +114,7 @@ const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentUser: Ref<IUser | null> = ref(null);
 const users: Ref<IUser[]> = ref([]);
-const newUser: Ref<INewUser> = ref({
-  firstName: '',
-  lastName: '',
-  login: '',
-  password: '',
-});
+const newUser: Ref<INewUser> = ref({...initialUser});
 
 const columns: Ref<IColumn[]> = ref(columnsSettings);
 const rows: Ref<TRows[]> = ref([]);
@@ -199,12 +194,7 @@ function saveAddUserClick() {
 
         rows.value = getTableRows(users.value);
 
-        newUser.value = {
-          firstName: '',
-          lastName: '',
-          login: '',
-          password: '',
-        };
+        newUser.value = {...initialUser};
 
         addModal.value?.hide();
       });

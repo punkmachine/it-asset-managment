@@ -5,3 +5,8 @@ export const columnsSettings: IColumn[] = [
   { key: 'title', title: 'Название' },
   { key: 'description', title: 'Описание' },
 ];
+
+export const initialBranch = {
+  title: '',
+  description: '',
+};
