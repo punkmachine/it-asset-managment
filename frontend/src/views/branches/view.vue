@@ -3,7 +3,7 @@
     <HeadBranchesPage @addBranch="handleAdd" />
 
     <div class="branches__content">
-      <SearchBranch />
+      <SearchBranch @searchInput="searchBranch" />
 
       <div class="divider"></div>
 
@@ -84,7 +84,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { debounce } from "debounce";
 
 import type { Ref } from 'vue'
 import type { IBranch } from '@/entities/types/backend/branches';
@@ -120,7 +121,9 @@ const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentBranch: Ref<IBranch | null> = ref(null);
 const branches: Ref<IBranch[]> = ref([]);
+const filteredBranches: Ref<IBranch[]> = ref([]);
 const newBranch: Ref<INewBranch> = ref({ ...initialBranch });
+const searchText: Ref<string> = ref('');
 
 const rows: Ref<TRows[]> = ref([]);
 const columns: Ref<IColumn[]> = ref(columnsSettings);
@@ -156,7 +159,8 @@ function getBranchesAndRowsTable() {
   fetchBranches()
     .then(data => {
       branches.value = [...data];
-      rows.value = getTableRows(branches.value);
+      filteredBranches.value = [...data];
+      rows.value = getTableRows(filteredBranches.value);
     });
 }
 
@@ -212,7 +216,27 @@ function keyDownEscape() {
   addModal.value?.hide();
 }
 
+function searchBranch(text: string) {
+  searchText.value = text;
+}
+
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
+
+const searchTextWatcher = debounce(() => {
+  if (searchText.value) {
+    const text = searchText.value;
+
+    filteredBranches.value = branches.value
+      .filter(branch => branch.title.includes(text) || branch.description.includes(text));
+
+    rows.value = getTableRows(filteredBranches.value);
+  } else {
+    filteredBranches.value = [...branches.value];
+    rows.value = getTableRows(filteredBranches.value);
+  }
+}, 300);
+
+watch(searchText, searchTextWatcher);
 
 onMounted(() => {
   getBranchesAndRowsTable();

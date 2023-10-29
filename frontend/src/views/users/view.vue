@@ -3,7 +3,7 @@
     <HeadUsersPage @addUser="handleAdd" />
 
     <div class="users__content">
-      <SearchUser />
+      <SearchUser @searchInput="searchUser" />
 
       <div class="divider"></div>
 
@@ -83,7 +83,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { debounce } from "debounce";
 
 import type { Ref } from 'vue'
 import type { IColumn, TRows } from '@/entities/types/UI/table';
@@ -114,7 +115,9 @@ const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentUser: Ref<IUser | null> = ref(null);
 const users: Ref<IUser[]> = ref([]);
+const filteredUsers: Ref<IUser[]> = ref([]);
 const newUser: Ref<INewUser> = ref({...initialUser});
+const searchText: Ref<string> = ref('');
 
 const columns: Ref<IColumn[]> = ref(columnsSettings);
 const rows: Ref<TRows[]> = ref([]);
@@ -150,7 +153,8 @@ function getUsersAndRowsTable() {
   fetchUsers()
     .then(data => {
       users.value = [...data];
-      rows.value = getTableRows(users.value);
+      filteredUsers.value = [...data]
+      rows.value = getTableRows(filteredUsers.value);
     });
 }
 
@@ -207,7 +211,27 @@ function keyDownEscape() {
   addModal.value?.hide();
 }
 
+function searchUser(text: string) {
+  searchText.value = text;
+}
+
+const searchTextWatcher = debounce(() => {
+  if (searchText.value) {
+    const text = searchText.value;
+
+    filteredUsers.value = users.value
+      .filter(user => user.firstName.includes(text) || user.lastName.includes(text));
+
+    rows.value = getTableRows(filteredUsers.value);
+  } else {
+    filteredUsers.value = [...users.value];
+    rows.value = getTableRows(filteredUsers.value);
+  }
+}, 300);
+
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
+
+watch(searchText, searchTextWatcher);
 
 onMounted(() => {
   getUsersAndRowsTable();
