@@ -104,7 +104,6 @@ import FormAddBranch from '@/views/branches/components/FormAddBranch.vue';
 
 import {
   fetchBranches,
-  getBranchById,
   deleteBranch,
   editBranch,
   postBranch,
@@ -133,29 +132,27 @@ function getCurrentBranchById(id: string): IBranch | null {
   return branches.value.find(branch => branch.id.toString() === id) ?? null;
 }
 
-function handleDelete(id: string) {
-  currentBranch.value = getCurrentBranchById(id);
-
-  if (deleteModal.value) {
-    addEventEscape();
-    deleteModal.value.show();
+function handleModalWrapper(modal: Ref<InstanceType<typeof UIModal> | null>, id: string | null): void {
+  if (id) {
+    currentBranch.value = getCurrentBranchById(id);
   }
+
+  if (modal.value) {
+    addEventEscape();
+    modal.value.show();
+  }
+}
+
+function handleDelete(id: string) {
+  handleModalWrapper(deleteModal, id);
 }
 
 function handleEdit(id: string) {
-  currentBranch.value = getCurrentBranchById(id);
-
-  if (editModal.value) {
-    addEventEscape();
-    editModal.value.show();
-  }
+  handleModalWrapper(editModal, id);
 }
 
 function handleAdd() {
-  if (addModal.value) {
-    addEventEscape();
-    addModal.value.show();
-  }
+  handleModalWrapper(addModal, null);
 }
 
 function getBranchesAndRowsTable() {

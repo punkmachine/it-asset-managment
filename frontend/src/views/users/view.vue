@@ -128,29 +128,27 @@ function getCurrentUserById(id: string): IUser | null {
   return users.value.find(user => user.id.toString() === id) ?? null;
 }
 
-function handleEdit(id: string) {
-  currentUser.value = getCurrentUserById(id);
-
-  if (editModal.value) {
-    addEventEscape();
-    editModal.value.show();
+function handleModalWrapper(modal: Ref<InstanceType<typeof UIModal> | null>, id: string | null): void {
+  if (id) {
+    currentUser.value = getCurrentUserById(id);
   }
+
+  if (modal.value) {
+    addEventEscape();
+    modal.value.show();
+  }
+}
+
+function handleEdit(id: string) {
+  handleModalWrapper(editModal, id);
 }
 
 function handleDelete(id: string) {
-  currentUser.value = getCurrentUserById(id);
-
-  if (deleteModal.value) {
-    addEventEscape();
-    deleteModal.value.show();
-  }
+  handleModalWrapper(deleteModal, id);
 }
 
 function handleAdd() {
-  if (addModal.value) {
-    addEventEscape();
-    addModal.value.show();
-  }
+  handleModalWrapper(addModal, null);
 }
 
 function getUsersAndRowsTable() {
