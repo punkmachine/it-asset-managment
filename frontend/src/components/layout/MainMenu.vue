@@ -34,6 +34,17 @@
           Админы
         </span>
       </RouterLink>
+      <RouterLink
+        to="/equipment-settings"
+        class="main-menu__item"
+      >
+        <svg class="main-menu__item-icon">
+          <use xlink:href="@/assets/icons/sprites/main-menu.svg#settings"></use>
+        </svg>
+        <span class="main-menu__item-text">
+          Настройки
+        </span>
+      </RouterLink>
     </nav>
   </aside>
 </template>
