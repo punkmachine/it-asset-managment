@@ -11,16 +11,16 @@ function branchesAdapterFromTable(branches: IBranch[]): IBranchInTable[] {
   });
 }
 
-export function getTableRows(users: IBranch[]) {
-  const usersTable = branchesAdapterFromTable(users);
+export function getTableRows(branches: IBranch[]) {
+  const branchesTable = branchesAdapterFromTable(branches);
 
-  return usersTable.map(user => {
+  return branchesTable.map(branch => {
     let result: ICell[] = [];
 
-    for (let key in user) {
+    for (let key in branch) {
       result.push({
         key,
-        title: user[key as keyof IBranchInTable],
+        title: branch[key as keyof IBranchInTable],
       });
     }
 
