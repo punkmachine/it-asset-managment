@@ -8,10 +8,16 @@
       </button>
     </div>
     <div class="pagination__counter">
-      <span class="pagination__counter-item pagination__counter-item--active">1</span>
-      <span class="pagination__counter-item">2</span>
-      <span class="pagination__counter-item pagination__counter-item--more">...</span>
-      <span class="pagination__counter-item">6</span>
+      <span
+        v-for="number in pagesCount"
+        :key="`pagination-${number}`"
+        class="pagination__counter-item"
+        :class="{
+          'pagination__counter-item--active': true
+        }"
+      >
+        {{ number }}
+      </span>
     </div>
     <div class="pagination__arrow">
       <button>
@@ -23,8 +29,8 @@
     <div>
       <select
         v-if="visibleSelect"
+        v-model="visibleItems"
         class="select"
-        value="10"
       >
         <option
           v-for="option in optionsSelect"
@@ -39,7 +45,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, computed } from 'vue';
+import { defineProps, computed, ref } from 'vue';
+import type { Ref } from 'vue';
 
 interface IProps {
   count: number,
@@ -47,8 +54,14 @@ interface IProps {
 
 const props = defineProps<IProps>();
 
+const visibleItems: Ref<number> = ref(10);
+
 const visibleSelect = computed(() => {
   return props.count > 10;
+});
+
+const pagesCount = computed(() => {
+  return Math.ceil(props.count / 10);
 });
 
 const optionsSelect = computed(() => {
