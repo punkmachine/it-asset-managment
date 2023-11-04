@@ -5,7 +5,13 @@
       class="modal__mask"
       @click="visible = false"
     >
-      <div class="modal__container" @click.stop>
+      <div
+        class="modal__container"
+        :class="{
+          'modal__container--with-columns': doubleColumns
+        }"
+        @click.stop
+      >
         <div class="modal__body">
           <slot name="body"></slot>
         </div>
@@ -19,8 +25,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineExpose } from 'vue';
+import { ref, defineExpose, defineProps } from 'vue';
 import type { Ref } from 'vue';
+
+interface IProps {
+  doubleColumns?: boolean,
+}
+
+const props = defineProps<IProps>();
 
 const visible: Ref<boolean> = ref(false);
 
@@ -58,6 +70,10 @@ defineExpose({
   box-shadow: var(--shadow-standard);
   padding: 20px 12px 16px 12px;
   transition: all 0.3s ease;
+}
+
+.modal__container--with-columns {
+  width: 620px;
 }
 
 .modal__footer {
