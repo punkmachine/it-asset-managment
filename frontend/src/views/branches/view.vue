@@ -36,7 +36,7 @@
 
       <UIModal ref="editModal">
         <template #body>
-          <h2 class="users__modal-title">
+          <h2 class="branches__modal-title">
             Редактирование филиала "{{ currentBranch?.title }}"
           </h2>
           <!--
@@ -61,7 +61,7 @@
 
       <UIModal ref="addModal">
         <template #body>
-          <h2 class="users__modal-title">
+          <h2 class="branches__modal-title">
             Создание филиала
           </h2>
           <form>
@@ -87,7 +87,7 @@
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { debounce } from "debounce";
 
-import type { Ref } from 'vue'
+import type { Ref } from 'vue';
 import type { IBranch } from '@/entities/types/backend/branches';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
 import type { INewBranch } from './types';
@@ -264,5 +264,12 @@ onBeforeUnmount(() => {
   min-height: var(--height-table-wrapper);
   max-height: var(--height-table-wrapper);
   max-width: calc(100vw - var(--menu-width));
+}
+
+.branches__modal-title {
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 18px;
 }
 </style>

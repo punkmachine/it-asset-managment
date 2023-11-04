@@ -6,8 +6,7 @@
       required
     />
 
-    <!-- @todo: textarea -->
-    <UIInput
+    <UITextArea
       label="Описание"
       v-model="branch.description"
       required
@@ -20,6 +19,7 @@ import { ref, defineProps, defineEmits, watch } from 'vue';
 import type { IBranch } from '@/entities/types/backend/branches';
 import type { Ref } from 'vue';
 import UIInput from '@/components/ui/UIInput.vue';
+import UITextArea from '@/components/ui/UITextArea.vue';
 
 interface IProps {
   editedBranch: IBranch,
