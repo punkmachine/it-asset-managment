@@ -17,6 +17,11 @@
   outline: 2px solid var(--outline-input);
 }
 
+.textarea {
+  resize: none;
+  height: 120px;
+}
+
 .input__icon {
   width: 20px;
   height: 20px;
