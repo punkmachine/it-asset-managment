@@ -26,16 +26,16 @@ interface IProps {
 };
 
 interface IEmits {
-  (e: 'updateAddedBranch', user: INewBranch): void,
+  (e: 'updateAddedBranch', branch: INewBranch): void,
 }
 
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
 
-const user: Ref<INewBranch> = ref(props.addedBranch);
+const branch: Ref<INewBranch> = ref(props.addedBranch);
 
-watch(user.value, (newUser) => {
-  emit('updateAddedBranch', newUser);
+watch(branch.value, (newBranch) => {
+  emit('updateAddedBranch', newBranch);
 });
 </script>
 
