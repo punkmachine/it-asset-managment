@@ -3,7 +3,7 @@
     <thead>
       <tr>
         <th
-          v-for="col in props.columns"
+          v-for="col in columns"
           :key="col.key"
           :width="`${col.width ? col.width : 'auto'}`"
           scope="col"
@@ -11,7 +11,7 @@
           {{ col.title }}
         </th>
         <th
-          v-if="props.actionsColVisible"
+          v-if="deleteButtonVisible || editButtonVisible"
           scope="col"
           width="316px"
         >
@@ -21,7 +21,7 @@
     </thead>
     <tbody>
       <tr
-        v-for="(row, rowIndex) in props.rows"
+        v-for="(row, rowIndex) in rows"
         :key="rowIndex"
       >
         <td
@@ -32,6 +32,7 @@
         </td>
         <td class="flex gap-3">
           <button
+            v-if="editButtonVisible"
             class="button button--text"
             @click="$emit('edit', row[0].title)"
           >
@@ -41,6 +42,7 @@
             Редактировать
           </button>
           <button
+            v-if="deleteButtonVisible"
             class="button button--text"
             @click="$emit('delete', row[0].title)"
           >
@@ -62,7 +64,8 @@ import type { IColumn, TRows } from '@/entities/types/UI/table';
 interface IProps {
   columns: IColumn[],
   rows: TRows[],
-  actionsColVisible?: boolean,
+  deleteButtonVisible?: boolean,
+  editButtonVisible?: boolean,
 };
 
 interface IEmits {

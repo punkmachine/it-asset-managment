@@ -11,7 +11,8 @@
         <UITable
           :columns="columns"
           :rows="rows"
-          actions-col-visible
+          delete-button-visible
+          edit-button-visible
           @edit="handleEdit"
           @delete="handleDelete"
         />
