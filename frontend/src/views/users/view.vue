@@ -222,17 +222,7 @@ function searchUser(text: string) {
 }
 
 const searchTextWatcher = debounce(() => {
-  if (searchText.value) {
-    const text = searchText.value;
-
-    filteredUsers.value = users.value
-      .filter(user => user.firstName.includes(text) || user.lastName.includes(text));
-
-    rows.value = getTableRows(filteredUsers.value);
-  } else {
-    filteredUsers.value = [...users.value];
-    rows.value = getTableRows(filteredUsers.value);
-  }
+  // @todo: запрос на бэкенд для поиска
 }, 300);
 
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);

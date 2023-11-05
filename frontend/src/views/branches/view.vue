@@ -229,17 +229,7 @@ function searchBranch(text: string) {
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 const searchTextWatcher = debounce(() => {
-  if (searchText.value) {
-    const text = searchText.value;
-
-    filteredBranches.value = branches.value
-      .filter(branch => branch.title.includes(text) || branch.description.includes(text));
-
-    rows.value = getTableRows(filteredBranches.value);
-  } else {
-    filteredBranches.value = [...branches.value];
-    rows.value = getTableRows(filteredBranches.value);
-  }
+  // @todo: запрос на бэкенд для поиска
 }, 300);
 
 watch(searchText, searchTextWatcher);

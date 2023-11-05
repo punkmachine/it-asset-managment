@@ -250,13 +250,7 @@ function searchTextInEquipment(equipment: IEquipment): boolean {
 }
 
 const searchTextWatcher = debounce(() => {
-  if (searchText.value) {
-    filteredEquipments.value = equipments.value.filter(searchTextInEquipment);
-  } else {
-    filteredEquipments.value = [...equipments.value];
-  }
-
-  rows.value = getTableRows(filteredEquipments.value);
+  // @todo: запрос на бэкенд для поиска
 }, 300);
 
 watch(searchText, searchTextWatcher);
