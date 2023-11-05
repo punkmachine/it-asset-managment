@@ -10,16 +10,3 @@ export const columnsSettings: IColumn[] = [
   { key: 'updatedDate', title: 'Дата изменения' },
   { key: 'financiallyResponsiblePerson', title: 'МОЛ' },
 ];
-
-export const initialEquipment = {
-  assetNumber: '',
-  inventoryNumber: '',
-  name: '',
-  description: '',
-  serialNumber: '',
-  financiallyResponsiblePerson: '',
-  recipient: '',
-  invoiceNumber: '',
-  branchId: '',
-  comments: [],
-};
