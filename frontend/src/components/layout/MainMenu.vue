@@ -34,7 +34,7 @@
           Админы
         </span>
       </RouterLink>
-      <RouterLink
+      <!-- <RouterLink
         to="/equipment-settings"
         class="main-menu__item"
       >
@@ -44,7 +44,7 @@
         <span class="main-menu__item-text">
           Настройки
         </span>
-      </RouterLink>
+      </RouterLink> -->
     </nav>
   </aside>
 </template>
