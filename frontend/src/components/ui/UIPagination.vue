@@ -1,7 +1,13 @@
 <template>
   <div class="pagination">
-    <div class="pagination__arrow">
-      <button>
+    <div
+      class="pagination__arrow"
+      :class="{
+        'pagination__arrow--disable': currentPage === 1,
+      }"
+      @click="prevPage"
+    >
+      <button :disabled="currentPage === 1">
         <svg>
           <use xlink:href="@/assets/icons/sprites/buttons.svg#arrow-left"></use>
         </svg>
@@ -10,17 +16,24 @@
     <div class="pagination__counter">
       <span
         v-for="number in pagesCount"
-        :key="`pagination-${number}`"
         class="pagination__counter-item"
+        :key="`pagination-${number}`"
         :class="{
-          'pagination__counter-item--active': true
+          'pagination__counter-item--active': currentPage === number
         }"
+        @click="setPage(number)"
       >
         {{ number }}
       </span>
     </div>
-    <div class="pagination__arrow">
-      <button>
+    <div
+      class="pagination__arrow"
+      :class="{
+        'pagination__arrow--disable': currentPage === pagesCount,
+      }"
+      @click="nextPage"
+    >
+      <button :disabled="currentPage === pagesCount">
         <svg>
           <use xlink:href="@/assets/icons/sprites/buttons.svg#arrow-right"></use>
         </svg>
@@ -29,8 +42,9 @@
     <div>
       <select
         v-if="visibleSelect"
-        v-model="visibleItems"
         class="select"
+        :value="visibleItems"
+        @change="emits('update:visibleItems', +($event.target as HTMLInputElement).value)"
       >
         <option
           v-for="option in optionsSelect"
@@ -45,16 +59,21 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, computed, ref } from 'vue';
-import type { Ref } from 'vue';
+import { defineProps, computed, defineEmits } from 'vue';
 
 interface IProps {
   count: number,
+  currentPage: number,
+  visibleItems: number,
+};
+
+interface IEmits {
+  (e: 'update:currentPage', newCurrentPage: number): void,
+  (e: 'update:visibleItems', newVisibleItems: number): void,
 };
 
 const props = defineProps<IProps>();
-
-const visibleItems: Ref<number> = ref(10);
+const emits = defineEmits<IEmits>();
 
 const visibleSelect = computed(() => {
   return props.count > 10;
@@ -76,6 +95,18 @@ const optionsSelect = computed(() => {
 
   return result;
 });
+
+function prevPage() {
+  emits('update:currentPage', props.currentPage - 1);
+}
+
+function nextPage() {
+  emits('update:currentPage', props.currentPage + 1);
+}
+
+function setPage(number: number) {
+  emits('update:currentPage', number);
+}
 </script>
 
 <style scoped>
@@ -90,6 +121,7 @@ const optionsSelect = computed(() => {
   justify-content: center;
   align-items: center;
   padding: 4px;
+  border-radius: 6px;
 }
 
 .pagination__arrow svg {
@@ -99,8 +131,16 @@ const optionsSelect = computed(() => {
 }
 
 .pagination__arrow:hover button {
-  border-radius: 6px;
   background-color: var(--bg-secondary);
+}
+
+.pagination__arrow--disable button {
+  opacity: 0.4;
+  cursor: auto;
+}
+
+.pagination__arrow--disable:hover button {
+  background-color: var(--bg-white);
 }
 
 .pagination__counter {

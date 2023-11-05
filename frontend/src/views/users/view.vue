@@ -17,7 +17,11 @@
         />
 
         <div class="flex justify-end mt-5 mr-5">
-          <UIPagination :count="rows.length" />
+          <UIPagination
+            v-model:current-page="currentPage"
+            v-model:visible-items="visibleTableItems"
+            :count="rows.length"
+          />
         </div>
       </div>
 
@@ -118,6 +122,8 @@ const users: Ref<IUser[]> = ref([]);
 const filteredUsers: Ref<IUser[]> = ref([]);
 const newUser: Ref<INewUser> = ref({...initialUser});
 const searchText: Ref<string> = ref('');
+const currentPage: Ref<number> = ref(1);
+const visibleTableItems: Ref<number> = ref(10);
 
 const columns: Ref<IColumn[]> = ref(columnsSettings);
 const rows: Ref<TRows[]> = ref([]);
