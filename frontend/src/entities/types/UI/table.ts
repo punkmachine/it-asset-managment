@@ -22,3 +22,14 @@ export interface IBranchInTable {
   description: string,
   title: string,
 };
+
+export interface IEquipmentInTable {
+  id: string,
+  inventoryNumber: string,
+  serialNumber: string,
+  assetNumber: string,
+  name: string,
+  createdDate: string,
+  updatedDate: string,
+  financiallyResponsiblePerson: string,
+};

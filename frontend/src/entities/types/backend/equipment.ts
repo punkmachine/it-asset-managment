@@ -1,6 +1,11 @@
 import type { IBranch } from './branches';
 import type { IUser } from './user';
 
+export enum EquipmentState {
+  active = 'ACTIVE',
+  deleted = 'DELETED',
+};
+
 export interface IHistoryItem {
   id: number,
   date: string, // когда была передана
@@ -23,6 +28,7 @@ export interface IEquipment {
   comments: string[] // комментарии
   invoiceNumber: string, // номер накладной
   branch: IBranch, // филиал
+  state: EquipmentState.active, // статус оборудования
 
   history: IHistoryItem[],
 };
