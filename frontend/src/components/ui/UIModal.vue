@@ -48,7 +48,8 @@ defineExpose({
   show, hide
 });
 </script>
-<style scoped>
+
+<style>
 .modal__mask {
   position: fixed;
   z-index: 9998;
@@ -81,6 +82,13 @@ defineExpose({
   justify-content: flex-end;
   align-items: center;
   margin-top: 16px;
+}
+
+.modal__title {
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .modal-enter-from {

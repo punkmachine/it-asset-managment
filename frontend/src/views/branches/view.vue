@@ -41,7 +41,7 @@
 
       <UIModal ref="editModal">
         <template #body>
-          <h2 class="branches__modal-title">
+          <h2 class="modal__title">
             Редактирование филиала "{{ currentBranch?.title }}"
           </h2>
           <!--
@@ -66,7 +66,7 @@
 
       <UIModal ref="addModal">
         <template #body>
-          <h2 class="branches__modal-title">
+          <h2 class="modal__title">
             Создание филиала
           </h2>
           <form>
@@ -261,12 +261,5 @@ onBeforeUnmount(() => {
   min-height: var(--height-table-wrapper);
   max-height: var(--height-table-wrapper);
   max-width: calc(100vw - var(--menu-width));
-}
-
-.branches__modal-title {
-  margin-bottom: 12px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 18px;
 }
 </style>

@@ -26,7 +26,7 @@
 
       <UIModal ref="deleteModal">
         <template #body>
-          Вы точно хотите удалить сотрудника "{{ currentEquipment?.inventoryNumber }}"?
+          Вы точно хотите списать "{{ currentEquipment?.inventoryNumber }}"?
         </template>
 
         <template #footer>
@@ -169,12 +169,5 @@ onBeforeUnmount(() => {
   min-height: var(--height-table-wrapper);
   max-height: var(--height-table-wrapper);
   max-width: calc(100vw - var(--menu-width));
-}
-
-.equipments__modal-title {
-  margin-bottom: 12px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 18px;
 }
 </style>

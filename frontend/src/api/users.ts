@@ -1,8 +1,8 @@
-import type { IUser, IProfile } from '@/entities/types/backend/user';
+import type { IUser, IProfile, TUsersList, ISuperUser } from '@/entities/types/backend/user';
 import { UserState, UserRoles } from '@/entities/types/backend/user';
 import type { INewUser } from '@/views/users/types';
 
-export function fetchUsers(): Promise<IUser[]> {
+export function fetchUsers(): Promise<TUsersList> {
   return new Promise((resolve, reject) => {
     resolve([
       {
@@ -45,7 +45,7 @@ export function editUser(editedUser: IUser): Promise<IUser> {
   });
 }
 
-export function getUserById(id: number): Promise<IUser> {
+export function getUserById(id: number): Promise<IUser | ISuperUser> {
   return new Promise((resolve, reject) => {
     resolve({
       id,

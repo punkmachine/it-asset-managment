@@ -41,7 +41,7 @@
 
       <UIModal ref="editModal">
         <template #body>
-          <h2 class="users__modal-title">
+          <h2 class="modal__title">
             Редактирование пользователя "{{ currentUser?.lastName }} {{ currentUser?.firstName }}"
           </h2>
           <!-- @todo: костыль с currentUser, потому что он технически может быть null,
@@ -65,7 +65,7 @@
 
       <UIModal ref="addModal">
         <template #body>
-          <h2 class="users__modal-title">
+          <h2 class="modal__title">
             Создание админа
           </h2>
           <form>
@@ -256,12 +256,5 @@ onBeforeUnmount(() => {
   min-height: var(--height-table-wrapper);
   max-height: var(--height-table-wrapper);
   max-width: calc(100vw - var(--menu-width));
-}
-
-.users__modal-title {
-  margin-bottom: 12px;
-  text-align: center;
-  font-weight: 600;
-  font-size: 18px;
 }
 </style>
