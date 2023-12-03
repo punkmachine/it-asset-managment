@@ -76,6 +76,16 @@ const router = createRouter({
       }
     },
     {
+      path: '/statistics',
+      name: 'statistics',
+      component: () => import('@/views/statistics/view.vue'),
+      meta: {
+        secure: true,
+        superAdminOnly: true,
+        layout: 'main',
+      }
+    },
+    {
       path: '/:notFound',
       name: 'not-found',
       component: () => import('@/views/404/view.vue'),
