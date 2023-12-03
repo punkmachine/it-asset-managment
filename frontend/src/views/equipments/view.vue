@@ -3,7 +3,7 @@
     <HeadEquipmentsPage @addEquipment="handleAdd" />
 
     <div class="equipments__content">
-      <SearchEquipments @searchInput="SearchEquipment" />
+      <SearchEquipments @searchInput="searchEquipment" />
 
       <div class="divider"></div>
 
@@ -126,7 +126,7 @@ function keyDownEscape() {
   deleteModal.value?.hide();
 }
 
-function SearchEquipment(text: string) {
+function searchEquipment(text: string) {
   searchText.value = text;
 }
 
