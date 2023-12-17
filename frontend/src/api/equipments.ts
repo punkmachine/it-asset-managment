@@ -1,5 +1,4 @@
 import type { IEquipment } from '@/entities/types/backend/equipment';
-import type { INewEquipment } from '@/views/equipments/types';
 import { EquipmentState } from '@/entities/types/backend/equipment';
 import { BranchState } from '@/entities/types/backend/branches';
 
@@ -102,26 +101,5 @@ export function deleteEquipment(): Promise<boolean> {
 export function editEquipment(equipment: IEquipment): Promise<IEquipment> {
   return new Promise((resolve, reject) => {
     resolve(equipment);
-  });
-}
-
-export function postEquipment(newEquipment: INewEquipment): Promise<IEquipment> {
-  return new Promise((resolve, reject) => {
-    resolve({
-      ...newEquipment,
-      id: 3,
-      createdDate: '2023-10-22T04:55:58.867Z',
-      updatedDate: '2023-10-22T04:55:58.867Z',
-      state: EquipmentState.active,
-      history: [],
-      branch: {
-        id: +newEquipment.branchId,
-        createdDate: '2023-10-22T04:55:58.867Z',
-        updatedDate: '2023-10-22T04:55:58.867Z',
-        title: 'Филиал в Алматы',
-        description: 'Филиал в Алматы',
-        state: BranchState.active,
-      }
-    })
   });
 }
