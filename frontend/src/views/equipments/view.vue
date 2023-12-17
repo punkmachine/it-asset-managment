@@ -131,8 +131,8 @@ function searchEquipment(text: string) {
   searchText.value = text;
 }
 
-function goDetailEquipment() {
-  console.log('done');
+function goDetailEquipment(id: string | number) {
+  router.push(`/equipment/${id}`);
 }
 
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);

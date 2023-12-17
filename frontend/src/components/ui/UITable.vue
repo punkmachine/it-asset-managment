@@ -26,7 +26,7 @@
         :class="{
           'cursor-pointer hover:bg-slate-100': goDetailItem
         }"
-        @click="rowClick"
+        @click="rowClick(row)"
       >
         <td
           v-for="item in row"
@@ -63,7 +63,7 @@
 
 <script lang="ts" setup>
 import { defineProps, defineEmits } from 'vue';
-import type { IColumn, TRows } from '@/entities/types/UI/table';
+import type { IColumn, TRows, ICell } from '@/entities/types/UI/table';
 
 interface IProps {
   columns: IColumn[],
@@ -81,9 +81,15 @@ interface IEmits {
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
 
-function rowClick() {
+function rowClick(row: TRows) {
+  console.log(JSON.parse(JSON.stringify(row)));
+
   if (typeof props.goDetailItem === 'function') {
-    props.goDetailItem();
+    const idCell = row.find(cell => cell.key === 'id');
+
+    if (idCell) {
+      props.goDetailItem(idCell.title);
+    }
   }
 }
 </script>

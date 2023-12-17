@@ -13,12 +13,13 @@
       class="hidden"
     >
 
-    <button class="button" @click="$emit('addEquipment')">
+    <!-- @todo -->
+    <!-- <button class="button" @click="$emit('addEquipment')">
       <svg class="button__icon">
         <use xlink:href="@/assets/icons/sprites/buttons.svg#add"></use>
       </svg>
       Добавить
-    </button>
+    </button> -->
   </HeadPage>
 </template>
 

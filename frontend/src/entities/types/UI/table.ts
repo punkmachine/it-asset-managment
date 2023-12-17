@@ -10,6 +10,7 @@ export interface ICell {
   title: string,
 }
 
+// @todo: rename to TRow
 export type TRows = ICell[];
 
 export interface IUserInTable {
