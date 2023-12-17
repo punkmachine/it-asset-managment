@@ -11,6 +11,7 @@
         <UITable
           :columns="columns"
           :rows="rows"
+          :go-detail-item="goDetailEquipment"
           delete-button-visible
           @delete="handleDelete"
         />
@@ -128,6 +129,10 @@ function keyDownEscape() {
 
 function searchEquipment(text: string) {
   searchText.value = text;
+}
+
+function goDetailEquipment() {
+  console.log('done');
 }
 
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);

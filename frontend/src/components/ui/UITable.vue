@@ -23,6 +23,10 @@
       <tr
         v-for="(row, rowIndex) in rows"
         :key="rowIndex"
+        :class="{
+          'cursor-pointer hover:bg-slate-100': goDetailItem
+        }"
+        @click="rowClick"
       >
         <td
           v-for="item in row"
@@ -66,6 +70,7 @@ interface IProps {
   rows: TRows[],
   deleteButtonVisible?: boolean,
   editButtonVisible?: boolean,
+  goDetailItem?: () => void,
 };
 
 interface IEmits {
@@ -75,6 +80,12 @@ interface IEmits {
 
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
+
+function rowClick() {
+  if (typeof props.goDetailItem === 'function') {
+    props.goDetailItem();
+  }
+}
 </script>
 
 <style scoped>
