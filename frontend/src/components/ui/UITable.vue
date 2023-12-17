@@ -70,7 +70,7 @@ interface IProps {
   rows: TRows[],
   deleteButtonVisible?: boolean,
   editButtonVisible?: boolean,
-  goDetailItem?: () => void,
+  goDetailItem?: (id: string | number) => void,
 };
 
 interface IEmits {
@@ -82,8 +82,6 @@ const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
 
 function rowClick(row: TRows) {
-  console.log(JSON.parse(JSON.stringify(row)));
-
   if (typeof props.goDetailItem === 'function') {
     const idCell = row.find(cell => cell.key === 'id');
 
