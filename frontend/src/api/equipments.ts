@@ -1,6 +1,7 @@
 import type { IEquipment } from '@/entities/types/backend/equipment';
 import { EquipmentState } from '@/entities/types/backend/equipment';
 import { BranchState } from '@/entities/types/backend/branches';
+import { UserState, UserRoles } from '@/entities/types/backend/user';
 
 export function fetchEquipments(): Promise<IEquipment[]> {
   return new Promise((resolve, reject) => {
@@ -87,7 +88,42 @@ export function getEquipmentById(id: string | number): Promise<IEquipment> {
         state: BranchState.active
       },
       state: EquipmentState.active,
-      history: [],
+      history: [
+        {
+          id: 1,
+          accepted: 'Петрович',
+          passedOn: {
+            id: 1,
+            createdDate: '2023-10-22T04:55:58.867Z',
+            updatedDate: '2023-10-22T04:55:58.867Z',
+            firstName: 'Александр',
+            lastName: 'Рассудихин',
+            login: 'alex',
+            password: 'hash',
+            state: UserState.active,
+            role: UserRoles.superAdmin,
+            avatar: '',
+          },
+          date: '2023-10-22T04:55:58.867Z',
+        },
+        {
+          id: 2,
+          accepted: 'Петрович',
+          passedOn: {
+            id: 1,
+            createdDate: '2023-10-22T04:55:58.867Z',
+            updatedDate: '2023-10-22T04:55:58.867Z',
+            firstName: 'Александр',
+            lastName: 'Рассудихин',
+            login: 'alex',
+            password: 'hash',
+            state: UserState.active,
+            role: UserRoles.superAdmin,
+            avatar: '',
+          },
+          date: '2023-10-22T04:55:58.867Z',
+        }
+      ],
     });
   });
 }
