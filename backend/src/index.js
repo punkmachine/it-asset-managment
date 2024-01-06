@@ -1,7 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
-import router from './router/index.js';
+import router from './router.js';
 
 const PORT = 5004;
 const DB_URL = 'mongodb://localhost:27017/IT-ASSET-MANAGMENT';
