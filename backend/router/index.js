@@ -30,4 +30,9 @@ router.post('/equipments', () => {}); // @todo: тут файл должен б�
 router.patch('/equipment/:id', () => {});
 router.delete('/equipment/:id', () => {});
 
+// история оборудования
+router.get('/equipments/history/:equipmentId', () => {}); // @todo: пагинация
+router.post('/equipments/history/:equipmentId', () => {});
+
+
 export default router;
