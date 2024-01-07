@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import BranchesController from './controllers/branch.js';
 
 const router = new Router();
 
@@ -9,12 +10,12 @@ router.get('/ping', (request, response) => {
 router.post('/login', () => {});
 
 // филиалы
-router.get('/branches', () => {}); // @todo: пагинация
+router.get('/branches', BranchesController.getAll); // @todo: пагинация
 router.get('/branches/search', () => {}); // @todo: пагинация
-router.get('/branch/:id', () => {});
-router.post('/branch', () => {});
-router.put('/branch/:id', () => {});
-router.delete('/branch/:id', () => {});
+router.get('/branch/:id', BranchesController.getById);
+router.post('/branch', BranchesController.create);
+router.put('/branch/:id', BranchesController.updateById);
+router.delete('/branch/:id', BranchesController.deleteById);
 
 // юзеры
 router.get('/users', () => {}); // @todo: пагинация
