@@ -1,4 +1,4 @@
-import Branch from '../models/branch';
+import Branch from '../models/branch.js';
 
 class BranchesController {
 	async getAll(request, response) {

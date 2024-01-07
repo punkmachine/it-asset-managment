@@ -1,6 +1,6 @@
-// import { validationResult } from 'express-validator';
-// import { hashSync } from 'bcryptjs';
-import User from '../models/user';
+import { validationResult } from 'express-validator';
+import { hashSync } from 'bcrypt';
+import User from '../models/user.js';
 
 class UserController {
 	async getAll(request, response) {
@@ -15,32 +15,30 @@ class UserController {
 
 	async create(request, response) {
 		try {
-      // const errors = validationResult(request);
+      const errors = validationResult(request);
 
-      // if (!errors.isEmpty()) {
-      //   return res.status(400)
-      //     .json({ message: "Ошибка при регистрации", errors });
-      // }
+      if (!errors.isEmpty()) {
+        return res.status(400)
+          .json({ message: "Ошибка при регистрации", errors });
+      }
 
-      // const { login, password } = request.body;
-      // const isCandidateExist = await User.findOne({ login });
+      const { login, password } = request.body;
+      const isCandidateExist = await User.findOne({ login });
 
-      // if (isCandidateExist) {
-      //   return res.status(400)
-      //     .json({ message: "Пользователь с таким именем уже существует" });
-      // }
+      if (isCandidateExist) {
+        return res.status(400)
+          .json({ message: "Пользователь с таким именем уже существует" });
+      }
 
-      // const hashPassword = hashSync(password, 7);
-      // const newUser = {
-      //   ...request.body,
-      //   password: hashPassword,
-      // };
+      const hashPassword = hashSync(password, 7);
+      const newUser = {
+        ...request.body,
+        password: hashPassword,
+      };
 
-      // const createdUser = await User.create(newUser);
+      const createdUser = await User.create(newUser);
 
-			// response.status(201).json(createdUser);
-
-      return res.json({ message: "Пользователь успешно зарегистрирован" });
+			response.status(201).json(createdUser);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}

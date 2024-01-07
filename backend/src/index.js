@@ -4,7 +4,7 @@ import fileUpload from 'express-fileupload';
 import router from './router.js';
 
 const PORT = 5004;
-const DB_URL = 'mongodb://localhost:27017/IT-ASSET-MANAGMENT';
+const DB_URL = 'mongodb://127.0.0.1:27017/it-asset-managment';
 const app = express();
 
 app.use(fileUpload({}));
@@ -16,10 +16,7 @@ async function startApp() {
 	try {
 		app.listen(PORT, () => console.log('server started'));
 
-		mongoose.connect(DB_URL, {
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-		})
+		mongoose.connect(DB_URL, {})
 			.then(() => {
 				console.log('Успешное подключение к базе данных');
 			})
