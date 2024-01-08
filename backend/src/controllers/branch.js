@@ -13,7 +13,14 @@ class BranchesController {
 
 	async create(request, response) {
 		try {
-      const createdBranch = await Branch.create(request.body);
+      const newBranch = {
+        ...request.body,
+        createdDate: new Date().toISOString(),
+        updatedDate: new Date().toISOString(),
+        state: 'ACTIVE',
+      };
+
+      const createdBranch = await Branch.create(newBranch);
 
 			response.status(201).json(createdBranch);
 		} catch (error) {
@@ -53,6 +60,7 @@ class BranchesController {
 		}
 	};
 
+  // @todo: блокировать, а не удалять
 	async deleteById(request, response) {
 		try {
       const { id } = request.params;
