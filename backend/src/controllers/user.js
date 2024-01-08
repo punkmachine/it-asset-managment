@@ -34,6 +34,9 @@ class UserController {
       const newUser = {
         ...request.body,
         password: hashPassword,
+        createdDate: new Date().toISOString(),
+        updatedDate: new Date().toISOString(),
+        state: 'ACTIVE',
       };
 
       const createdUser = await User.create(newUser);
@@ -68,7 +71,16 @@ class UserController {
         throw new Error('Ошибка редактирования филиала по ID. Не указан ID.');
       }
 
-      const updatedUser = await User.findByIdAndUpdate(id, request.body, { new: true });
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            ...request.body,
+            updatedDate: new Date().toISOString()
+          }
+        },
+        { new: true }
+      );
 
 			response.status(200).json(updatedUser);
 		} catch (error) {
@@ -76,6 +88,7 @@ class UserController {
 		}
 	};
 
+  // @todo: блокировать, а не удалять
 	async deleteById(request, response) {
 		try {
       const { id } = request.params;
