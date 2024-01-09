@@ -40,9 +40,6 @@ const User = new Schema({
   password: {
 		type: String,
 		required: true,
-		trim: true,
-    // maxLength: 64,
-    // minLength: 6,
 	},
   state: {
     type: String,
