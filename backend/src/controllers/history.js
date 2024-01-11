@@ -6,7 +6,7 @@ class HistoryController {
       const { equipmentId } = request.params;
 
       if (!equipmentId) {
-        throw new Error('Ошибка получения филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка получения филиала по ID. Не указан ID.' });
       }
 
       const historyItems = await History.find({ equipmentId });
@@ -21,7 +21,7 @@ class HistoryController {
 		try {
       const newHistory = {
         ...request.body,
-        date: new Date(),
+        date: new Date().toISOString(),
       };
 
       const createdHistory = await History.create(newHistory);
