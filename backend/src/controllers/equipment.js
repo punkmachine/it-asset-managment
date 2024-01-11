@@ -63,7 +63,6 @@ class EquipmentsController {
 		}
 	};
 
-  // @todo: блокировать, а не удалять
 	async deleteById(request, response) {
 		try {
       const { id } = request.params;
@@ -72,9 +71,15 @@ class EquipmentsController {
         throw new Error('Ошибка удаления филиала по ID. Не указан ID.');
       }
 
-      const deletedEquipment = await Equipment.findByIdAndDelete(id);
+      const deletedEquipment = await Equipment.findById(id);
+      if (!deletedEquipment) {
+        return response.status(404).json({ message: 'Оборудование с указанным ID не найден.' });
+      }
 
-			response.status(200).json(deletedEquipment);
+      deletedEquipment.state = 'DELETED';
+      const updatedEquipment = await deletedEquipment.save();
+
+			response.status(200).json(updatedEquipment);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
