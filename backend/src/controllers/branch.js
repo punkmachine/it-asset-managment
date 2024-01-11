@@ -33,7 +33,7 @@ class BranchesController {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка получения филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка получения филиала по ID. Не указан ID.' });
       }
 
       const branch = await Branch.findById(id);
@@ -49,7 +49,7 @@ class BranchesController {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка редактирования филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка редактирования филиала по ID. Не указан ID.' });
       }
 
       const updatedBranch = await Branch.findByIdAndUpdate(id, request.body, { new: true });
@@ -60,22 +60,27 @@ class BranchesController {
 		}
 	};
 
-  // @todo: блокировать, а не удалять
-	async deleteById(request, response) {
-		try {
+  async deleteById(request, response) {
+    try {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка удаления филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка удаления филиала по ID. Не указан ID.' });
       }
 
-      const deletedBranch = await Branch.findByIdAndDelete(id);
+      const deletedBranch = await Branch.findById(id);
+      if (!deletedBranch) {
+        return response.status(404).json({ message: 'Филиал с указанным ID не найден.' });
+      }
 
-			response.status(200).json(deletedBranch);
-		} catch (error) {
-			response.status(500).json(error.message);
-		}
-	};
+      deletedBranch.state = 'DELETED';
+      const updatedBranch = await deletedBranch.save();
+
+      response.status(200).json(updatedBranch);
+    } catch (error) {
+      response.status(500).json(error.message);
+    }
+  };
 }
 
 export default new BranchesController();

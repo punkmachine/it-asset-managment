@@ -15,14 +15,12 @@ class AuthController {
 
       const user = await User.findOne({ login });
       if (!user) {
-        return response.status(404)
-          .json({ message: `Пользователь ${login} не найден` })
+        return response.status(404).json({ message: `Пользователь ${login} не найден` })
       }
 
       const validPassword = compareSync(password, user.password);
       if (!validPassword) {
-        return response.status(400)
-          .json({ message: 'Введен неверный пароль' });
+        return response.status(400).json({ message: 'Введен неверный пароль' });
       }
 
       const token = generateAccessToken(user._id); // @todo: роль
