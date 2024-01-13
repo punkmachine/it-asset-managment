@@ -7,6 +7,8 @@ import authMiddleware from './middleware/auth.js';
 import AuthController from './controllers/auth.js';
 import UserController from './controllers/user.js';
 import BranchesController from './controllers/branch.js';
+import EquipmentsController from './controllers/equipment.js';
+import HistoryController from './controllers/history.js';
 
 const router = new Router();
 
@@ -27,8 +29,8 @@ router.get('/user/:id', authMiddleware, UserController.getById);
 router.post('/user',
   [
     check('login', "Имя пользователя не может быть пустым").notEmpty(),
-    check('password', "Пароль должен быть больше 4 и меньше 10 символов").isLength({ min: 4 }),
-    authMiddleware
+    check('password', "Пароль должен быть больше 4 символов").isLength({ min: 4 }),
+    // authMiddleware
   ],
   UserController.create
 );
@@ -36,19 +38,19 @@ router.put('/user/:id', authMiddleware, UserController.updateById);
 router.delete('/user/:id', authMiddleware, UserController.deleteById);
 
 // оборудование
-router.get('/equipments', () => {}); // @todo: пагинация
-router.get('/equipments/search', () => {}); // @todo: пагинация
-router.get('/equipment/:id', () => {});
-router.post('/equipments', () => {}); // @todo: тут файл должен быть
-router.put('/equipment/:id', () => {});
-router.delete('/equipment/:id', () => {});
+router.get('/equipments', authMiddleware, EquipmentsController.getAll); // @todo: пагинация
+router.get('/equipments/search', authMiddleware, () => {}); // @todo: пагинация
+router.get('/equipment/:id', authMiddleware, EquipmentsController.getById);
+router.post('/equipments', authMiddleware, EquipmentsController.create); // @todo: тут файл должен быть
+router.put('/equipment/:id', authMiddleware, EquipmentsController.updateById);
+router.delete('/equipment/:id', authMiddleware, EquipmentsController.deleteById);
 
 // комменты оборудования
-router.post('/equipment/comment/:id', () => {});
+router.post('/equipment/comment/:equipmentId', authMiddleware, EquipmentsController.createComment);
 
 // история оборудования
-router.get('/equipments/history/:equipmentId', () => {}); // @todo: пагинация
-router.post('/equipments/history/:equipmentId', () => {});
+router.get('/equipments/history/:equipmentId', authMiddleware, HistoryController.getHistoryByEquipmentId);
+router.post('/equipments/history/:equipmentId', authMiddleware, HistoryController.createHistoryItem);
 
 
 export default router;
