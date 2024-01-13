@@ -28,7 +28,7 @@ export interface IEquipment {
   comments: string[] // комментарии
   invoiceNumber: string, // номер накладной
   branch: IBranch, // филиал
-  state: EquipmentState.active, // статус оборудования
+  state: EquipmentState, // статус оборудования
 
   history: IHistoryItem[],
 };
