@@ -15,7 +15,7 @@ class AuthController {
 
       const user = await User.findOne({ login });
       if (!user) {
-        return response.status(404).json({ message: `Пользователь ${login} не найден` })
+        return response.status(404).json({ message: `Пользователь ${login} не найден` });
       }
 
       const validPassword = compareSync(password, user.password);

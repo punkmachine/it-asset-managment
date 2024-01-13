@@ -35,7 +35,7 @@ class EquipmentsController {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка получения филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка получения филиала по ID. Не указан ID.' });
       }
 
       const branch = await Equipment.findById(id);
@@ -52,7 +52,7 @@ class EquipmentsController {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка редактирования филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка редактирования филиала по ID. Не указан ID.' });
       }
 
       const updatedEquipment = await Equipment.findByIdAndUpdate(id, request.body, { new: true });
@@ -68,7 +68,7 @@ class EquipmentsController {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка удаления филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка удаления филиала по ID. Не указан ID.' });
       }
 
       const deletedEquipment = await Equipment.findById(id);
