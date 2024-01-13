@@ -11,20 +11,9 @@ class EquipmentsController {
 		}
 	};
 
-	async create(request, response) {
+	async createByFile(request, response) {
 		try {
-      const newEquipment = {
-        ...request.body,
-        createdDate: new Date().toISOString(),
-        updatedDate: new Date().toISOString(),
-        state: 'ACTIVE',
-        comments: [],
-        // как записать branch?
-      };
-
-      const createdEquipment = await Equipment.create(newEquipment);
-
-			response.status(201).json(createdEquipment);
+      console.log('request');
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -84,6 +73,31 @@ class EquipmentsController {
 			response.status(500).json(error.message);
 		}
 	};
+
+  async createComment(request, response) {
+    try {
+      const { equipmentId } = request.params;
+      const { text } = request.body;
+
+      if (!equipmentId) {
+        return response.status(400).json({ message: 'Ошибка добавления комментария по ID. Не указан ID.' });
+      }
+
+      const equipment = await Equipment.findById(equipmentId);
+
+      if (!equipment) {
+        return response.status(404).json({ message: 'Оборудование не найдено.' });
+      }
+
+      equipment.comments.push(text);
+
+      await equipment.save();
+
+      return response.status(200).json(equipment);
+		} catch (error) {
+			response.status(500).json(error.message);
+		}
+  }
 }
 
 export default new EquipmentsController();

@@ -41,7 +41,7 @@ router.delete('/user/:id', authMiddleware, UserController.deleteById);
 router.get('/equipments', authMiddleware, EquipmentsController.getAll); // @todo: пагинация
 router.get('/equipments/search', authMiddleware, () => {}); // @todo: пагинация
 router.get('/equipment/:id', authMiddleware, EquipmentsController.getById);
-router.post('/equipments', authMiddleware, EquipmentsController.create); // @todo: тут файл должен быть
+router.post('/equipments', authMiddleware, EquipmentsController.createByFile); // @todo: тут файл должен быть
 router.put('/equipment/:id', authMiddleware, EquipmentsController.updateById);
 router.delete('/equipment/:id', authMiddleware, EquipmentsController.deleteById);
 
