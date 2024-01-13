@@ -18,16 +18,14 @@ class UserController {
       const errors = validationResult(request);
 
       if (!errors.isEmpty()) {
-        return res.status(400)
-          .json({ message: "Ошибка при регистрации", errors });
+        return res.status(400).json({ message: "Ошибка при регистрации", errors });
       }
 
       const { login, password } = request.body;
       const isCandidateExist = await User.findOne({ login });
 
       if (isCandidateExist) {
-        return res.status(400)
-          .json({ message: "Пользователь с таким именем уже существует" });
+        return res.status(400).json({ message: "Пользователь с таким именем уже существует" });
       }
 
       const hashPassword = hashSync(password, 7);
@@ -52,7 +50,7 @@ class UserController {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка получения филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка получения пользователя по ID. Не указан ID.' });
       }
 
       const user = await User.findById(id);
@@ -68,7 +66,7 @@ class UserController {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка редактирования филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка редактирования пользователя по ID. Не указан ID.' });
       }
 
       const updatedUser = await User.findByIdAndUpdate(
@@ -88,18 +86,23 @@ class UserController {
 		}
 	};
 
-  // @todo: блокировать, а не удалять
 	async deleteById(request, response) {
 		try {
       const { id } = request.params;
 
       if (!id) {
-        throw new Error('Ошибка удаления филиала по ID. Не указан ID.');
+        return response.status(400).json({ message: 'Ошибка удаления пользователя по ID. Не указан ID.' });
       }
 
-      const deletedUser = await User.findByIdAndDelete(id);
+      const deletedUser = await User.findById(id);
+      if (!deletedUser) {
+        return response.status(404).json({ message: 'Пользователь с указанным ID не найден.' });
+      }
 
-			response.status(200).json(deletedUser);
+      deletedUser.state = 'DELETED';
+      const updatedUser = await deletedUser.save();
+
+			response.status(200).json(updatedUser);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
