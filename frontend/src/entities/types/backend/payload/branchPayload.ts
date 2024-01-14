@@ -1,4 +1,4 @@
-import { BranchState } from '@/entities/types/backend/branches';
+import { BranchState } from '@/entities/types/backend/response/branches';
 
 export interface ICreateBranchPayload {
   title: string,

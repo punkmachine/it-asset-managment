@@ -47,9 +47,9 @@ import { useRouter } from 'vue-router';
 import { debounce } from "debounce";
 
 import type { Ref } from 'vue';
-import type { IEquipment } from '@/entities/types/backend/equipment';
+import type { IEquipment } from '@/entities/types/backend/response/equipment';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
-import type { IBranch } from '@/entities/types/backend/branches';
+import type { IBranch } from '@/entities/types/backend/response/branches';
 
 import UIPagination from '@/components/ui/UIPagination.vue';
 import UITable from '@/components/ui/UITable.vue';
@@ -176,3 +176,4 @@ onBeforeUnmount(() => {
   max-width: calc(100vw - var(--menu-width));
 }
 </style>
+@/entities/types/backend/response/equipment@/entities/types/backend/response/branches

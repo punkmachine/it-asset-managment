@@ -32,7 +32,7 @@
 
 <script lang="ts" setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
-import type { IUser } from '@/entities/types/backend/user';
+import type { IUser } from '@/entities/types/backend/response/user';
 import type { Ref } from 'vue';
 import UIInput from '@/components/ui/UIInput.vue';
 
@@ -55,3 +55,4 @@ watch(user.value, (newUser) => {
 </script>
 
 <style scoped></style>
+@/entities/types/backend/response/user

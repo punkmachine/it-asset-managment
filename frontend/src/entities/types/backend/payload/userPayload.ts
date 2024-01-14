@@ -1,4 +1,4 @@
-import { UserState, UserRoles } from '@/entities/types/backend/user';
+import { UserState, UserRoles } from '@/entities/types/backend/response/user';
 
 export interface IUserCreatePayload {
   firstName: string,

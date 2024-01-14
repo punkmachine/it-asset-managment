@@ -49,7 +49,7 @@
 import { ref, onMounted } from 'vue';
 
 import type { Ref } from 'vue';
-import type { IUser } from '@/entities/types/backend/user';
+import type { IUser } from '@/entities/types/backend/response/user';
 
 import HeadPage from '@/components/HeadPage.vue';
 import UIInput from '@/components/ui/UIInput.vue';
@@ -123,3 +123,4 @@ onMounted(() => {
   bottom: 16px;
 }
 </style>
+@/entities/types/backend/response/user

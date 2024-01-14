@@ -64,7 +64,7 @@ import type { Ref } from 'vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import type { IEquipment } from '@/entities/types/backend/equipment';
+import type { IEquipment } from '@/entities/types/backend/response/equipment';
 import type { IDataItem } from '@/views/equipment/types';
 import { TimeFormatDict } from '@/utils/helpers/date';
 
@@ -189,3 +189,4 @@ onMounted(() => {
   padding-bottom: 0;
 }
 </style>
+@/entities/types/backend/response/equipment

@@ -1,4 +1,4 @@
-import { EquipmentState } from '@/entities/types/backend/equipment';
+import { EquipmentState } from '@/entities/types/backend/response/equipment';
 
 export interface IEquipmentCreatePayload {
   assetNumber: string, // ассет номер

@@ -1,5 +1,5 @@
-import type { IBranch } from '@/entities/types/backend/branches';
-import { BranchState } from '@/entities/types/backend/branches';
+import type { IBranch } from '@/entities/types/backend/response/branches';
+import { BranchState } from '@/entities/types/backend/response/branches';
 import type { INewBranch } from '@/views/branches/types';
 
 export function fetchBranches(): Promise<IBranch[]> {

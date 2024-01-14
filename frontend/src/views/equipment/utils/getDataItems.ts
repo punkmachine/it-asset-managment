@@ -1,5 +1,5 @@
-import type { IEquipment } from '@/entities/types/backend/equipment';
-import { EquipmentState } from '@/entities/types/backend/equipment';
+import type { IEquipment } from '@/entities/types/backend/response/equipment';
+import { EquipmentState } from '@/entities/types/backend/response/equipment';
 import { TimeFormatDict } from '@/utils/helpers/date';
 
 import { getFormatDate } from '@/utils/helpers/date';

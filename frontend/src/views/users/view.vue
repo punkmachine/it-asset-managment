@@ -93,7 +93,7 @@ import { debounce } from "debounce";
 
 import type { Ref } from 'vue'
 import type { IColumn, TRows } from '@/entities/types/UI/table';
-import type { IUser } from '@/entities/types/backend/user';
+import type { IUser } from '@/entities/types/backend/response/user';
 import type { INewUser } from './types';
 
 import UIPagination from '@/components/ui/UIPagination.vue';
@@ -258,3 +258,4 @@ onBeforeUnmount(() => {
   max-width: calc(100vw - var(--menu-width));
 }
 </style>
+@/entities/types/backend/response/user

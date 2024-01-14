@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { ref, defineProps, defineEmits, watch } from 'vue';
-import type { IBranch } from '@/entities/types/backend/branches';
+import type { IBranch } from '@/entities/types/backend/response/branches';
 import type { Ref } from 'vue';
 import UIInput from '@/components/ui/UIInput.vue';
 import UITextArea from '@/components/ui/UITextArea.vue';
@@ -40,3 +40,4 @@ watch(branch.value, (newBranch) => {
 </script>
 
 <style scoped></style>
+@/entities/types/backend/response/branches

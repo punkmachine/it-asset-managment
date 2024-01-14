@@ -2,7 +2,7 @@
   Статистика используемых лимитов
 </template>
 
-<script setup>
+<script lang="ts" setup>
 </script>
 
 <style scoped></style>

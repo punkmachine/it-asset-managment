@@ -1,5 +1,5 @@
-import type { IUser, IProfile, TUsersList, ISuperUser } from '@/entities/types/backend/user';
-import { UserState, UserRoles } from '@/entities/types/backend/user';
+import type { IUser, IProfile, TUsersList, ISuperUser } from '@/entities/types/backend/response/user';
+import { UserState, UserRoles } from '@/entities/types/backend/response/user';
 import type { INewUser } from '@/views/users/types';
 
 export function fetchUsers(): Promise<TUsersList> {

@@ -93,7 +93,7 @@ import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { debounce } from "debounce";
 
 import type { Ref } from 'vue';
-import type { IBranch } from '@/entities/types/backend/branches';
+import type { IBranch } from '@/entities/types/backend/response/branches';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
 import type { INewBranch } from './types';
 
@@ -263,3 +263,4 @@ onBeforeUnmount(() => {
   max-width: calc(100vw - var(--menu-width));
 }
 </style>
+@/entities/types/backend/response/branches

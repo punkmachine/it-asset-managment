@@ -1,7 +1,7 @@
-import type { IEquipment } from '@/entities/types/backend/equipment';
-import { EquipmentState } from '@/entities/types/backend/equipment';
-import { BranchState } from '@/entities/types/backend/branches';
-import { UserState, UserRoles } from '@/entities/types/backend/user';
+import type { IEquipment } from '@/entities/types/backend/response/equipment';
+import { EquipmentState } from '@/entities/types/backend/response/equipment';
+import { BranchState } from '@/entities/types/backend/response/branches';
+import { UserState, UserRoles } from '@/entities/types/backend/response/user';
 
 export function fetchEquipments(): Promise<IEquipment[]> {
   return new Promise((resolve, reject) => {

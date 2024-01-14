@@ -1,5 +1,5 @@
 import type { IUserInTable, ICell } from '@/entities/types/UI/table';
-import type { IUser } from '@/entities/types/backend/user';
+import type { IUser } from '@/entities/types/backend/response/user';
 
 function usersAdapterFromTable(users: IUser[]): IUserInTable[] {
   return users.map(user => {

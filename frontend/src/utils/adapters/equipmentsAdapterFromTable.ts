@@ -1,5 +1,5 @@
 import type { IEquipmentInTable, ICell } from '@/entities/types/UI/table';
-import type { IEquipment } from '@/entities/types/backend/equipment';
+import type { IEquipment } from '@/entities/types/backend/response/equipment';
 
 function equipmentsAdapterFromTable(equipments: IEquipment[]): IEquipmentInTable[] {
   return equipments.map(equipment => {

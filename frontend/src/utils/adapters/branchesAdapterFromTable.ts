@@ -1,5 +1,5 @@
 import type { IBranchInTable, ICell } from '@/entities/types/UI/table';
-import type { IBranch } from '@/entities/types/backend/branches';
+import type { IBranch } from '@/entities/types/backend/response/branches';
 
 function branchesAdapterFromTable(branches: IBranch[]): IBranchInTable[] {
   return branches.map(branch => {
