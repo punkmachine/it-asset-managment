@@ -34,7 +34,7 @@ const User = new Schema({
 		required: true,
 		trim: true,
     maxLength: 64,
-    minLength: 6,
+    minLength: 5,
     unique: true,
 	},
   password: {
