@@ -1,36 +1,35 @@
-import { ref, computed } from 'vue';
+import { ref, watch, computed } from 'vue';
+
 import type { Ref } from 'vue';
+import type { IUser } from '@/entities/types/backend/response/user';
+
 import { defineStore } from 'pinia';
 
+import { api } from '@/api';
+
 export const useUsersStore = defineStore('users', () => {
-  // state
-  const count: Ref<number> = ref(0);
-  const name: Ref<string> = ref('Eduardo');
+  const currentUser: Ref<IUser | null> = ref(null);
+  const currentUserId: Ref<string> = ref(localStorage.getItem('userId') || '');
 
-  // getters
-  const doubleCount = computed(() => count.value * 2);
+  function fetchCurrentUser() {
+    if (currentUserId.value) {
+      api.users.getUserById(currentUserId.value)
+        .then(data => {
+          currentUser.value = data;
+        })
+        .catch(error => {
+          console.log('error >>>', error);
+        });
+    }
+  }
 
-  // actions
-  function increment() {
-    count.value++
+  function setCurrentUserId(id: string) {
+    currentUserId.value = id;
+    localStorage.setItem('userId', currentUserId.value);
   }
 
   return {
-    count, name,
-    doubleCount,
-    increment
-  };
+    currentUser, currentUserId,
+    fetchCurrentUser, setCurrentUserId,
+  }
 });
-
-// example in component:
-// <script setup>
-// import { storeToRefs } from 'pinia'
-
-// const store = useCounterStore()
-// // `name` and `doubleCount` are reactive refs
-// // This will also extract refs for properties added by plugins
-// // but skip any action or non reactive (non ref/reactive) property
-// const { name, doubleCount } = storeToRefs(store)
-// // the increment action can just be destructured
-// const { increment } = store
-// </script>
