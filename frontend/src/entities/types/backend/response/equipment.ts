@@ -7,14 +7,14 @@ export enum EquipmentState {
 };
 
 export interface IHistoryItem {
-  id: number,
+  id: string,
   date: string, // когда была передана
   passedOn: IUser, // передал
   accepted: string, // принял
 };
 
 export interface IEquipment {
-  id: number,
+  id: string,
   createdDate: string, // дата ввода в эксплуатацию
   updatedDate: string, // дата последнего изменения
 

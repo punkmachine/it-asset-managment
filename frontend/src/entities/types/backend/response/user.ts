@@ -22,7 +22,7 @@ export interface IProfile {
 };
 
 export interface IUser {
-  id: number,
+  _id: string,
   createdDate: string,
   updatedDate: string,
   firstName: string,

@@ -4,7 +4,7 @@ export enum BranchState {
 };
 
 export interface IBranch {
-  id: number,
+  id: string,
   createdDate: string,
   updatedDate: string,
   title: string,
