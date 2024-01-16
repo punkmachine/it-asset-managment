@@ -21,7 +21,7 @@
     </thead>
     <tbody>
       <tr
-        v-for="(row, rowIndex) in rows"
+        v-for="(row, rowIndex) in filteredRows"
         :key="rowIndex"
         :class="{
           'cursor-pointer hover:bg-slate-100': goDetailItem
@@ -38,7 +38,7 @@
           <button
             v-if="editButtonVisible"
             class="button button--text"
-            @click="$emit('edit', row[0].title)"
+            @click="$emit('edit', rows[rowIndex][0].title)"
           >
             <svg class="button__icon">
               <use xlink:href="@/assets/icons/sprites/buttons.svg#edit"></use>
@@ -48,7 +48,7 @@
           <button
             v-if="deleteButtonVisible"
             class="button button--text"
-            @click="$emit('delete', row[0].title)"
+            @click="$emit('delete', rows[rowIndex][0].title)"
           >
             <svg class="button__icon">
               <use xlink:href="@/assets/icons/sprites/buttons.svg#delete"></use>
@@ -62,8 +62,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits } from 'vue';
-import type { IColumn, TRows, ICell } from '@/entities/types/UI/table';
+import { defineProps, defineEmits, computed } from 'vue';
+import type { IColumn, TRows } from '@/entities/types/UI/table';
 
 interface IProps {
   columns: IColumn[],
@@ -80,6 +80,12 @@ interface IEmits {
 
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
+
+const filteredRows = computed(() => {
+  return props.rows.map(row => {
+    return row.filter(cell => !cell.key.includes('_'));
+  });
+});
 
 function rowClick(row: TRows) {
   if (typeof props.goDetailItem === 'function') {
@@ -118,7 +124,7 @@ tbody tr {
 
 tbody td, tbody th {
   padding: 16px 24px;
-  white-space: nowrap;
+  white-space: break-spaces;
 }
 
 tbody th {
