@@ -6,21 +6,21 @@ import { getQueryParams } from '@/utils/helpers/queryParam';
 
 export const branches = (client: AxiosInstance) => ({
   fetchBranches: (): Promise<IBranch[]> => {
-    return client.get('/users');
+    return client.get('/branches');
   },
   getBranchById: (id: number | string): Promise<IBranch> => {
-    return client.get(`/user/${id}`);
+    return client.get(`/branch/${id}`);
   },
   searchBranch: (data: IQueryData): Promise<IBranch[]> => {
-    return client.get(`user/search?${getQueryParams(data)}`);
+    return client.get(`branches/search?${getQueryParams(data)}`);
   },
   createBranch: (payload: ICreateBranchPayload): Promise<IBranch> => {
-    return client.post('/user', payload);
+    return client.post('/branch', payload);
   },
   updateBranch: (id: number | string, payload: IUpdateBranchPayload): Promise<IBranch> => {
-    return client.put(`/user/${id}`, payload);
+    return client.put(`/branch/${id}`, payload);
   },
   deleteBranch: (id: number | string): Promise<IBranch> => {
-    return client.delete(`/user/${id}`);
+    return client.delete(`/branch/${id}`);
   },
 });
