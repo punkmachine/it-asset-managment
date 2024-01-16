@@ -14,12 +14,16 @@ export interface ICell {
 export type TRows = ICell[];
 
 export interface IUserInTable {
-  id: string,
+  number: string,
   fio: string,
+  role: string,
+  state: string,
+  _id: string,
 };
 
 export interface IBranchInTable {
-  id: string,
+  _id: string,
+  number: string,
   description: string,
   title: string,
 };
