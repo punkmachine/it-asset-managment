@@ -13,20 +13,6 @@
       required
       autocomplete="family-name"
     />
-
-    <UIInput
-      label="Логин"
-      v-model="user.login"
-      required
-      autocomplete="username"
-    />
-
-    <UIInput
-      label="Пароль"
-      v-model="user.password"
-      required
-      autocomplete="current-password"
-    />
   </div>
 </template>
 
@@ -55,4 +41,3 @@ watch(user.value, (newUser) => {
 </script>
 
 <style scoped></style>
-@/entities/types/backend/response/user
