@@ -1,6 +1,9 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+
 import type { InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
+
+import router from '@/router';
 
 const client = axios.create({
   baseURL: 'http://localhost:5004/api/',
@@ -33,6 +36,11 @@ function responseSuccess<T>(response: AxiosResponse<T>): T {
 }
 
 function responseError(error: AxiosError): Promise<never> {
+  if (error.response?.status === 403) {
+    Cookies.remove('token');
+    router.push('/login');
+  }
+
   return Promise.reject(error);
 }
 
