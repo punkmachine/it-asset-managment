@@ -25,7 +25,7 @@ class AuthController {
 
       const token = generateAccessToken(user._id); // @todo: роль
 
-      response.status(200).json({ token });
+      response.status(200).json({ token, userId: user._id });
     } catch (error) {
       response.status(500).json(error.message);
     }
