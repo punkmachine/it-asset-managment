@@ -81,6 +81,29 @@ class BranchesController {
       response.status(500).json(error.message);
     }
   };
+
+  async searchBranches(request, response) {
+    try {
+      const { searchText } = request.query;
+
+      if (!searchText) {
+        return response.status(400).json({ error: 'Для поиска филиала необходимо указать параметр searchText' });
+      }
+
+      const searchRegex = new RegExp(searchText, 'i');
+
+      const branches = await Branch.find({
+        $or: [
+          { title: { $regex: searchRegex } },
+          { description: { $regex: searchRegex } },
+        ],
+      });
+
+      response.status(200).json(branches);
+		} catch (error) {
+			response.status(500).json(error.message);
+		}
+  };
 }
 
 export default new BranchesController();

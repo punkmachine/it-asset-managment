@@ -97,7 +97,36 @@ class EquipmentsController {
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
-  }
+  };
+
+  async searchEquipments(request, response) {
+    try {
+      const { searchText } = request.query;
+
+      if (!searchText) {
+        return response.status(400).json({ error: 'Для поиска оборудования необходимо указать параметр searchText' });
+      }
+
+      const searchRegex = new RegExp(searchText, 'i');
+
+      const branches = await Equipment.find({
+        $or: [
+          { assetNumber: { $regex: searchRegex } },
+          { inventoryNumber: { $regex: searchRegex } },
+          { name: { $regex: searchRegex } },
+          { description: { $regex: searchRegex } },
+          { inventoryNumber: { $regex: searchRegex } },
+          { financiallyResponsiblePerson: { $regex: searchRegex } },
+          { recipient: { $regex: searchRegex } },
+          { invoiceNumber: { $regex: searchRegex } },
+        ],
+      });
+
+      response.status(200).json(branches);
+		} catch (error) {
+			response.status(500).json(error.message);
+		}
+  };
 }
 
 export default new EquipmentsController();

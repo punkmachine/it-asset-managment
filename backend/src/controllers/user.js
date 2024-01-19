@@ -35,6 +35,7 @@ class UserController {
         createdDate: new Date().toISOString(),
         updatedDate: new Date().toISOString(),
         state: 'ACTIVE',
+        role: 'ADMIN',
       };
 
       const createdUser = await User.create(newUser);
@@ -100,6 +101,7 @@ class UserController {
       }
 
       deletedUser.state = 'DELETED';
+      deletedUser.updatedDate = new Date().toISOString();
       const updatedUser = await deletedUser.save();
 
 			response.status(200).json(updatedUser);
@@ -107,6 +109,29 @@ class UserController {
 			response.status(500).json(error.message);
 		}
 	};
+
+  async searchUsers(request, response) {
+    try {
+      const { searchText } = request.query;
+
+      if (!searchText) {
+        return response.status(400).json({ error: 'Для поиска пользователя необходимо указать параметр searchText' });
+      }
+
+      const searchRegex = new RegExp(searchText, 'i');
+
+      const users = await User.find({
+        $or: [
+          { firstName: { $regex: searchRegex } },
+          { lastName: { $regex: searchRegex } },
+        ],
+      });
+
+      response.status(200).json(users);
+		} catch (error) {
+			response.status(500).json(error.message);
+		}
+  }
 }
 
 export default new UserController();
