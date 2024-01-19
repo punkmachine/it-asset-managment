@@ -58,13 +58,12 @@ import HeadEquipmentsPage from '@/views/equipments/components/HeadEquipmentsPage
 import SearchEquipments from '@/views/equipments/components/SearchEquipments.vue';
 import DeleteModalFooter from '@/views/equipments/components/DeleteModalFooter.vue';
 
-import { fetchEquipments, deleteEquipment } from '@/api/equipments';
-import { fetchBranches } from '@/api/branches';
 import { getTableRows } from '@/utils/adapters/equipmentsAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
 
 import { columnsSettings } from '@/views/equipments/settings';
+import { api } from '@/api';
 
 const router = useRouter();
 
@@ -82,7 +81,7 @@ const rows: Ref<TRows[]> = ref([]);
 const columns: Ref<IColumn[]> = ref(columnsSettings);
 
 function getCurrentEquipmentById(id: string): IEquipment | null {
-  return equipments.value.find(equipment => equipment.id.toString() === id) ?? null;
+  return equipments.value.find(equipment => equipment._id === id) ?? null;
 }
 
 function handleModalWrapper(modal: Ref<InstanceType<typeof UIModal> | null>, id: string | null): void {
@@ -105,22 +104,40 @@ function handleAdd() {
 }
 
 function getEquipmentsAndRowsTable() {
-  fetchEquipments()
+  api.equipments.fetchEquipments()
     .then(data => {
       equipments.value = [...data];
       filteredEquipments.value = [...data];
       rows.value = getTableRows(filteredEquipments.value);
+    })
+    .catch(error => {
+      console.log('error >>>', error);
     });
 }
 
 function deleteEquipmentClick() {
-  deleteEquipment()
-    .then(() => {
-      getEquipmentsAndRowsTable();
-      currentEquipment.value = null;
+  if (currentEquipment.value) {
+    api.equipments.deleteEquipment(currentEquipment.value._id)
+      .then(data => {
+        equipments.value = equipments.value.map(equipment => {
+          if (equipment._id === data._id) {
+            return {
+              ...data,
+            };
+          }
 
-      deleteModal.value?.hide();
-    });
+          return equipment;
+        });
+        filteredEquipments.value = [...equipments.value];
+        rows.value = getTableRows(filteredEquipments.value);
+
+        currentEquipment.value = null;
+        deleteModal.value?.hide();
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
+  }
 }
 
 function keyDownEscape() {
@@ -146,7 +163,7 @@ watch(searchText, searchTextWatcher);
 onMounted(() => {
   getEquipmentsAndRowsTable();
 
-  fetchBranches()
+  api.branches.fetchBranches()
     .then(data => {
       branches.value = [...data];
     });
@@ -176,4 +193,3 @@ onBeforeUnmount(() => {
   max-width: calc(100vw - var(--menu-width));
 }
 </style>
-@/entities/types/backend/response/equipment@/entities/types/backend/response/branches
