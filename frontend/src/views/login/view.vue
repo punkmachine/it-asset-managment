@@ -33,18 +33,38 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import Cookies from 'js-cookie';
 
 import type { Ref } from 'vue';
+
+import { api } from '@/api';
+import { useUsersStore } from '@/store';
 
 import UIInput from '@/components/ui/UIInput.vue';
 
 const router = useRouter();
 
+const usersStore = useUsersStore();
+
 const login: Ref<string> = ref('');
 const password: Ref<string> = ref('');
 
 function authorization() {
-  router.push('/')
+  const payload = {
+    login: login.value,
+    password: password.value,
+  };
+
+  api.auth.login(payload)
+    .then(data => {
+      Cookies.set('token', data.token);
+      usersStore.setCurrentUserId(data.userId);
+      usersStore.fetchCurrentUser();
+      router.push('/');
+    })
+    .catch(error => {
+      console.log('error >>>', error);
+    });
 }
 </script>
 
