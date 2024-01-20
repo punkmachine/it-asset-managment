@@ -107,7 +107,7 @@ import FormEditUser from '@/views/users/components/FormEditUser.vue';
 import FormAddUser from '@/views/users/components/FormAddUser.vue';
 import AddModalFooter from '@/views/users/components/AddModalFooter.vue';
 
-import { fetchUsers, deleteUser, editUser, postUser } from '@/api/users';
+import { api } from '@/api';
 import { getTableRows } from '@/utils/adapters/usersAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
@@ -120,6 +120,7 @@ const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentUser: Ref<IUser | null> = ref(null);
 const users: Ref<IUser[]> = ref([]);
+const backupUsers: Ref<IUser[]> = ref([]);
 const filteredUsers: Ref<IUser[]> = ref([]);
 const newUser: Ref<INewUser> = ref({...initialUser});
 const searchText: Ref<string> = ref('');
@@ -130,7 +131,7 @@ const columns: Ref<IColumn[]> = ref(columnsSettings);
 const rows: Ref<TRows[]> = ref([]);
 
 function getCurrentUserById(id: string): IUser | null {
-  return users.value.find(user => user.id.toString() === id) ?? null;
+  return users.value.find(user => user._id === id) ?? null;
 }
 
 function handleModalWrapper(modal: Ref<InstanceType<typeof UIModal> | null>, id: string | null): void {
@@ -157,46 +158,63 @@ function handleAdd() {
 }
 
 function getUsersAndRowsTable() {
-  fetchUsers()
+  api.users.fetchUsers()
     .then(data => {
       users.value = [...data];
-      filteredUsers.value = [...data]
+      filteredUsers.value = [...data];
       rows.value = getTableRows(filteredUsers.value);
+    })
+    .catch(error => {
+      console.log('error >>>', error);
     });
 }
 
 function deleteUserClick() {
-  deleteUser()
-    .then(() => {
-      getUsersAndRowsTable();
-      currentUser.value = null;
-
-      deleteModal.value?.hide();
-    });
-}
-
-function saveEditUserClick() {
   if (currentUser.value) {
-    editUser(currentUser.value)
-      .then(data => {
+    api.users.deleteUser(currentUser.value._id)
+      .then(blockedUser => {
+        currentUser.value = null;
         users.value = users.value.map(user => {
-          if (user.id === data.id) {
+          if (user._id === blockedUser._id) {
             return {
-              ...data,
+              ...blockedUser,
             };
           }
 
           return user;
         });
-
-        editModal.value?.hide();
+        deleteModal.value?.hide();
       });
   }
 }
 
+function saveEditUserClick() {
+  if (currentUser.value) {
+    api.users.updateUser(currentUser.value._id, currentUser.value)
+      .then(data => {
+        users.value = users.value.map(user => {
+          if (user._id === data._id) {
+            return { ...data };
+          }
+
+          return user;
+        });
+
+        rows.value = getTableRows(users.value);
+        editModal.value?.hide();
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      })
+  }
+}
+
 function saveAddUserClick() {
-  if (newUser.value.firstName && newUser.value.lastName) {
-    postUser(newUser.value)
+  const validate = newUser.value.firstName && newUser.value.lastName
+    && newUser.value.login && newUser.value.password;
+
+  if (validate) {
+    api.users.createUser(newUser.value)
       .then(data => {
         users.value = [
           ...users.value,
@@ -208,6 +226,9 @@ function saveAddUserClick() {
         newUser.value = {...initialUser};
 
         addModal.value?.hide();
+      })
+      .catch(error => {
+        console.log('error >>>', error);
       });
   }
 }
@@ -223,8 +244,24 @@ function searchUser(text: string) {
 }
 
 const searchTextWatcher = debounce(() => {
-  // @todo: запрос на бэкенд для поиска
-}, 300);
+  if (searchText.value.length > 3) {
+    backupUsers.value = [...users.value];
+
+    api.users.searchUser({ searchText: searchText.value })
+      .then(data => {
+        users.value = [...data];
+        filteredUsers.value = [...data];
+        rows.value = getTableRows(filteredUsers.value);
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
+  } else {
+    users.value = [...backupUsers.value];
+    filteredUsers.value = [...backupUsers.value];
+    rows.value = getTableRows(filteredUsers.value);
+  }
+}, 500);
 
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
@@ -258,4 +295,3 @@ onBeforeUnmount(() => {
   max-width: calc(100vw - var(--menu-width));
 }
 </style>
-@/entities/types/backend/response/user
