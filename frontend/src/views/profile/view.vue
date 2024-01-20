@@ -10,16 +10,16 @@
       </div>
 
       <div class="profile__data">
-        <div v-if="userData" class="flex flex-col gap-2">
+        <div v-if="localUserData" class="flex flex-col gap-2">
           <UIInput
-            v-model="userData.firstName"
+            v-model="localUserData.firstName"
             label="Имя:"
             required
             autocomplete="name"
           />
 
           <UIInput
-            v-model="userData.lastName"
+            v-model="localUserData.lastName"
             label="Фамилия:"
             required
             autocomplete="family-name"
@@ -54,33 +54,41 @@ import type { IUser } from '@/entities/types/backend/response/user';
 import HeadPage from '@/components/HeadPage.vue';
 import UIInput from '@/components/ui/UIInput.vue';
 
-import { getUserById, saveProfile } from '@/api/users';
+import { api } from '@/api';
+import { useUsersStore } from '@/store';
 
-const userData: Ref<IUser | null> = ref(null);
+const userStore = useUsersStore();
+
+const localUserData: Ref<IUser | null> = ref(JSON.parse(JSON.stringify(userStore.currentUser)));
 let backupUserData: IUser | null = null;
 
-async function fetchUserData() {
-  userData.value = await getUserById(1);
-  backupUserData = userData.value;
-}
-
 function goBackupData() {
-  userData.value = backupUserData;
+  localUserData.value = backupUserData;
 }
 
 function saveNewUserData() {
-  if (userData.value) {
-    saveProfile({
-      id: userData.value.id,
-      firstName: userData.value.firstName,
-      lastName: userData.value.lastName,
-      avatar: userData.value.avatar,
-    });
+  if (localUserData.value) {
+    const payload = {
+      firstName: localUserData.value.firstName,
+      lastName: localUserData.value.lastName,
+      login: localUserData.value.login,
+      password: localUserData.value.password,
+      state: localUserData.value.state,
+      role: localUserData.value.role,
+    };
+
+    api.users.updateUser(localUserData.value._id, payload)
+      .then(() => {
+        userStore.fetchCurrentUser();
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
   }
 }
 
 onMounted(() => {
-  fetchUserData();
+  backupUserData = JSON.parse(JSON.stringify(localUserData.value));
 });
 </script>
 
@@ -123,4 +131,3 @@ onMounted(() => {
   bottom: 16px;
 }
 </style>
-@/entities/types/backend/response/user
