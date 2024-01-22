@@ -1,9 +1,11 @@
 import Equipment from '../models/equipment.js';
+import User from '../models/user.js';
 
 class EquipmentsController {
 	async getAll(request, response) {
 		try {
-      const equipments = await Equipment.find();
+      const equipments = await Equipment.find()
+        .populate('branch').populate('financiallyResponsiblePerson');
 
 			response.status(200).json(equipments);
 		} catch (error) {
@@ -11,9 +13,29 @@ class EquipmentsController {
 		}
 	};
 
-	async createByFile(request, response) {
+	async createEquipments(request, response) {
 		try {
-      console.log('request');
+      const data = request.body;
+
+      if (!Array.isArray(data)) {
+        return response.status(400).json({ error: 'Не валидная структура данных' });
+      }
+
+      const preSavedEquipments = data.map(item => {
+        return {
+          ...item,
+          createdDate: new Date().toISOString(),
+          updatedDate: new Date().toISOString(),
+          state: 'ACTIVE',
+          comments: [],
+          recipient: '',
+        }
+      });
+
+      const savedEquipments = await Equipment.create(preSavedEquipments)
+        .populate('branch').populate('financiallyResponsiblePerson');
+
+      response.status(200).json(savedEquipments);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -27,7 +49,7 @@ class EquipmentsController {
         return response.status(400).json({ message: 'Ошибка получения филиала по ID. Не указан ID.' });
       }
 
-      const branch = await Equipment.findById(id);
+      const branch = await Equipment.findById(id).populate('branch').populate('financiallyResponsiblePerson');
 
 			response.status(200).json(branch);
 		} catch (error) {
@@ -44,7 +66,8 @@ class EquipmentsController {
         return response.status(400).json({ message: 'Ошибка редактирования филиала по ID. Не указан ID.' });
       }
 
-      const updatedEquipment = await Equipment.findByIdAndUpdate(id, request.body, { new: true });
+      const updatedEquipment = await Equipment.findByIdAndUpdate(id, request.body, { new: true })
+        .populate('branch').populate('financiallyResponsiblePerson');
 
 			response.status(200).json(updatedEquipment);
 		} catch (error) {
@@ -83,6 +106,14 @@ class EquipmentsController {
         return response.status(400).json({ message: 'Ошибка добавления комментария по ID. Не указан ID.' });
       }
 
+      if (!text) {
+        return response.status(400).json({ message: 'А текст указать не судьба?' });
+      }
+
+      if (text.length === 0) {
+        return response.status(400).json({ message: 'Длина комментария должны быть больше нуля' });
+      }
+
       const equipment = await Equipment.findById(equipmentId);
 
       if (!equipment) {
@@ -109,20 +140,21 @@ class EquipmentsController {
 
       const searchRegex = new RegExp(searchText, 'i');
 
-      const branches = await Equipment.find({
+      const equipments = await Equipment.find({
         $or: [
           { assetNumber: { $regex: searchRegex } },
-          { inventoryNumber: { $regex: searchRegex } },
-          { name: { $regex: searchRegex } },
-          { description: { $regex: searchRegex } },
-          { inventoryNumber: { $regex: searchRegex } },
-          { financiallyResponsiblePerson: { $regex: searchRegex } },
-          { recipient: { $regex: searchRegex } },
-          { invoiceNumber: { $regex: searchRegex } },
+          // { inventoryNumber: { $regex: searchRegex } },
+          // { name: { $regex: searchRegex } },
+          // { description: { $regex: searchRegex } },
+          // { inventoryNumber: { $regex: searchRegex } },
+          // { financiallyResponsiblePerson: { $regex: searchRegex } },
+          // { recipient: { $regex: searchRegex } },
+          // { invoiceNumber: { $regex: searchRegex } },
+          // { serialNumber: { $regex: searchRegex } },
         ],
       });
 
-      response.status(200).json(branches);
+      response.status(200).json(equipments);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
