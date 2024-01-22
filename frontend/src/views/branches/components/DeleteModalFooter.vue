@@ -4,7 +4,7 @@
       Отмена
     </button>
     <button class="button button--red" @click="$emit('delete')">
-      Удалить
+      Заблокировать
     </button>
   </div>
 </template>

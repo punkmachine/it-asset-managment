@@ -13,7 +13,7 @@
         <th
           v-if="deleteButtonVisible || editButtonVisible"
           scope="col"
-          width="316px"
+          class="flex justify-end"
         >
           Действие
         </th>
@@ -34,7 +34,7 @@
         >
           {{ item.title }}
         </td>
-        <td class="flex gap-3">
+        <td class="flex justify-end gap-3">
           <button
             v-if="editButtonVisible"
             class="button button--text"
@@ -53,7 +53,7 @@
             <svg class="button__icon">
               <use xlink:href="@/assets/icons/sprites/buttons.svg#delete"></use>
             </svg>
-            Удалить
+            Заблокировать
           </button>
         </td>
       </tr>
@@ -70,7 +70,7 @@ interface IProps {
   rows: TRows[],
   deleteButtonVisible?: boolean,
   editButtonVisible?: boolean,
-  goDetailItem?: (id: string | number) => void,
+  goDetailItem?: (id: string) => void,
 };
 
 interface IEmits {
@@ -89,10 +89,14 @@ const filteredRows = computed(() => {
 
 function rowClick(row: TRows) {
   if (typeof props.goDetailItem === 'function') {
-    const idCell = row.find(cell => cell.key === 'id');
+    const numberRow = row.find(cell => cell.key === 'number')?.title;
 
-    if (idCell) {
-      props.goDetailItem(idCell.title);
+    if (numberRow && !Number.isNaN(numberRow)) {
+      const idCell = props.rows[Number(numberRow) - 1].find(cell => cell.key === '_id')?.title;
+
+      if (idCell) {
+        props.goDetailItem(idCell);
+      }
     }
   }
 }
