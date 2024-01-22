@@ -9,7 +9,7 @@ class HistoryController {
         return response.status(400).json({ message: 'Ошибка получения филиала по ID. Не указан ID.' });
       }
 
-      const historyItems = await History.find({ equipmentId });
+      const historyItems = await History.find({ equipmentId }).populate('passedOn');
 
 			response.status(200).json(historyItems);
 		} catch (error) {
@@ -22,6 +22,7 @@ class HistoryController {
       const newHistory = {
         ...request.body,
         date: new Date().toISOString(),
+        equipmentId: request.params.equipmentId,
       };
 
       const createdHistory = await History.create(newHistory);
