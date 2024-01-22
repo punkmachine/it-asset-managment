@@ -47,19 +47,21 @@ const Equipment = new Schema({
     minLength: 12,
     maxLength: 12,
 	},
-  financiallyResponsiblePerson: {
+  serialNumber: {
 		type: String,
 		required: true,
 		trim: true,
-    minLength: 4,
-    maxLength: 128,
+    minLength: 12,
+    maxLength: 12,
+	},
+  financiallyResponsiblePerson: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+		required: true,
 	},
   recipient: {
 		type: String,
-		required: true,
 		trim: true,
-    minLength: 4,
-    maxLength: 128,
 	},
   invoiceNumber: {
 		type: String,
