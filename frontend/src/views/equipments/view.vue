@@ -1,6 +1,9 @@
 <template>
   <div class="equipments">
-    <HeadEquipmentsPage @addEquipment="handleAdd" />
+    <HeadEquipmentsPage
+      @addEquipment="handleAdd"
+      @addEquipmentsXLSX="handleXLSXAdd"
+    />
 
     <div class="equipments__content">
       <SearchEquipments @searchInput="searchEquipment" />
@@ -45,6 +48,7 @@
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import { debounce } from "debounce";
+import * as xlsx from 'xlsx';
 
 import type { Ref } from 'vue';
 import type { IEquipment } from '@/entities/types/backend/response/equipment';
@@ -71,6 +75,7 @@ const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentEquipment: Ref<IEquipment | null> = ref(null);
 const equipments: Ref<IEquipment[]> = ref([]);
+const equipmentsBackup: Ref<IEquipment[]> = ref([]);
 const filteredEquipments: Ref<IEquipment[]> = ref([]);
 const searchText: Ref<string> = ref('');
 const branches: Ref<IBranch[]> = ref([]);
@@ -148,15 +153,56 @@ function searchEquipment(text: string) {
   searchText.value = text;
 }
 
-function goDetailEquipment(id: string | number) {
+function goDetailEquipment(id: string) {
   router.push(`/equipment/${id}`);
+}
+
+function handleXLSXAdd(file: File) {
+  const reader = new FileReader();
+
+  reader.onload = (event: ProgressEvent<FileReader>) => {
+    const data = new Uint8Array((event.target as FileReader).result as ArrayBuffer);
+    const xlsxData = xlsx.read(data, { type: 'array' });
+    const firstSheetName = xlsxData.SheetNames[0];
+    const sheet = xlsxData.Sheets[firstSheetName];
+    const result = xlsx.utils.sheet_to_json(sheet);
+
+     // @ts-ignore-next-line
+     api.equipments.createEquipments(result)
+      .then(data => {
+        equipments.value.push(...data);
+        filteredEquipments.value = [...equipments.value];
+        rows.value = getTableRows(filteredEquipments.value);
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
+  }
+
+  reader.readAsArrayBuffer(file);
 }
 
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 const searchTextWatcher = debounce(() => {
-  // @todo: запрос на бэкенд для поиска
-}, 300);
+  if (searchText.value.length > 3) {
+    equipmentsBackup.value = [...equipments.value];
+
+    api.equipments.searchEquipment({ searchText: searchText.value })
+      .then(data => {
+        equipments.value = [...data];
+        filteredEquipments.value = [...data];
+        rows.value = getTableRows(filteredEquipments.value);
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
+  } else {
+    equipments.value = [...equipmentsBackup.value];
+    filteredEquipments.value = [...equipmentsBackup.value];
+    rows.value = getTableRows(filteredEquipments.value);
+  }
+}, 1000);
 
 watch(searchText, searchTextWatcher);
 

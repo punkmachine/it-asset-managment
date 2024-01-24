@@ -11,6 +11,7 @@
       id="fileUpload"
       type="file"
       class="hidden"
+      @change="handleFileChanged"
     >
 
     <!-- @todo -->
@@ -24,15 +25,30 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits } from 'vue';
+import { defineEmits, ref } from 'vue';
+
+import type { Ref } from 'vue';
 
 import HeadPage from '@/components/HeadPage.vue';
 
 interface IEmits {
   (e: 'addEquipment'): void,
+  (e: 'addEquipmentsXLSX', file: File): void,
 }
 
 const emit = defineEmits<IEmits>();
+
+const file: Ref<File | null> = ref(null);
+
+function handleFileChanged(event: Event) {
+  const target = event.target as HTMLInputElement;
+  const selectedFile = target.files ? target.files[0] : null;
+  file.value = selectedFile;
+
+  if (file.value) {
+    emit('addEquipmentsXLSX', file.value);
+  }
+}
 
 function importElements() {
   const fileInput = document.getElementById('fileUpload');
@@ -42,7 +58,3 @@ function importElements() {
   }
 }
 </script>
-
-<style scoped>
-
-</style>
