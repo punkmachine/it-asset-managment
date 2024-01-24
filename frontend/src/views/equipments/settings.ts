@@ -8,5 +8,7 @@ export const columnsSettings: IColumn[] = [
   { key: 'name', title: 'Название' },
   { key: 'createdDate', title: 'Дата ввода' },
   { key: 'updatedDate', title: 'Дата изменения' },
+  { key: 'branch', title: 'Филиал', },
   { key: 'financiallyResponsiblePerson', title: 'МОЛ' },
+  { key: 'state', title: 'Состояние', width: '120px', },
 ];
