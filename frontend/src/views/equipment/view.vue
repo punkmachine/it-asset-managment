@@ -2,7 +2,16 @@
   <div class="equipment">
     <div class="equipment-col w-6/10">
       <div class="equipment__card">
-        <h2 class="equipment__card-header">Данные</h2>
+        <div class="flex justify-between items-center pb-2 px-4">
+          <h2 class="equipment__card-header">Данные</h2>
+
+          <button
+            class="button !w-auto"
+            @click="updateRecipientClick"
+          >
+            {{ equipment?.recipient ? 'Переназначить' : 'Назначить' }}
+          </button>
+        </div>
         <div class="equipment__card-divider"></div>
 
         <div v-if="equipment" class="equipment__data">
@@ -20,12 +29,12 @@
 
     <div class="equipment-col w-4/10">
       <div class="equipment__card">
-        <h2 class="equipment__card-header">История</h2>
+        <h2 class="equipment__card-header pb-2 px-4">История</h2>
         <div class="equipment__card-divider"></div>
 
         <div v-if="equipment" class="equipment__history">
           <div
-            v-for="historyItem in equipment.history"
+            v-for="historyItem in history"
             :key="`h${historyItem}`"
             class="equipment__history-item"
           >
@@ -37,7 +46,7 @@
       </div>
 
       <div class="equipment__card mt-6">
-        <h2 class="equipment__card-header">Комментарии</h2>
+        <h2 class="equipment__card-header pb-2 px-4">Комментарии</h2>
         <div class="equipment__card-divider"></div>
         <div v-if="equipment" class="equipment__comments">
           <div
@@ -54,8 +63,51 @@
             <span>{{ comment }}</span>
           </div>
         </div>
+
+        <div class="equipment__new-comment">
+          <UITextArea
+            v-model="newComment"
+            placeholder="Ваш комментарий"
+            height-mini
+          />
+          <button
+            class="button"
+            @click="addComment"
+          >
+            <svg class="button__icon">
+              <use xlink:href="@/assets/icons/sprites/buttons.svg#add"></use>
+            </svg>
+            Добавить
+          </button>
+        </div>
       </div>
     </div>
+
+    <UIModal ref="updateRecipientModal">
+      <template #body>
+        <div class="pb-3">
+          <p class="font-bold text-lg text-center">
+            Назначение получателя
+          </p>
+        </div>
+
+        <UIInput
+          v-model="newRecipient"
+          label="Введите ФИО"
+        />
+      </template>
+
+      <template #footer>
+        <div class="flex gap-2">
+          <button class="button button--gray" @click="updateRecipientModal?.hide">
+            Отмена
+          </button>
+          <button class="button" @click="postNewRecipient">
+            Добавить
+          </button>
+        </div>
+      </template>
+    </UIModal>
   </div>
 </template>
 
@@ -64,32 +116,109 @@ import type { Ref } from 'vue';
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import type { IEquipment } from '@/entities/types/backend/response/equipment';
+import type { IEquipment, IHistoryItem } from '@/entities/types/backend/response/equipment';
 import type { IDataItem } from '@/views/equipment/types';
 import { TimeFormatDict } from '@/utils/helpers/date';
 
-import { getEquipmentById } from '@/api/equipments';
+import { api } from '@/api';
+
+import { useUsersStore } from '@/store';
 
 import { generateDataItems } from '@/views/equipment/utils/getDataItems';
+
+import UITextArea from '@/components/ui/UITextArea.vue';
+import UIInput from '@/components/ui/UIInput.vue';
+import UIModal from '@/components/ui/UIModal.vue';
 
 import { getFormatDate } from '@/utils/helpers/date';
 
 const route = useRoute();
 
+const usersStore = useUsersStore();
+
+const updateRecipientModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+
 const equipment: Ref<IEquipment | null> = ref(null);
+const history: Ref<IHistoryItem[]> = ref([]);
+
+const newComment: Ref<string> = ref('');
+const newRecipient: Ref<string> = ref('');
+
 let dataItems: Ref<IDataItem[]> = ref([]);
 
-onMounted(() => {
+function fetchEquipment() {
   // @ts-ignore-next-line
-  getEquipmentById(route.params.id)
+  api.equipments.getEquipmentById(route.params.id)
     .then(data => {
       equipment.value = data;
+      dataItems.value = generateDataItems(equipment.value);
     })
-    .then(() => {
-      if (equipment.value) {
-        dataItems.value = generateDataItems(equipment.value);
-      }
+    .catch(error => {
+      console.log('error >>>', error);
     });
+}
+
+function fetchHistory() {
+  // @ts-ignore-next-line
+  api.equipments.getEquipmentsHistory(route.params.id)
+    .then(data => {
+      history.value = data;
+    })
+    .catch(error => {
+      console.log('error >>>', error);
+    });
+}
+
+function addComment() {
+  if (newComment.value) {
+    // @ts-ignore-next-line
+    api.equipments.commentEquipment(route.params.id, { text: newComment.value, })
+      .then(() => {
+        fetchEquipment();
+        newComment.value = '';
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
+  }
+}
+
+function updateRecipientClick() {
+  updateRecipientModal.value?.show();
+}
+
+function postNewRecipient() {
+  if (newRecipient.value) {
+    // @ts-ignore-next-line
+    api.equipments.updateEquipment(route.params.id, {
+      ...equipment.value,
+      recipient: newRecipient.value,
+    })
+      .then(data => {
+        equipment.value = data;
+        dataItems.value = generateDataItems(equipment.value);
+
+        api.equipments.postEquipmentsHistory(equipment.value._id, {
+          passedOn: usersStore.currentUserId,
+          accepted: newRecipient.value,
+        })
+          .then(fetchHistory)
+          .catch(error => {
+            console.log('error >>>', error);
+          });
+
+        newRecipient.value = '';
+        updateRecipientModal.value?.hide();
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
+  }
+}
+
+onMounted(() => {
+  fetchEquipment();
+  fetchHistory();
 });
 </script>
 
@@ -116,7 +245,6 @@ onMounted(() => {
 .equipment__card-header {
   font-size: 18px;
   font-weight: 500;
-  padding: 0 16px 8px 16px;
 }
 
 .equipment__card-divider {
@@ -188,5 +316,18 @@ onMounted(() => {
   border-bottom: 0;
   padding-bottom: 0;
 }
+
+.equipment__new-comment {
+  padding: 16px 16px 0 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.equipment__new-comment > label {
+  width: 100%;
+}
+
+.equipment__new-comment > button {
+  width: auto;
+}
 </style>
-@/entities/types/backend/response/equipment
