@@ -10,7 +10,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@ui': fileURLToPath(new URL('./src/components/ui', import.meta.url)),
+      '@composables': fileURLToPath(new URL('./src/vue-features/composables', import.meta.url)),
     }
   }
 })
