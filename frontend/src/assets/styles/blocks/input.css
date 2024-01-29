@@ -22,6 +22,10 @@
   height: 120px;
 }
 
+.textarea--mini {
+  height: 40px;
+}
+
 .input__icon {
   width: 20px;
   height: 20px;
@@ -33,4 +37,13 @@
 
 .input--with-icon {
   padding-left: 32px;
+}
+
+.input__pre-icon {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: -24px;
+  top: 50%;
+  transform: translate(0, -50%);
 }

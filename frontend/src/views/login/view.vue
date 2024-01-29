@@ -10,18 +10,24 @@
           required
           autocomplete="username"
           autofocus
+          pre-icon="user"
+          data-testid="login"
         />
 
         <UIInput
           v-model="password"
           label="Пароль"
           required
+          type="password"
+          pre-icon="password"
           autocomplete="current-password"
+          data-testid="password"
         />
       </div>
 
       <button
         class="button mt-5"
+        data-testid="btn-auth"
         @click.prevent="authorization"
       >
         Войти
@@ -69,6 +75,13 @@ function authorization() {
 </script>
 
 <style scoped>
+.auth {
+  max-width: 600px;
+  background-color: #fff;
+  padding: 44px 36px;
+  border-radius: 12px;
+}
+
 .auth__form {
   display: flex;
   flex-direction: column;
