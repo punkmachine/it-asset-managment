@@ -10,7 +10,7 @@
           <use xlink:href="@/assets/icons/sprites/profile.svg#profile"></use>
         </svg>
         <span class="account__text">
-          username
+          {{ currentUser?.firstName }} {{ currentUser?.lastName }}
         </span>
       </div>
       <transition name="fade">
@@ -33,9 +33,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { storeToRefs } from 'pinia'
+
 import { clickOutside } from '@/vue-features/directives/clickOutside';
+import { useUsersStore } from '@/store';
 
 const vClickOutside = clickOutside;
+
+const usersStore = useUsersStore();
+const { currentUser } = storeToRefs(usersStore);
 
 const showProfileMenu = ref(false);
 
