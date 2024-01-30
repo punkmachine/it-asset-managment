@@ -14,7 +14,7 @@ export interface IHistoryItem {
 };
 
 export interface IEquipment {
-  id: string,
+  _id: string,
   createdDate: string, // дата ввода в эксплуатацию
   updatedDate: string, // дата последнего изменения
 
@@ -23,7 +23,7 @@ export interface IEquipment {
   name: string, // название
   description: string, // описание
   serialNumber: string, // серийный номер
-  financiallyResponsiblePerson: string, // материально ответственное лицо
+  financiallyResponsiblePerson: IUser, // материально ответственное лицо
   recipient: string, // получатель
   comments: string[] // комментарии
   invoiceNumber: string, // номер накладной

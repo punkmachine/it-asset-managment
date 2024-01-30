@@ -29,7 +29,8 @@ export interface IBranchInTable {
 };
 
 export interface IEquipmentInTable {
-  id: string,
+  _id: string,
+  number: string,
   inventoryNumber: string,
   serialNumber: string,
   assetNumber: string,
@@ -37,4 +38,6 @@ export interface IEquipmentInTable {
   createdDate: string,
   updatedDate: string,
   financiallyResponsiblePerson: string,
+  state: string,
+  branch: string,
 };
