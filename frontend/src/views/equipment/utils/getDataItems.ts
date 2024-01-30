@@ -17,6 +17,7 @@ function getReadableState(state: EquipmentState) {
 
 function generateDataItems(equipment: IEquipment) {
   const format = TimeFormatDict.FullDateLongMonth;
+  const FRP = equipment.financiallyResponsiblePerson;
 
   return [
     generateDataItem('Название устройства', equipment.name),
@@ -24,8 +25,8 @@ function generateDataItems(equipment: IEquipment) {
     generateDataItem('Серийный номер устройства:', equipment.serialNumber),
     generateDataItem('Статус устройства:', getReadableState(equipment.state)),
     generateDataItem('Ассет номер устройства:', equipment.assetNumber),
-    generateDataItem('Материально-ответственное лицо:', equipment.financiallyResponsiblePerson),
-    generateDataItem('Получатель:', equipment.recipient),
+    generateDataItem('Материально-ответственное лицо:', `${FRP.firstName} ${FRP.lastName}`),
+    generateDataItem('Получатель:', equipment.recipient || '-'),
     generateDataItem('Номер накладной:', equipment.invoiceNumber),
     generateDataItem('Филиал:', equipment.branch.title),
     generateDataItem('Описание устройства:', equipment.description),
