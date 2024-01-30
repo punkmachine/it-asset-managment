@@ -108,12 +108,7 @@ import AddModalFooter from '@/views/branches/components/AddModalFooter.vue';
 import FormEditBranch from '@/views/branches/components/FormEditBranch.vue';
 import FormAddBranch from '@/views/branches/components/FormAddBranch.vue';
 
-import {
-  fetchBranches,
-  deleteBranch,
-  editBranch,
-  postBranch,
-} from '@/api/branches';
+import { api } from '@/api';
 import { getTableRows } from '@/utils/adapters/branchesAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
@@ -125,6 +120,7 @@ const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentBranch: Ref<IBranch | null> = ref(null);
+const backupBranches: Ref<IBranch[]> = ref([]);
 const branches: Ref<IBranch[]> = ref([]);
 const filteredBranches: Ref<IBranch[]> = ref([]);
 const newBranch: Ref<INewBranch> = ref({ ...initialBranch });
@@ -136,7 +132,7 @@ const rows: Ref<TRows[]> = ref([]);
 const columns: Ref<IColumn[]> = ref(columnsSettings);
 
 function getCurrentBranchById(id: string): IBranch | null {
-  return branches.value.find(branch => branch.id.toString() === id) ?? null;
+  return branches.value.find(branch => branch._id === id) ?? null;
 }
 
 function handleModalWrapper(modal: Ref<InstanceType<typeof UIModal> | null>, id: string | null): void {
@@ -163,30 +159,23 @@ function handleAdd() {
 }
 
 function getBranchesAndRowsTable() {
-  fetchBranches()
+  api.branches.fetchBranches()
     .then(data => {
       branches.value = [...data];
       filteredBranches.value = [...data];
       rows.value = getTableRows(filteredBranches.value);
+    })
+    .catch(error => {
+      console.log('error >>>', error);
     });
 }
 
 function deleteBranchClick() {
-  deleteBranch()
-    .then(() => {
-      getBranchesAndRowsTable();
-      currentBranch.value = null;
-
-      deleteModal.value?.hide();
-    });
-}
-
-function saveEditBranchClick() {
   if (currentBranch.value) {
-    editBranch(currentBranch.value)
+    api.branches.deleteBranch(currentBranch.value._id)
       .then(data => {
         branches.value = branches.value.map(branch => {
-          if (branch.id === data.id) {
+          if (branch._id === data._id) {
             return {
               ...data,
             };
@@ -194,15 +183,46 @@ function saveEditBranchClick() {
 
           return branch;
         });
+        filteredBranches.value = [...branches.value];
+        rows.value = getTableRows(filteredBranches.value);
+
+        deleteModal.value?.hide();
+        currentBranch.value = null;
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
+  }
+}
+
+function saveEditBranchClick() {
+  if (currentBranch.value) {
+    api.branches.updateBranch(currentBranch.value._id, currentBranch.value)
+      .then(data => {
+        branches.value = branches.value.map(branch => {
+          if (branch._id === data._id) {
+            return {
+              ...data,
+            };
+          }
+
+          return branch;
+        });
+        filteredBranches.value = [...branches.value];
+        rows.value = getTableRows(filteredBranches.value);
 
         editModal.value?.hide();
+        currentBranch.value = null;
+      })
+      .catch(error => {
+        console.log('error >>>', error);
       });
   }
 }
 
 function saveAddBranchClick() {
   if (newBranch.value.title && newBranch.value.description) {
-    postBranch(newBranch.value)
+    api.branches.createBranch(newBranch.value)
       .then(data => {
         branches.value = [
           ...branches.value,
@@ -213,6 +233,9 @@ function saveAddBranchClick() {
         newBranch.value = { ...initialBranch };
 
         addModal.value?.hide();
+      })
+      .catch(error => {
+        console.log('error >>>', error);
       });
   }
 }
@@ -230,8 +253,24 @@ function searchBranch(text: string) {
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 const searchTextWatcher = debounce(() => {
-  // @todo: запрос на бэкенд для поиска
-}, 300);
+  if (searchText.value.length > 3) {
+    backupBranches.value = [...branches.value];
+
+    api.branches.searchBranch({ searchText: searchText.value })
+      .then(data => {
+        branches.value = [...data];
+        filteredBranches.value = [...data];
+        rows.value = getTableRows(filteredBranches.value);
+      })
+      .catch(error => {
+        console.log('error >>>', error);
+      });
+  } else {
+    branches.value = [...backupBranches.value];
+    filteredBranches.value = [...backupBranches.value];
+    rows.value = getTableRows(filteredBranches.value);
+  }
+}, 500);
 
 watch(searchText, searchTextWatcher);
 
@@ -263,4 +302,3 @@ onBeforeUnmount(() => {
   max-width: calc(100vw - var(--menu-width));
 }
 </style>
-@/entities/types/backend/response/branches
