@@ -14,8 +14,8 @@ export const equipments = (client: AxiosInstance) => ({
   searchEquipment: (data: IQueryData): Promise<IEquipment[]> => {
     return client.get(`equipments/search?${getQueryParams(data)}`);
   },
-  createEquipment: (payload: IEquipmentCreatePayload): Promise<IEquipment> => {
-    return client.post('/equipment', payload);
+  createEquipments: (payload: IEquipmentCreatePayload[]): Promise<IEquipment[]> => {
+    return client.post('/equipments', payload);
   },
   updateEquipment: (id: number | string, payload: IEquipmentUpdatePayload): Promise<IEquipment> => {
     return client.put(`/equipment/${id}`, payload);
@@ -26,10 +26,10 @@ export const equipments = (client: AxiosInstance) => ({
   commentEquipment: (equipmentId: number | string, payload: ICommentPayload): Promise<IEquipment> => {
     return client.post(`/equipment/comment/${equipmentId}`, payload);
   },
-  getEquipmentsHistory: (equipmentId: number | string): Promise<IHistoryItem> => {
+  getEquipmentsHistory: (equipmentId: number | string): Promise<IHistoryItem[]> => {
     return client.get(`/equipments/history/${equipmentId}`);
   },
   postEquipmentsHistory: (equipmentId: number | string, payload: IHistoryPayload): Promise<IHistoryItem> => {
     return client.post(`/equipments/history/${equipmentId}`, payload);
-  }
+  },
 });
