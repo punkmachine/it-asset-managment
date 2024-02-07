@@ -5,6 +5,9 @@
       class="input textarea"
       v-bind="$attrs"
       :value="modelValue"
+      :class="{
+        'textarea--mini': heightMini
+      }"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     />
   </label>
@@ -14,8 +17,9 @@
 import { defineProps, defineEmits } from 'vue';
 
 interface IProps {
-  label: string,
   modelValue: string,
+  label?: string,
+  heightMini?: boolean,
 };
 
 interface IEmits {

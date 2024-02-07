@@ -1,12 +1,25 @@
 import type { IBranchInTable, ICell } from '@/entities/types/UI/table';
 import type { IBranch } from '@/entities/types/backend/response/branches';
+import { BranchState } from '@/entities/types/backend/response/branches';
+
+function getReadableState(key: BranchState | 'default') {
+  const dict = {
+    ACTIVE: 'Активен',
+    DELETED: 'Заблокирован',
+    default: '...'
+  };
+
+  return dict[key] ? dict[key] : dict.default;
+}
 
 function branchesAdapterFromTable(branches: IBranch[]): IBranchInTable[] {
-  return branches.map(branch => {
+  return branches.map((branch, index) => {
     return {
-      id: branch.id.toString(),
-      title: branch.title,
-      description: branch.description,
+      _id: branch._id,
+      number: `${index + 1}`,
+      title: branch.title ?? '',
+      state: getReadableState(branch.state),
+      description: branch.description ?? '',
     }
   });
 }
@@ -15,9 +28,9 @@ export function getTableRows(branches: IBranch[]) {
   const branchesTable = branchesAdapterFromTable(branches);
 
   return branchesTable.map(branch => {
-    let result: ICell[] = [];
+    const result: ICell[] = [];
 
-    for (let key in branch) {
+    for (const key in branch) {
       result.push({
         key,
         title: branch[key as keyof IBranchInTable],
