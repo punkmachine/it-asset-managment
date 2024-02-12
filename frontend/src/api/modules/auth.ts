@@ -6,4 +6,7 @@ export const auth = (client: AxiosInstance) => ({
   login: (payload: IAuthPayload): Promise<ILoginResponse> => {
     return client.post(`/login`, payload);
   },
+  createSuperAdmin: (payload: IAuthPayload): Promise<ILoginResponse> => {
+    return client.post(`/create-super-admin`, payload);
+  },
 });

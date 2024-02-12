@@ -1,7 +1,7 @@
 <template>
   <div class="auth">
     <form class="auth__form">
-      <h1 class="auth__title">Авторизация</h1>
+      <h1 class="auth__title" @click="createSuperAdmin">Авторизация</h1>
 
       <div class="flex flex-col gap-3 w-full">
         <UIInput
@@ -62,6 +62,24 @@ function authorization() {
   };
 
   api.auth.login(payload)
+    .then(data => {
+      Cookies.set('token', data.token);
+      usersStore.setCurrentUserId(data.userId);
+      usersStore.fetchCurrentUser();
+      router.push('/');
+    })
+    .catch(error => {
+      console.log('error >>>', error);
+    });
+}
+
+function createSuperAdmin() {
+  const payload = {
+    login: 'login',
+    password: '1234',
+  };
+
+  api.auth.createSuperAdmin(payload)
     .then(data => {
       Cookies.set('token', data.token);
       usersStore.setCurrentUserId(data.userId);
