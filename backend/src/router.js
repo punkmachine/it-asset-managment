@@ -13,6 +13,7 @@ import HistoryController from './controllers/history.js';
 const router = new Router();
 
 router.post('/login', AuthController.login);
+router.post('/create-super-admin', AuthController.createSuperAdmin);
 
 // филиалы
 router.get('/branches', authMiddleware, BranchesController.getAll); // @todo: пагинация
