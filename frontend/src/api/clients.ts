@@ -6,7 +6,7 @@ import type { InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axio
 import router from '@/router';
 
 const client = axios.create({
-  baseURL: 'http://localhost:5004/api/',
+  baseURL: import.meta.env.VITE_APP_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
