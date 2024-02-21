@@ -6,7 +6,7 @@ function getReadableRole(key: UserRoles | 'default') {
   const dict = {
     SUPERADMIN: 'Царь',
     ADMIN: 'Администратор',
-    default: '...'
+    default: '...',
   };
 
   return dict[key] ? dict[key] : dict.default;
@@ -16,7 +16,7 @@ function getReadableState(key: UserState | 'default') {
   const dict = {
     ACTIVE: 'Активен',
     DELETED: 'Заблокирован',
-    default: '...'
+    default: '...',
   };
 
   return dict[key] ? dict[key] : dict.default;
@@ -30,7 +30,7 @@ function usersAdapterFromTable(users: IUser[]): IUserInTable[] {
       fio: `${user.firstName} ${user.lastName}`,
       role: getReadableRole(user.role),
       state: getReadableState(user.state),
-    }
+    };
   });
 }
 

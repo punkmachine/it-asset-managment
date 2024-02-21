@@ -1,4 +1,4 @@
-import type { IColumn } from '@/entities/types/UI/table'
+import type { IColumn } from '@/entities/types/UI/table';
 
 export const columnsSettings: IColumn[] = [
   { key: 'number', title: 'Номер', width: '120px' },

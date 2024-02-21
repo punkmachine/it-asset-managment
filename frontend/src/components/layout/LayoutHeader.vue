@@ -1,26 +1,38 @@
 <template>
   <header>
-    <RouterLink to="/" class="logo">
-      <img src="@/assets/icons/logo.svg" alt="">
+    <RouterLink
+      to="/"
+      class="logo"
+    >
+      <img
+        src="@/assets/icons/logo.svg"
+        alt=""
+      />
       <span class="logo__text">Учёт оборудования</span>
     </RouterLink>
-    <div class="account" v-click-outside="hideMenuProfile">
-      <div class="account__btn" @click="toggleVisibleMenuProfile">
+    <div
+      class="account"
+      v-click-outside="hideMenuProfile"
+    >
+      <div
+        class="account__btn"
+        @click="toggleVisibleMenuProfile"
+      >
         <svg>
           <use xlink:href="@/assets/icons/sprites/profile.svg#profile"></use>
         </svg>
-        <span class="account__text">
-          {{ currentUser?.firstName }} {{ currentUser?.lastName }}
-        </span>
+        <span class="account__text">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
       </div>
       <transition name="fade">
         <nav
           v-if="showProfileMenu"
           class="account__menu"
         >
-          <RouterLink to="/profile" class="account__menu-item">
-            Профиль
-          </RouterLink>
+          <RouterLink
+            to="/profile"
+            class="account__menu-item"
+            >Профиль</RouterLink
+          >
           <div class="account__menu-item">
             <button>Выйти</button>
           </div>
@@ -33,7 +45,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
-import { storeToRefs } from 'pinia'
+import { storeToRefs } from 'pinia';
 
 import { clickOutside } from '@/vue-features/directives/clickOutside';
 import { useUsersStore } from '@/store';
@@ -69,10 +81,13 @@ header {
   display: flex;
   z-index: 10;
   justify-content: space-between;
-  box-shadow: 0 0 1px #0003, 0 4px 10px #2134520a;
+  box-shadow:
+    0 0 1px #0003,
+    0 4px 10px #2134520a;
 }
 
-.logo, .account__btn {
+.logo,
+.account__btn {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -86,7 +101,8 @@ header {
   color: var(--text-main);
 }
 
-.logo img, .account svg {
+.logo img,
+.account svg {
   width: 36px;
   height: 36px;
   margin-right: 12px;

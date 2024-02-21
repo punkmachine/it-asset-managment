@@ -13,8 +13,6 @@ const pinia = createPinia();
 
 router.beforeEach(middleware);
 
-app
-  .use(router)
-  .use(pinia);
+app.use(router).use(pinia);
 
-app.mount('#app')
+app.mount('#app');

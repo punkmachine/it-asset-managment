@@ -19,7 +19,7 @@
         class="pagination__counter-item"
         :key="`pagination-${number}`"
         :class="{
-          'pagination__counter-item--active': currentPage === number
+          'pagination__counter-item--active': currentPage === number,
         }"
         @click="setPage(number)"
       >
@@ -62,15 +62,15 @@
 import { defineProps, computed, defineEmits } from 'vue';
 
 interface IProps {
-  count: number,
-  currentPage: number,
-  visibleItems: number,
-};
+  count: number;
+  currentPage: number;
+  visibleItems: number;
+}
 
 interface IEmits {
-  (e: 'update:currentPage', newCurrentPage: number): void,
-  (e: 'update:visibleItems', newVisibleItems: number): void,
-};
+  (e: 'update:currentPage', newCurrentPage: number): void;
+  (e: 'update:visibleItems', newVisibleItems: number): void;
+}
 
 const props = defineProps<IProps>();
 const emits = defineEmits<IEmits>();

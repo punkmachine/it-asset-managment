@@ -17,5 +17,5 @@ export function useEscapeClick(callback: Function) {
   return {
     addEventEscape,
     removeEventEscape,
-  }
-};
+  };
+}

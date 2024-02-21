@@ -1,6 +1,11 @@
 import type { AxiosInstance } from 'axios';
 import type { IQueryData } from '@/entities/types/backend/query';
-import type { IEquipmentCreatePayload, IEquipmentUpdatePayload, ICommentPayload, IHistoryPayload } from '@/entities/types/backend/payload/equipmentPayload';
+import type {
+  IEquipmentCreatePayload,
+  IEquipmentUpdatePayload,
+  ICommentPayload,
+  IHistoryPayload,
+} from '@/entities/types/backend/payload/equipmentPayload';
 import type { IEquipment, IHistoryItem } from '@/entities/types/backend/response/equipment';
 import { getQueryParams } from '@/utils/helpers/queryParam';
 

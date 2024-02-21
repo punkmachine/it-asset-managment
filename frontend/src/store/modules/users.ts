@@ -13,7 +13,8 @@ export const useUsersStore = defineStore('users', () => {
 
   function fetchCurrentUser() {
     if (currentUserId.value) {
-      api.users.getUserById(currentUserId.value)
+      api.users
+        .getUserById(currentUserId.value)
         .then(data => {
           currentUser.value = data;
         })
@@ -29,7 +30,9 @@ export const useUsersStore = defineStore('users', () => {
   }
 
   return {
-    currentUser, currentUserId,
-    fetchCurrentUser, setCurrentUserId,
-  }
+    currentUser,
+    currentUserId,
+    fetchCurrentUser,
+    setCurrentUserId,
+  };
 });

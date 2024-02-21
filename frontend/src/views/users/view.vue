@@ -17,7 +17,7 @@
           @delete="handleDelete"
         />
 
-        <div class="flex justify-end mt-5 mr-5">
+        <div class="mr-5 mt-5 flex justify-end">
           <UIPagination
             v-model:current-page="currentPage"
             v-model:visible-items="visibleTableItems"
@@ -50,7 +50,7 @@
           <form v-if="currentUser">
             <FormEditUser
               :edited-user="currentUser"
-              @edit-user="(newUser) => currentUser = newUser"
+              @edit-user="newUser => (currentUser = newUser)"
             />
           </form>
         </template>
@@ -65,13 +65,11 @@
 
       <UIModal ref="addModal">
         <template #body>
-          <h2 class="modal__title">
-            Создание админа
-          </h2>
+          <h2 class="modal__title">Создание админа</h2>
           <form>
             <FormAddUser
               :added-user="newUser"
-              @updateAddedUser="(user) => newUser = user"
+              @updateAddedUser="user => (newUser = user)"
             />
           </form>
         </template>
@@ -89,9 +87,9 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import { debounce } from "debounce";
+import { debounce } from 'debounce';
 
-import type { Ref } from 'vue'
+import type { Ref } from 'vue';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
 import type { IUser } from '@/entities/types/backend/response/user';
 import type { INewUser } from './types';
@@ -122,7 +120,7 @@ const currentUser: Ref<IUser | null> = ref(null);
 const users: Ref<IUser[]> = ref([]);
 const backupUsers: Ref<IUser[]> = ref([]);
 const filteredUsers: Ref<IUser[]> = ref([]);
-const newUser: Ref<INewUser> = ref({...initialUser});
+const newUser: Ref<INewUser> = ref({ ...initialUser });
 const searchText: Ref<string> = ref('');
 const currentPage: Ref<number> = ref(1);
 const visibleTableItems: Ref<number> = ref(10);
@@ -158,7 +156,8 @@ function handleAdd() {
 }
 
 function getUsersAndRowsTable() {
-  api.users.fetchUsers()
+  api.users
+    .fetchUsers()
     .then(data => {
       users.value = [...data];
       filteredUsers.value = [...data];
@@ -171,26 +170,26 @@ function getUsersAndRowsTable() {
 
 function deleteUserClick() {
   if (currentUser.value) {
-    api.users.deleteUser(currentUser.value._id)
-      .then(blockedUser => {
-        currentUser.value = null;
-        users.value = users.value.map(user => {
-          if (user._id === blockedUser._id) {
-            return {
-              ...blockedUser,
-            };
-          }
+    api.users.deleteUser(currentUser.value._id).then(blockedUser => {
+      currentUser.value = null;
+      users.value = users.value.map(user => {
+        if (user._id === blockedUser._id) {
+          return {
+            ...blockedUser,
+          };
+        }
 
-          return user;
-        });
-        deleteModal.value?.hide();
+        return user;
       });
+      deleteModal.value?.hide();
+    });
   }
 }
 
 function saveEditUserClick() {
   if (currentUser.value) {
-    api.users.updateUser(currentUser.value._id, currentUser.value)
+    api.users
+      .updateUser(currentUser.value._id, currentUser.value)
       .then(data => {
         users.value = users.value.map(user => {
           if (user._id === data._id) {
@@ -205,25 +204,22 @@ function saveEditUserClick() {
       })
       .catch(error => {
         console.log('error >>>', error);
-      })
+      });
   }
 }
 
 function saveAddUserClick() {
-  const validate = newUser.value.firstName && newUser.value.lastName
-    && newUser.value.login && newUser.value.password;
+  const validate = newUser.value.firstName && newUser.value.lastName && newUser.value.login && newUser.value.password;
 
   if (validate) {
-    api.users.createUser(newUser.value)
+    api.users
+      .createUser(newUser.value)
       .then(data => {
-        users.value = [
-          ...users.value,
-          data
-        ];
+        users.value = [...users.value, data];
 
         rows.value = getTableRows(users.value);
 
-        newUser.value = {...initialUser};
+        newUser.value = { ...initialUser };
 
         addModal.value?.hide();
       })
@@ -247,7 +243,8 @@ const searchTextWatcher = debounce(() => {
   if (searchText.value.length > 3) {
     backupUsers.value = [...users.value];
 
-    api.users.searchUser({ searchText: searchText.value })
+    api.users
+      .searchUser({ searchText: searchText.value })
       .then(data => {
         users.value = [...data];
         filteredUsers.value = [...data];

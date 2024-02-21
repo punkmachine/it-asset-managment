@@ -1,9 +1,15 @@
 <template>
-  <div class="max-w-min flex justify-between gap-2 items-center">
-    <button class="button button--gray" @click="$emit('cancel')">
+  <div class="flex max-w-min items-center justify-between gap-2">
+    <button
+      class="button button--gray"
+      @click="$emit('cancel')"
+    >
       Отмена
     </button>
-    <button class="button" @click="$emit('add')">
+    <button
+      class="button"
+      @click="$emit('add')"
+    >
       Добавить
     </button>
   </div>
@@ -13,9 +19,9 @@
 import { defineEmits } from 'vue';
 
 interface IEmits {
-  (e: 'cancel'): void,
-  (e: 'add'): void
-};
+  (e: 'cancel'): void;
+  (e: 'add'): void;
+}
 
 const emits = defineEmits<IEmits>();
 </script>

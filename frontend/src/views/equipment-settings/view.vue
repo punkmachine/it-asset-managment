@@ -1,10 +1,5 @@
-<template>
-  Страница настроек для полей оборудования
-</template>
+<template>Страница настроек для полей оборудования</template>
 
-<script lang="ts" setup>
-</script>
+<script lang="ts" setup></script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

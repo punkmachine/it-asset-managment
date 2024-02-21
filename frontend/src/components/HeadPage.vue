@@ -11,8 +11,8 @@
 import { defineProps } from 'vue';
 
 interface IProps {
-  title: string,
-};
+  title: string;
+}
 
 const props = defineProps<IProps>();
 </script>

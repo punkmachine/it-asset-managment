@@ -1,9 +1,14 @@
 <template>
   <div class="auth">
     <form class="auth__form">
-      <h1 class="auth__title" @click="createSuperAdmin">Авторизация</h1>
+      <h1
+        class="auth__title"
+        @click="createSuperAdmin"
+      >
+        Авторизация
+      </h1>
 
-      <div class="flex flex-col gap-3 w-full">
+      <div class="flex w-full flex-col gap-3">
         <UIInput
           v-model="login"
           label="Логин"
@@ -61,7 +66,8 @@ function authorization() {
     password: password.value,
   };
 
-  api.auth.login(payload)
+  api.auth
+    .login(payload)
     .then(data => {
       Cookies.set('token', data.token);
       usersStore.setCurrentUserId(data.userId);
@@ -79,7 +85,8 @@ function createSuperAdmin() {
     password: '1234',
   };
 
-  api.auth.createSuperAdmin(payload)
+  api.auth
+    .createSuperAdmin(payload)
     .then(data => {
       Cookies.set('token', data.token);
       usersStore.setCurrentUserId(data.userId);

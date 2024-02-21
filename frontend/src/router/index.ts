@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHistory('/'),
@@ -10,7 +10,7 @@ const router = createRouter({
       meta: {
         secure: true,
         layout: 'main',
-      }
+      },
     },
     {
       path: '/equipment/:id',
@@ -19,7 +19,7 @@ const router = createRouter({
       meta: {
         secure: true,
         layout: 'main',
-      }
+      },
     },
     {
       path: '/branches',
@@ -28,7 +28,7 @@ const router = createRouter({
       meta: {
         secure: true,
         layout: 'main',
-      }
+      },
     },
     {
       path: '/equipment-settings',
@@ -37,7 +37,7 @@ const router = createRouter({
       meta: {
         secure: true,
         layout: 'main',
-      }
+      },
     },
     {
       path: '/login',
@@ -46,7 +46,7 @@ const router = createRouter({
       meta: {
         secure: false,
         layout: 'empty',
-      }
+      },
     },
     {
       path: '/new-equipment',
@@ -55,7 +55,7 @@ const router = createRouter({
       meta: {
         secure: true,
         layout: 'main',
-      }
+      },
     },
     {
       path: '/profile',
@@ -64,7 +64,7 @@ const router = createRouter({
       meta: {
         secure: true,
         layout: 'main',
-      }
+      },
     },
     {
       path: '/users',
@@ -73,7 +73,7 @@ const router = createRouter({
       meta: {
         secure: true,
         layout: 'main',
-      }
+      },
     },
     {
       path: '/statistics',
@@ -83,7 +83,7 @@ const router = createRouter({
         secure: true,
         superAdminOnly: true,
         layout: 'main',
-      }
+      },
     },
     {
       path: '/:notFound',
@@ -92,9 +92,9 @@ const router = createRouter({
       meta: {
         secure: false,
         layout: 'empty',
-      }
+      },
     },
-  ]
-})
+  ],
+});
 
-export default router
+export default router;

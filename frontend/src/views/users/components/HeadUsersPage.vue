@@ -1,6 +1,9 @@
 <template>
   <HeadPage title="Админы">
-    <button class="button" @click="$emit('addUser')">
+    <button
+      class="button"
+      @click="$emit('addUser')"
+    >
       <svg class="button__icon">
         <use xlink:href="@/assets/icons/sprites/buttons.svg#add"></use>
       </svg>
@@ -14,7 +17,7 @@ import { defineEmits } from 'vue';
 import HeadPage from '@/components/HeadPage.vue';
 
 interface IEmits {
-  (e: 'addUser'): void
+  (e: 'addUser'): void;
 }
 
 const emit = defineEmits<IEmits>();

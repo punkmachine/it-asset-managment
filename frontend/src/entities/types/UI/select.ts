@@ -1,4 +1,4 @@
 export interface IOptions {
-  key: string,
-  title: string,
-};
+  key: string;
+  title: string;
+}

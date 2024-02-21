@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-3 w-full">
+  <div class="flex w-full flex-col gap-3">
     <UIInput
       label="Имя"
       v-model="user.firstName"
@@ -37,11 +37,11 @@ import type { INewUser } from '@/views/users/types';
 import UIInput from '@/components/ui/UIInput.vue';
 
 interface IProps {
-  addedUser: INewUser,
-};
+  addedUser: INewUser;
+}
 
 interface IEmits {
-  (e: 'updateAddedUser', user: INewUser): void,
+  (e: 'updateAddedUser', user: INewUser): void;
 }
 
 const props = defineProps<IProps>();
@@ -49,7 +49,7 @@ const emit = defineEmits<IEmits>();
 
 const user: Ref<INewUser> = ref(props.addedUser);
 
-watch(user.value, (newUser) => {
+watch(user.value, newUser => {
   emit('updateAddedUser', newUser);
 });
 </script>

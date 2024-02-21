@@ -1,10 +1,5 @@
-<template>
-  Создание экземпляра оборудования
-</template>
+<template>Создание экземпляра оборудования</template>
 
-<script lang="ts" setup>
-</script>
+<script lang="ts" setup></script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

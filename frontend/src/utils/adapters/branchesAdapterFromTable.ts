@@ -6,7 +6,7 @@ function getReadableState(key: BranchState | 'default') {
   const dict = {
     ACTIVE: 'Активен',
     DELETED: 'Заблокирован',
-    default: '...'
+    default: '...',
   };
 
   return dict[key] ? dict[key] : dict.default;
@@ -20,7 +20,7 @@ function branchesAdapterFromTable(branches: IBranch[]): IBranchInTable[] {
       title: branch.title ?? '',
       state: getReadableState(branch.state),
       description: branch.description ?? '',
-    }
+    };
   });
 }
 

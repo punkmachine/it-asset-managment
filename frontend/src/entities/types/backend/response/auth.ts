@@ -1,4 +1,4 @@
 export interface ILoginResponse {
-  token: string,
-  userId: string,
-};
+  token: string;
+  userId: string;
+}

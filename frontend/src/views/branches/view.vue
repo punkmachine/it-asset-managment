@@ -17,7 +17,7 @@
           @delete="handleDelete"
         />
 
-        <div class="flex justify-end mt-5 mr-5">
+        <div class="mr-5 mt-5 flex justify-end">
           <UIPagination
             v-model:current-page="currentPage"
             v-model:visible-items="visibleTableItems"
@@ -27,9 +27,7 @@
       </div>
 
       <UIModal ref="deleteModal">
-        <template #body>
-          Вы точно хотите удалить сотрудника "{{ currentBranch?.title }}"?
-        </template>
+        <template #body>Вы точно хотите удалить сотрудника "{{ currentBranch?.title }}"?</template>
 
         <template #footer>
           <DeleteModalFooter
@@ -41,9 +39,7 @@
 
       <UIModal ref="editModal">
         <template #body>
-          <h2 class="modal__title">
-            Редактирование филиала "{{ currentBranch?.title }}"
-          </h2>
+          <h2 class="modal__title">Редактирование филиала "{{ currentBranch?.title }}"</h2>
           <!--
             @todo: костыль с currentBranch, потому что он технически может быть null,
             но физически в этой форме ну реально никак, а TS ругается
@@ -51,7 +47,7 @@
           <form v-if="currentBranch">
             <FormEditBranch
               :edited-branch="currentBranch"
-              @edit-branch="(newBranch) => currentBranch = newBranch"
+              @edit-branch="newBranch => (currentBranch = newBranch)"
             />
           </form>
         </template>
@@ -66,13 +62,11 @@
 
       <UIModal ref="addModal">
         <template #body>
-          <h2 class="modal__title">
-            Создание филиала
-          </h2>
+          <h2 class="modal__title">Создание филиала</h2>
           <form>
             <FormAddBranch
               :added-branch="newBranch"
-              @updateAddedBranch="(branch) => newBranch = branch"
+              @updateAddedBranch="branch => (newBranch = branch)"
             />
           </form>
         </template>
@@ -90,7 +84,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import { debounce } from "debounce";
+import { debounce } from 'debounce';
 
 import type { Ref } from 'vue';
 import type { IBranch } from '@/entities/types/backend/response/branches';
@@ -159,7 +153,8 @@ function handleAdd() {
 }
 
 function getBranchesAndRowsTable() {
-  api.branches.fetchBranches()
+  api.branches
+    .fetchBranches()
     .then(data => {
       branches.value = [...data];
       filteredBranches.value = [...data];
@@ -172,7 +167,8 @@ function getBranchesAndRowsTable() {
 
 function deleteBranchClick() {
   if (currentBranch.value) {
-    api.branches.deleteBranch(currentBranch.value._id)
+    api.branches
+      .deleteBranch(currentBranch.value._id)
       .then(data => {
         branches.value = branches.value.map(branch => {
           if (branch._id === data._id) {
@@ -197,7 +193,8 @@ function deleteBranchClick() {
 
 function saveEditBranchClick() {
   if (currentBranch.value) {
-    api.branches.updateBranch(currentBranch.value._id, currentBranch.value)
+    api.branches
+      .updateBranch(currentBranch.value._id, currentBranch.value)
       .then(data => {
         branches.value = branches.value.map(branch => {
           if (branch._id === data._id) {
@@ -222,12 +219,10 @@ function saveEditBranchClick() {
 
 function saveAddBranchClick() {
   if (newBranch.value.title && newBranch.value.description) {
-    api.branches.createBranch(newBranch.value)
+    api.branches
+      .createBranch(newBranch.value)
       .then(data => {
-        branches.value = [
-          ...branches.value,
-          data
-        ];
+        branches.value = [...branches.value, data];
 
         rows.value = getTableRows(branches.value);
         newBranch.value = { ...initialBranch };
@@ -256,7 +251,8 @@ const searchTextWatcher = debounce(() => {
   if (searchText.value.length > 3) {
     backupBranches.value = [...branches.value];
 
-    api.branches.searchBranch({ searchText: searchText.value })
+    api.branches
+      .searchBranch({ searchText: searchText.value })
       .then(data => {
         branches.value = [...data];
         filteredBranches.value = [...data];

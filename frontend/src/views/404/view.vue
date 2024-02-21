@@ -1,14 +1,19 @@
 <template>
   <div class="not-found">
-    <span class="not-found__title">
-      404
-    </span>
-    <span class="not-found__text">
-      Страница не найдена
-    </span>
+    <span class="not-found__title">404</span>
+    <span class="not-found__text">Страница не найдена</span>
     <div class="not-found__buttons">
-      <button @click="$router.back" class="not-found__button">Вернуться назад</button>
-      <RouterLink to="/" class="not-found__button">На главную</RouterLink>
+      <button
+        @click="$router.back"
+        class="not-found__button"
+      >
+        Вернуться назад
+      </button>
+      <RouterLink
+        to="/"
+        class="not-found__button"
+        >На главную</RouterLink
+      >
     </div>
   </div>
 </template>
@@ -54,7 +59,7 @@ import { RouterLink } from 'vue-router';
 }
 
 .not-found__button::before {
-  content: "";
+  content: '';
   position: absolute;
   display: block;
   width: 100%;

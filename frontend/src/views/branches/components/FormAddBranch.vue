@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-3 w-full">
+  <div class="flex w-full flex-col gap-3">
     <UIInput
       label="Название"
       v-model="addedBranch.title"
@@ -22,11 +22,11 @@ import UITextArea from '@/components/ui/UITextArea.vue';
 import UIInput from '@/components/ui/UIInput.vue';
 
 interface IProps {
-  addedBranch: INewBranch,
-};
+  addedBranch: INewBranch;
+}
 
 interface IEmits {
-  (e: 'updateAddedBranch', branch: INewBranch): void,
+  (e: 'updateAddedBranch', branch: INewBranch): void;
 }
 
 const props = defineProps<IProps>();
@@ -34,7 +34,7 @@ const emit = defineEmits<IEmits>();
 
 const branch: Ref<INewBranch> = ref(props.addedBranch);
 
-watch(branch.value, (newBranch) => {
+watch(branch.value, newBranch => {
   emit('updateAddedBranch', newBranch);
 });
 </script>

@@ -23,14 +23,14 @@ import { defineProps, defineEmits } from 'vue';
 import type { IOptions } from '@/entities/types/UI/select';
 
 interface IProps {
-  label: string,
-  modelValue: string,
-  options: IOptions[]
-};
+  label: string;
+  modelValue: string;
+  options: IOptions[];
+}
 
 interface IEmits {
-  (e: 'update:modelValue', newValue: string): void,
-};
+  (e: 'update:modelValue', newValue: string): void;
+}
 
 const props = defineProps<IProps>();
 const emits = defineEmits<IEmits>();

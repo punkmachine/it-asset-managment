@@ -24,7 +24,7 @@
         v-for="(row, rowIndex) in filteredRows"
         :key="rowIndex"
         :class="{
-          'cursor-pointer hover:bg-slate-100': goDetailItem
+          'cursor-pointer hover:bg-slate-100': goDetailItem,
         }"
         @click="rowClick(row)"
       >
@@ -66,17 +66,17 @@ import { defineProps, defineEmits, computed } from 'vue';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
 
 interface IProps {
-  columns: IColumn[],
-  rows: TRows[],
-  deleteButtonVisible?: boolean,
-  editButtonVisible?: boolean,
-  goDetailItem?: (id: string) => void,
-};
+  columns: IColumn[];
+  rows: TRows[];
+  deleteButtonVisible?: boolean;
+  editButtonVisible?: boolean;
+  goDetailItem?: (id: string) => void;
+}
 
 interface IEmits {
-  (e: 'edit', id: string): void
-  (e: 'delete', id: string): void
-};
+  (e: 'edit', id: string): void;
+  (e: 'delete', id: string): void;
+}
 
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
@@ -126,7 +126,8 @@ tbody tr {
   border-bottom: 1px solid #e5e7eb;
 }
 
-tbody td, tbody th {
+tbody td,
+tbody th {
   padding: 16px 24px;
   white-space: break-spaces;
 }

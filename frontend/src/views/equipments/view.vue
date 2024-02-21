@@ -19,7 +19,7 @@
           @delete="handleDelete"
         />
 
-        <div class="flex justify-end mt-5 mr-5">
+        <div class="mr-5 mt-5 flex justify-end">
           <UIPagination
             v-model:current-page="currentPage"
             v-model:visible-items="visibleTableItems"
@@ -29,9 +29,7 @@
       </div>
 
       <UIModal ref="deleteModal">
-        <template #body>
-          Вы точно хотите списать "{{ currentEquipment?.inventoryNumber }}"?
-        </template>
+        <template #body>Вы точно хотите списать "{{ currentEquipment?.inventoryNumber }}"?</template>
 
         <template #footer>
           <DeleteModalFooter
@@ -47,7 +45,7 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import { debounce } from "debounce";
+import { debounce } from 'debounce';
 import * as xlsx from 'xlsx';
 
 import type { Ref } from 'vue';
@@ -109,7 +107,8 @@ function handleAdd() {
 }
 
 function getEquipmentsAndRowsTable() {
-  api.equipments.fetchEquipments()
+  api.equipments
+    .fetchEquipments()
     .then(data => {
       equipments.value = [...data];
       filteredEquipments.value = [...data];
@@ -122,7 +121,8 @@ function getEquipmentsAndRowsTable() {
 
 function deleteEquipmentClick() {
   if (currentEquipment.value) {
-    api.equipments.deleteEquipment(currentEquipment.value._id)
+    api.equipments
+      .deleteEquipment(currentEquipment.value._id)
       .then(data => {
         equipments.value = equipments.value.map(equipment => {
           if (equipment._id === data._id) {
@@ -167,8 +167,9 @@ function handleXLSXAdd(file: File) {
     const sheet = xlsxData.Sheets[firstSheetName];
     const result = xlsx.utils.sheet_to_json(sheet);
 
-     // @ts-ignore-next-line
-     api.equipments.createEquipments(result)
+    // @ts-ignore-next-line
+    api.equipments
+      .createEquipments(result)
       .then(data => {
         equipments.value.push(...data);
         filteredEquipments.value = [...equipments.value];
@@ -177,7 +178,7 @@ function handleXLSXAdd(file: File) {
       .catch(error => {
         console.log('error >>>', error);
       });
-  }
+  };
 
   reader.readAsArrayBuffer(file);
 }
@@ -188,7 +189,8 @@ const searchTextWatcher = debounce(() => {
   if (searchText.value.length > 3) {
     equipmentsBackup.value = [...equipments.value];
 
-    api.equipments.searchEquipment({ searchText: searchText.value })
+    api.equipments
+      .searchEquipment({ searchText: searchText.value })
       .then(data => {
         equipments.value = [...data];
         filteredEquipments.value = [...data];
@@ -209,10 +211,9 @@ watch(searchText, searchTextWatcher);
 onMounted(() => {
   getEquipmentsAndRowsTable();
 
-  api.branches.fetchBranches()
-    .then(data => {
-      branches.value = [...data];
-    });
+  api.branches.fetchBranches().then(data => {
+    branches.value = [...data];
+  });
 });
 
 onBeforeUnmount(() => {

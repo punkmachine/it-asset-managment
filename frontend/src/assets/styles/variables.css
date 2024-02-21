@@ -1,18 +1,18 @@
 :root {
   /* Задний фон */
   --bg-main: #fff;
-  --bg-secondary: #EEF2F7;
+  --bg-secondary: #eef2f7;
   --bg-hover-main: #f2f2f2;
 
   /* Текста */
   --text-main: #334155;
-  --text-secondary: #9EA6B4;
+  --text-secondary: #9ea6b4;
   --text-white: #fff;
 
   /* Бордеры */
   --border-standard: #e7ebee;
-  --border-secondary: #9EA6B4;
-  --border-input: #DADFE5;
+  --border-secondary: #9ea6b4;
+  --border-input: #dadfe5;
   --outline-input: #082f49;
 
   /* Ссылки */
@@ -20,8 +20,8 @@
   --link-hover-color: #3730a3;
 
   /* Кнопки */
-  --main-accent: #4CAF50;
-  --secondary-accent: #218D1F;
+  --main-accent: #4caf50;
+  --secondary-accent: #218d1f;
   --main-red: #ef4444;
   --main-red-hover: #dc2626;
   --main-secondary: #9ca3af;

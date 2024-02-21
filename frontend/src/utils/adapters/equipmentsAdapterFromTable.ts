@@ -7,7 +7,7 @@ function getReadableState(key: EquipmentState | 'default') {
   const dict = {
     ACTIVE: 'Активен',
     DELETED: 'Заблокирован',
-    default: '...'
+    default: '...',
   };
 
   return dict[key] ? dict[key] : dict.default;
@@ -29,7 +29,7 @@ function equipmentsAdapterFromTable(equipments: IEquipment[]): IEquipmentInTable
       financiallyResponsiblePerson: `${financiallyResponsiblePerson.firstName} ${financiallyResponsiblePerson.lastName}`,
       state: getReadableState(equipment.state),
       branch: branch.title,
-    }
+    };
   });
 }
 

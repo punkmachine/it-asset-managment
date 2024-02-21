@@ -3,7 +3,7 @@ export enum TimeFormatDict {
   FullTime = 'fullTime',
   FullDateLongMonth = 'fullDateLongMonth',
   FullDateNumeric = 'fullDateNumeric',
-};
+}
 
 export const TimeFormats = {
   [TimeFormatDict.StandardTime]: {
@@ -16,23 +16,21 @@ export const TimeFormats = {
     second: 'numeric',
   },
   [TimeFormatDict.FullDateLongMonth]: {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   },
   [TimeFormatDict.FullDateNumeric]: {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
   },
 } as const;
 
 function getFormatDate(date: string, format: TimeFormatDict) {
   const result = new Date(date);
 
-  return new Intl.DateTimeFormat("ru-RU", TimeFormats[format]).format(result);
+  return new Intl.DateTimeFormat('ru-RU', TimeFormats[format]).format(result);
 }
 
-export {
-  getFormatDate,
-};
+export { getFormatDate };

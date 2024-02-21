@@ -8,7 +8,7 @@
       <div
         class="modal__container"
         :class="{
-          'modal__container--with-columns': doubleColumns
+          'modal__container--with-columns': doubleColumns,
         }"
         @click.stop
       >
@@ -29,7 +29,7 @@ import { ref, defineExpose, defineProps } from 'vue';
 import type { Ref } from 'vue';
 
 interface IProps {
-  doubleColumns?: boolean,
+  doubleColumns?: boolean;
 }
 
 const props = defineProps<IProps>();
@@ -45,7 +45,8 @@ function hide(): void {
 }
 
 defineExpose({
-  show, hide
+  show,
+  hide,
 });
 </script>
 

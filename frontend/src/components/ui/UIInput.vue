@@ -32,15 +32,15 @@ import inputs from '@/assets/icons/sprites/inputs.svg';
 import { defineProps, defineEmits } from 'vue';
 
 interface IProps {
-  label: string,
-  modelValue: string,
-  preIcon?: string,
-  postIcon?: string,
-};
+  label: string;
+  modelValue: string;
+  preIcon?: string;
+  postIcon?: string;
+}
 
 interface IEmits {
-  (e: 'update:modelValue', newValue: string): void,
-};
+  (e: 'update:modelValue', newValue: string): void;
+}
 
 const props = defineProps<IProps>();
 const emits = defineEmits<IEmits>();

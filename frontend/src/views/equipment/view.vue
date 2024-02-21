@@ -2,7 +2,7 @@
   <div class="equipment">
     <div class="equipment-col w-6/10">
       <div class="equipment__card">
-        <div class="flex justify-between items-center pb-2 px-4">
+        <div class="flex items-center justify-between px-4 pb-2">
           <h2 class="equipment__card-header">Данные</h2>
 
           <button
@@ -14,7 +14,10 @@
         </div>
         <div class="equipment__card-divider"></div>
 
-        <div v-if="equipment" class="equipment__data">
+        <div
+          v-if="equipment"
+          class="equipment__data"
+        >
           <div
             v-for="(item, index) in dataItems"
             :key="index"
@@ -29,10 +32,13 @@
 
     <div class="equipment-col w-4/10">
       <div class="equipment__card">
-        <h2 class="equipment__card-header pb-2 px-4">История</h2>
+        <h2 class="equipment__card-header px-4 pb-2">История</h2>
         <div class="equipment__card-divider"></div>
 
-        <div v-if="equipment" class="equipment__history">
+        <div
+          v-if="equipment"
+          class="equipment__history"
+        >
           <div
             v-for="historyItem in history"
             :key="`h${historyItem}`"
@@ -46,9 +52,12 @@
       </div>
 
       <div class="equipment__card mt-6">
-        <h2 class="equipment__card-header pb-2 px-4">Комментарии</h2>
+        <h2 class="equipment__card-header px-4 pb-2">Комментарии</h2>
         <div class="equipment__card-divider"></div>
-        <div v-if="equipment" class="equipment__comments">
+        <div
+          v-if="equipment"
+          class="equipment__comments"
+        >
           <div
             v-for="(comment, index) in equipment.comments"
             :key="`comment-${index}`"
@@ -59,7 +68,7 @@
               alt=""
               aria-hidden
               class="equipment__comment-icon"
-            >
+            />
             <span>{{ comment }}</span>
           </div>
         </div>
@@ -86,9 +95,7 @@
     <UIModal ref="updateRecipientModal">
       <template #body>
         <div class="pb-3">
-          <p class="font-bold text-lg text-center">
-            Назначение получателя
-          </p>
+          <p class="text-center text-lg font-bold">Назначение получателя</p>
         </div>
 
         <UIInput
@@ -99,10 +106,16 @@
 
       <template #footer>
         <div class="flex gap-2">
-          <button class="button button--gray" @click="updateRecipientModal?.hide">
+          <button
+            class="button button--gray"
+            @click="updateRecipientModal?.hide"
+          >
             Отмена
           </button>
-          <button class="button" @click="postNewRecipient">
+          <button
+            class="button"
+            @click="postNewRecipient"
+          >
             Добавить
           </button>
         </div>
@@ -148,7 +161,8 @@ let dataItems: Ref<IDataItem[]> = ref([]);
 
 function fetchEquipment() {
   // @ts-ignore-next-line
-  api.equipments.getEquipmentById(route.params.id)
+  api.equipments
+    .getEquipmentById(route.params.id)
     .then(data => {
       equipment.value = data;
       dataItems.value = generateDataItems(equipment.value);
@@ -160,7 +174,8 @@ function fetchEquipment() {
 
 function fetchHistory() {
   // @ts-ignore-next-line
-  api.equipments.getEquipmentsHistory(route.params.id)
+  api.equipments
+    .getEquipmentsHistory(route.params.id)
     .then(data => {
       history.value = data;
     })
@@ -172,7 +187,8 @@ function fetchHistory() {
 function addComment() {
   if (newComment.value) {
     // @ts-ignore-next-line
-    api.equipments.commentEquipment(route.params.id, { text: newComment.value, })
+    api.equipments
+      .commentEquipment(route.params.id, { text: newComment.value })
       .then(() => {
         fetchEquipment();
         newComment.value = '';
@@ -190,18 +206,20 @@ function updateRecipientClick() {
 function postNewRecipient() {
   if (newRecipient.value) {
     // @ts-ignore-next-line
-    api.equipments.updateEquipment(route.params.id, {
-      ...equipment.value,
-      recipient: newRecipient.value,
-    })
+    api.equipments
+      .updateEquipment(route.params.id, {
+        ...equipment.value,
+        recipient: newRecipient.value,
+      })
       .then(data => {
         equipment.value = data;
         dataItems.value = generateDataItems(equipment.value);
 
-        api.equipments.postEquipmentsHistory(equipment.value._id, {
-          passedOn: usersStore.currentUserId,
-          accepted: newRecipient.value,
-        })
+        api.equipments
+          .postEquipmentsHistory(equipment.value._id, {
+            passedOn: usersStore.currentUserId,
+            accepted: newRecipient.value,
+          })
           .then(fetchHistory)
           .catch(error => {
             console.log('error >>>', error);

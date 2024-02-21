@@ -1,6 +1,9 @@
 <template>
   <HeadPage title="Список оборудования">
-    <button class="button button--gray" @click="importElements">
+    <button
+      class="button button--gray"
+      @click="importElements"
+    >
       <svg class="button__icon">
         <use xlink:href="@/assets/icons/sprites/buttons.svg#upload"></use>
       </svg>
@@ -12,7 +15,7 @@
       type="file"
       class="hidden"
       @change="handleFileChanged"
-    >
+    />
 
     <!-- @todo -->
     <!-- <button class="button" @click="$emit('addEquipment')">
@@ -32,8 +35,8 @@ import type { Ref } from 'vue';
 import HeadPage from '@/components/HeadPage.vue';
 
 interface IEmits {
-  (e: 'addEquipment'): void,
-  (e: 'addEquipmentsXLSX', file: File): void,
+  (e: 'addEquipment'): void;
+  (e: 'addEquipmentsXLSX', file: File): void;
 }
 
 const emit = defineEmits<IEmits>();

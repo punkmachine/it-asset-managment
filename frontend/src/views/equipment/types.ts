@@ -1,4 +1,4 @@
 export interface IDataItem {
-  title: string,
-  value: string,
-};
+  title: string;
+  value: string;
+}

@@ -12,7 +12,7 @@ const client = axios.create({
   },
 });
 
-function requestSuccess(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig  {
+function requestSuccess(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
   const token = Cookies.get('token');
   if (token) {
     if (!config.headers) {

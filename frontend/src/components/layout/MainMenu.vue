@@ -8,9 +8,7 @@
         <svg class="main-menu__item-icon">
           <use xlink:href="@/assets/icons/sprites/main-menu.svg#equipments"></use>
         </svg>
-        <span class="main-menu__item-text">
-          Оборудование
-        </span>
+        <span class="main-menu__item-text">Оборудование</span>
       </RouterLink>
       <RouterLink
         to="/branches"
@@ -19,9 +17,7 @@
         <svg class="main-menu__item-icon">
           <use xlink:href="@/assets/icons/sprites/main-menu.svg#branches"></use>
         </svg>
-        <span class="main-menu__item-text">
-          Филиалы
-        </span>
+        <span class="main-menu__item-text">Филиалы</span>
       </RouterLink>
       <RouterLink
         to="/users"
@@ -30,9 +26,7 @@
         <svg class="main-menu__item-icon">
           <use xlink:href="@/assets/icons/sprites/main-menu.svg#users"></use>
         </svg>
-        <span class="main-menu__item-text">
-          Админы
-        </span>
+        <span class="main-menu__item-text">Админы</span>
       </RouterLink>
       <!-- <RouterLink
         to="/equipment-settings"

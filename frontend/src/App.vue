@@ -13,5 +13,4 @@ import MainLayout from '@/layouts/MainLayout.vue';
 import EmptyLayout from '@/layouts/EmptyLayout.vue';
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

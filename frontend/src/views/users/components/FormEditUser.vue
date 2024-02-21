@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-3 w-full">
+  <div class="flex w-full flex-col gap-3">
     <UIInput
       label="Имя"
       v-model="user.firstName"
@@ -23,11 +23,11 @@ import type { Ref } from 'vue';
 import UIInput from '@/components/ui/UIInput.vue';
 
 interface IProps {
-  editedUser: IUser,
-};
+  editedUser: IUser;
+}
 
 interface IEmits {
-  (e: 'editUser', user: IUser): void,
+  (e: 'editUser', user: IUser): void;
 }
 
 const props = defineProps<IProps>();
@@ -35,7 +35,7 @@ const emit = defineEmits<IEmits>();
 
 const user: Ref<IUser> = ref(props.editedUser);
 
-watch(user.value, (newUser) => {
+watch(user.value, newUser => {
   emit('editUser', newUser);
 });
 </script>

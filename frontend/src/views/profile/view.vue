@@ -10,7 +10,10 @@
       </div>
 
       <div class="profile__data">
-        <div v-if="localUserData" class="flex flex-col gap-2">
+        <div
+          v-if="localUserData"
+          class="flex flex-col gap-2"
+        >
           <UIInput
             v-model="localUserData.firstName"
             label="Имя:"
@@ -77,7 +80,8 @@ function saveNewUserData() {
       role: localUserData.value.role,
     };
 
-    api.users.updateUser(localUserData.value._id, payload)
+    api.users
+      .updateUser(localUserData.value._id, payload)
       .then(() => {
         userStore.fetchCurrentUser();
       })

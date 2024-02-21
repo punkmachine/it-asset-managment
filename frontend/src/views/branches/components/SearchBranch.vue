@@ -9,8 +9,8 @@ import { defineEmits } from 'vue';
 import UISearch from '@/components/ui/UISearch.vue';
 
 interface IEmits {
-  (e: 'searchInput', searchText: string): void,
-};
+  (e: 'searchInput', searchText: string): void;
+}
 
 const emits = defineEmits<IEmits>();
 

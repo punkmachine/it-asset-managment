@@ -17,8 +17,8 @@ import { ref, watch, defineEmits } from 'vue';
 import type { Ref } from 'vue';
 
 interface IEmits {
-  (e: 'searchInput', searchText: string): void,
-};
+  (e: 'searchInput', searchText: string): void;
+}
 
 const search: Ref<string> = ref('');
 
