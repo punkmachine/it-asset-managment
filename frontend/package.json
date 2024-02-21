@@ -19,6 +19,7 @@
     "debounce": "^1.2.1",
     "js-cookie": "^3.0.5",
     "pinia": "^2.1.7",
+    "prettier-plugin-tailwindcss": "^0.5.11",
     "vue": "^3.3.7",
     "vue-i18n": "^9.5.0",
     "vue-router": "^4.2.4",
