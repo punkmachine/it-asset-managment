@@ -87,7 +87,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 
 import type { Ref } from 'vue';
 import type { IColumn, TRows } from '@/entities/types/UI/table';

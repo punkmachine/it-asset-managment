@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import * as xlsx from 'xlsx';
 
 import type { Ref } from 'vue';

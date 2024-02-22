@@ -84,7 +84,7 @@
 
 <script lang="ts" setup>
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 
 import type { Ref } from 'vue';
 import type { IBranch } from '@/entities/types/backend/response/branches';
