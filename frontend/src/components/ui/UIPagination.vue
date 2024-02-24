@@ -13,6 +13,7 @@
         </svg>
       </button>
     </div>
+
     <div class="pagination__counter">
       <span
         v-for="number in pagesCount"
@@ -26,6 +27,7 @@
         {{ number }}
       </span>
     </div>
+
     <div
       class="pagination__arrow"
       :class="{
@@ -39,6 +41,7 @@
         </svg>
       </button>
     </div>
+
     <div>
       <select
         v-if="visibleSelect"

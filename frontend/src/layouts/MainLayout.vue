@@ -16,11 +16,6 @@ import MainMenu from '@/components/layout/MainMenu.vue';
 </script>
 
 <style scoped>
-.layout {
-  --header-height: 64px;
-  --menu-width: 128px;
-}
-
 main {
   background-color: var(--bg-secondary);
   width: 100%;

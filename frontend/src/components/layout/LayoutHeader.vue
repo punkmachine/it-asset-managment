@@ -31,8 +31,9 @@
           <RouterLink
             to="/profile"
             class="account__menu-item"
-            >Профиль</RouterLink
           >
+            Профиль
+          </RouterLink>
           <div class="account__menu-item">
             <button>Выйти</button>
           </div>

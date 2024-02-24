@@ -222,11 +222,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.equipments {
-  /* 100vh - header height - search section - .equipments__head */
-  --height-table-wrapper: calc(100vh - var(--header-height) - 74px - 72px);
-}
-
 .equipments__content {
   background-color: var(--bg-main);
 }
@@ -238,5 +233,9 @@ onBeforeUnmount(() => {
   min-height: var(--height-table-wrapper);
   max-height: var(--height-table-wrapper);
   max-width: calc(100vw - var(--menu-width));
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding-bottom: 16px;
 }
 </style>

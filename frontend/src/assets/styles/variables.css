@@ -29,4 +29,9 @@
 
   /* Тени */
   --shadow-standard: 0 6px 12px #11183826, 0 0 1px #00000040;
+
+  /* Размеры */
+  --header-height: 64px;
+  --menu-width: 128px;
+  --height-table-wrapper: calc(100vh - var(--header-height) - 74px - 72px);
 }

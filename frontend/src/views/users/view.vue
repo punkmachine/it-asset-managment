@@ -17,7 +17,7 @@
           @delete="handleDelete"
         />
 
-        <div class="mr-5 mt-5 flex justify-end">
+        <div class="mr-5 mt-5 flex justify-end ">
           <UIPagination
             v-model:current-page="currentPage"
             v-model:visible-items="visibleTableItems"
@@ -274,11 +274,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.users {
-  /* 100vh - header height - search section - .users__head */
-  --height-table-wrapper: calc(100vh - var(--header-height) - 74px - 72px);
-}
-
 .users__content {
   background-color: var(--bg-main);
 }
@@ -290,5 +285,9 @@ onBeforeUnmount(() => {
   min-height: var(--height-table-wrapper);
   max-height: var(--height-table-wrapper);
   max-width: calc(100vw - var(--menu-width));
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  padding-bottom: 16px;
 }
 </style>
