@@ -1,5 +1,4 @@
 import Equipment from '../models/equipment.js';
-import User from '../models/user.js';
 
 class EquipmentsController {
 	async getAll(request, response) {
@@ -32,11 +31,13 @@ class EquipmentsController {
         }
       });
 
-      const savedEquipments = await Equipment.create(preSavedEquipments)
-        // .populate('branch')
-        // .populate('financiallyResponsiblePerson');
+      const savedEquipments = await Equipment.create(preSavedEquipments);
+      const ids = savedEquipments.map(equipment => equipment._id);
+      const populateSavedEquipments = await Equipment.find({ _id: { $in: ids } })
+        .populate('branch')
+        .populate('financiallyResponsiblePerson');
 
-      response.status(200).json(savedEquipments);
+      response.status(200).json(populateSavedEquipments);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
