@@ -33,7 +33,8 @@ class EquipmentsController {
       });
 
       const savedEquipments = await Equipment.create(preSavedEquipments)
-        .populate('branch').populate('financiallyResponsiblePerson');
+        // .populate('branch')
+        // .populate('financiallyResponsiblePerson');
 
       response.status(200).json(savedEquipments);
 		} catch (error) {
@@ -140,19 +141,21 @@ class EquipmentsController {
 
       const searchRegex = new RegExp(searchText, 'i');
 
-      const equipments = await Equipment.find({
-        $or: [
-          { assetNumber: { $regex: searchRegex } },
-          // { inventoryNumber: { $regex: searchRegex } },
-          // { name: { $regex: searchRegex } },
-          // { description: { $regex: searchRegex } },
-          // { inventoryNumber: { $regex: searchRegex } },
-          // { financiallyResponsiblePerson: { $regex: searchRegex } },
-          // { recipient: { $regex: searchRegex } },
-          // { invoiceNumber: { $regex: searchRegex } },
-          // { serialNumber: { $regex: searchRegex } },
-        ],
-      });
+      const equipments = await Equipment
+        .find({
+          $or: [
+            { assetNumber: { $regex: searchRegex } },
+            { inventoryNumber: { $regex: searchRegex } },
+            { name: { $regex: searchRegex } },
+            { description: { $regex: searchRegex } },
+            { inventoryNumber: { $regex: searchRegex } },
+            // { financiallyResponsiblePerson: { $regex: searchRegex } },
+            { recipient: { $regex: searchRegex } },
+            { invoiceNumber: { $regex: searchRegex } },
+            { serialNumber: { $regex: searchRegex } },
+          ],
+        })
+        .populate('financiallyResponsiblePerson').populate('branch');
 
       response.status(200).json(equipments);
 		} catch (error) {
