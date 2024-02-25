@@ -148,6 +148,24 @@ function handleAdd() {
   handleModalWrapper(addModal, null);
 }
 
+function changeTargetBranch(data: IBranch) {
+  branches.value = branches.value.map(branch => {
+    if (branch._id === data._id) {
+      return {
+        ...data,
+      };
+    }
+
+    return branch;
+  });
+}
+
+function setNewDataBranch() {
+  filteredBranches.value = [...branches.value];
+  rows.value = getTableRows(filteredBranches.value);
+  currentBranch.value = null;
+}
+
 function getBranchesAndRowsTable() {
   api.branches
     .fetchBranches()
@@ -156,9 +174,6 @@ function getBranchesAndRowsTable() {
       filteredBranches.value = [...data];
       rows.value = getTableRows(filteredBranches.value);
     })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
 }
 
 function deleteBranchClick() {
@@ -166,25 +181,10 @@ function deleteBranchClick() {
     api.branches
       .deleteBranch(currentBranch.value._id)
       .then(data => {
-        branches.value = branches.value.map(branch => {
-          if (branch._id === data._id) {
-            return {
-              ...data,
-            };
-          }
-
-          return branch;
-        });
-
-        filteredBranches.value = [...branches.value];
-        rows.value = getTableRows(filteredBranches.value);
-
+        changeTargetBranch(data);
         deleteModal.value?.hide();
-        currentBranch.value = null;
+        setNewDataBranch();
       })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
   }
 }
 
@@ -193,25 +193,10 @@ function saveEditBranchClick() {
     api.branches
       .updateBranch(currentBranch.value._id, currentBranch.value)
       .then(data => {
-        branches.value = branches.value.map(branch => {
-          if (branch._id === data._id) {
-            return {
-              ...data,
-            };
-          }
-
-          return branch;
-        });
-
-        filteredBranches.value = [...branches.value];
-        rows.value = getTableRows(filteredBranches.value);
-
+        changeTargetBranch(data);
         editModal.value?.hide();
-        currentBranch.value = null;
+        setNewDataBranch();
       })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
   }
 }
 
@@ -220,15 +205,12 @@ function saveAddBranchClick() {
     api.branches
       .createBranch(newBranch.value)
       .then(data => {
-        branches.value = [...branches.value, data];
+        branches.value.push(data);
         rows.value = getTableRows(branches.value);
         newBranch.value = { ...initialBranch };
 
         addModal.value?.hide();
       })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
   }
 }
 
@@ -248,9 +230,6 @@ function requestSearch() {
       filteredBranches.value = [...data];
       rows.value = getTableRows(filteredBranches.value);
     })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
 }
 
 function clearSearch() {

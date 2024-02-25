@@ -67,6 +67,7 @@ import { columnsSettings } from '@/views/equipments/settings';
 import { api } from '@/api';
 
 const router = useRouter();
+
 const { searchText, setSearchText: searchEquipment } = useSearch(requestSearch, clearSearch);
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
@@ -106,17 +107,31 @@ function handleAdd() {
   router.push('/new-equipment');
 }
 
-function getEquipmentsAndRowsTable() {
+function setInitialData(data: IEquipment[], rewriteBaseList: boolean = true) {
+  if (rewriteBaseList) {
+    equipments.value = [...data];
+  }
+
+  filteredEquipments.value = [...data];
+  rows.value = getTableRows(filteredEquipments.value);
+}
+
+function getEquipmentsRowsTable() {
   api.equipments
     .fetchEquipments()
-    .then(data => {
-      equipments.value = [...data];
-      filteredEquipments.value = [...data];
-      rows.value = getTableRows(filteredEquipments.value);
-    })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
+    .then(setInitialData)
+}
+
+function updateTargetEquipment(data: IEquipment) {
+  equipments.value = equipments.value.map(equipment => {
+    if (equipment._id === data._id) {
+      return {
+        ...data,
+      };
+    }
+
+    return equipment;
+  });
 }
 
 function deleteEquipmentClick() {
@@ -124,24 +139,12 @@ function deleteEquipmentClick() {
     api.equipments
       .deleteEquipment(currentEquipment.value._id)
       .then(data => {
-        equipments.value = equipments.value.map(equipment => {
-          if (equipment._id === data._id) {
-            return {
-              ...data,
-            };
-          }
-
-          return equipment;
-        });
-        filteredEquipments.value = [...equipments.value];
-        rows.value = getTableRows(filteredEquipments.value);
-
+        updateTargetEquipment(data);
+        setInitialData(equipments.value, false);
         currentEquipment.value = null;
+
         deleteModal.value?.hide();
       })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
   }
 }
 
@@ -164,9 +167,6 @@ function handleXLSXAdd(file: File) {
       filteredEquipments.value = [...equipments.value];
       rows.value = getTableRows(filteredEquipments.value);
     })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
 }
 
 function requestSearch() {
@@ -174,24 +174,15 @@ function requestSearch() {
 
   api.equipments
     .searchEquipment({ searchText: searchText.value })
-    .then(data => {
-      equipments.value = [...data];
-      filteredEquipments.value = [...data];
-      rows.value = getTableRows(filteredEquipments.value);
-    })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
+    .then(setInitialData)
 }
 
 function clearSearch() {
-  equipments.value = [...equipmentsBackup.value];
-  filteredEquipments.value = [...equipmentsBackup.value];
-  rows.value = getTableRows(filteredEquipments.value);
+  setInitialData(equipmentsBackup.value)
 }
 
 onMounted(() => {
-  getEquipmentsAndRowsTable();
+  getEquipmentsRowsTable();
 
   api.branches.fetchBranches().then(data => {
     branches.value = [...data];

@@ -157,32 +157,36 @@ function handleAdd() {
   handleModalWrapper(addModal, null);
 }
 
+function changeTargetUser(data: IUser) {
+  currentUser.value = null;
+  users.value = users.value.map(user => {
+    if (user._id === data._id) {
+      return {
+        ...data,
+      };
+    }
+
+    return user;
+  });
+}
+
+function setInitialData(data: IUser[]) {
+  users.value = [...data];
+  filteredUsers.value = [...data];
+  rows.value = getTableRows(filteredUsers.value);
+}
+
 function getUsersAndRowsTable() {
   api.users
     .fetchUsers()
-    .then(data => {
-      users.value = [...data];
-      filteredUsers.value = [...data];
-      rows.value = getTableRows(filteredUsers.value);
-    })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
+    .then(setInitialData)
 }
 
 function deleteUserClick() {
   if (currentUser.value) {
-    api.users.deleteUser(currentUser.value._id).then(blockedUser => {
-      currentUser.value = null;
-      users.value = users.value.map(user => {
-        if (user._id === blockedUser._id) {
-          return {
-            ...blockedUser,
-          };
-        }
-
-        return user;
-      });
+    api.users.deleteUser(currentUser.value._id)
+    .then(blockedUser => {
+      changeTargetUser(blockedUser);
       deleteModal.value?.hide();
     });
   }
@@ -193,41 +197,29 @@ function saveEditUserClick() {
     api.users
       .updateUser(currentUser.value._id, currentUser.value)
       .then(data => {
-        users.value = users.value.map(user => {
-          if (user._id === data._id) {
-            return { ...data };
-          }
-
-          return user;
-        });
-
+        changeTargetUser(data);
         rows.value = getTableRows(users.value);
+
         editModal.value?.hide();
       })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
   }
 }
 
-function saveAddUserClick() {
-  const validate = newUser.value.firstName && newUser.value.lastName && newUser.value.login && newUser.value.password;
+function newUserDataIsValid() {
+  return newUser.value.firstName && newUser.value.lastName && newUser.value.login && newUser.value.password;
+}
 
-  if (validate) {
+function saveAddUserClick() {
+  if (newUserDataIsValid()) {
     api.users
       .createUser(newUser.value)
       .then(data => {
-        users.value = [...users.value, data];
-
+        users.value.push(data);
         rows.value = getTableRows(users.value);
-
         newUser.value = { ...initialUser };
 
         addModal.value?.hide();
       })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
   }
 }
 
@@ -242,20 +234,11 @@ function requestSearch() {
 
   api.users
     .searchUser({ searchText: searchText.value })
-    .then(data => {
-      users.value = [...data];
-      filteredUsers.value = [...data];
-      rows.value = getTableRows(filteredUsers.value);
-    })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
+    .then(setInitialData)
 }
 
 function clearSearch() {
-  users.value = [...backupUsers.value];
-  filteredUsers.value = [...backupUsers.value];
-  rows.value = getTableRows(filteredUsers.value);
+  setInitialData(backupUsers.value);
 }
 
 onMounted(() => {

@@ -69,25 +69,29 @@ function goBackupData() {
   localUserData.value = backupUserData;
 }
 
+function getNewUserPayload() {
+  if (!localUserData.value) return;
+
+  return {
+    firstName: localUserData.value.firstName,
+    lastName: localUserData.value.lastName,
+    login: localUserData.value.login,
+    password: localUserData.value.password,
+    state: localUserData.value.state,
+    role: localUserData.value.role,
+  };
+}
+
 function saveNewUserData() {
   if (localUserData.value) {
-    const payload = {
-      firstName: localUserData.value.firstName,
-      lastName: localUserData.value.lastName,
-      login: localUserData.value.login,
-      password: localUserData.value.password,
-      state: localUserData.value.state,
-      role: localUserData.value.role,
-    };
+    const payload = getNewUserPayload();
 
     api.users
+      // @ts-ignore-next-line
       .updateUser(localUserData.value._id, payload)
       .then(() => {
         userStore.fetchCurrentUser();
       })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
   }
 }
 

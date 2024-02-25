@@ -18,9 +18,6 @@ export const useUsersStore = defineStore('users', () => {
         .then(data => {
           currentUser.value = data;
         })
-        .catch(error => {
-          console.log('error >>>', error);
-        });
     }
   }
 

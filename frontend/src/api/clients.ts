@@ -36,6 +36,7 @@ function responseError(error: AxiosError): Promise<never> {
     router.push('/login');
   }
 
+  console.error('error >>>', error);
   return Promise.reject(error);
 }
 

@@ -47,6 +47,7 @@ import { useRouter } from 'vue-router';
 import Cookies from 'js-cookie';
 
 import type { Ref } from 'vue';
+import type { ILoginResponse } from '@/entities/types/backend/response/auth';
 
 import { api } from '@/api';
 import { useUsersStore } from '@/store';
@@ -54,11 +55,17 @@ import { useUsersStore } from '@/store';
 import UIInput from '@/components/ui/UIInput.vue';
 
 const router = useRouter();
-
 const usersStore = useUsersStore();
 
 const login: Ref<string> = ref('');
 const password: Ref<string> = ref('');
+
+function successAuth(data: ILoginResponse) {
+  Cookies.set('token', data.token);
+  usersStore.setCurrentUserId(data.userId);
+  usersStore.fetchCurrentUser();
+  router.push('/');
+}
 
 function authorization() {
   const payload = {
@@ -68,15 +75,7 @@ function authorization() {
 
   api.auth
     .login(payload)
-    .then(data => {
-      Cookies.set('token', data.token);
-      usersStore.setCurrentUserId(data.userId);
-      usersStore.fetchCurrentUser();
-      router.push('/');
-    })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
+    .then(successAuth)
 }
 
 function createSuperAdmin() {
@@ -87,15 +86,7 @@ function createSuperAdmin() {
 
   api.auth
     .createSuperAdmin(payload)
-    .then(data => {
-      Cookies.set('token', data.token);
-      usersStore.setCurrentUserId(data.userId);
-      usersStore.fetchCurrentUser();
-      router.push('/');
-    })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
+    .then(successAuth)
 }
 </script>
 
