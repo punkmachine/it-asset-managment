@@ -43,9 +43,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import debounce from 'debounce';
 
 import type { Ref } from 'vue';
 import type { IEquipment } from '@/entities/types/backend/response/equipment';
@@ -62,11 +61,14 @@ import DeleteModalFooter from '@/views/equipments/components/DeleteModalFooter.v
 import { getTableRows } from '@/utils/adapters/equipmentsAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
+import { useSearch } from '@/vue-features/composables/useSearch';
 
 import { columnsSettings } from '@/views/equipments/settings';
 import { api } from '@/api';
 
 const router = useRouter();
+const { searchText, setSearchText: searchEquipment } = useSearch(requestSearch, clearSearch);
+const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
@@ -74,7 +76,6 @@ const currentEquipment: Ref<IEquipment | null> = ref(null);
 const equipments: Ref<IEquipment[]> = ref([]);
 const equipmentsBackup: Ref<IEquipment[]> = ref([]);
 const filteredEquipments: Ref<IEquipment[]> = ref([]);
-const searchText: Ref<string> = ref('');
 const branches: Ref<IBranch[]> = ref([]);
 const currentPage: Ref<number> = ref(1);
 const visibleTableItems: Ref<number> = ref(10);
@@ -148,10 +149,6 @@ function keyDownEscape() {
   deleteModal.value?.hide();
 }
 
-function searchEquipment(text: string) {
-  searchText.value = text;
-}
-
 function goDetailEquipment(id: string) {
   router.push(`/equipment/${id}`);
 }
@@ -172,30 +169,26 @@ function handleXLSXAdd(file: File) {
     });
 }
 
-const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
+function requestSearch() {
+  equipmentsBackup.value = [...equipments.value];
 
-const searchTextWatcher = debounce(() => {
-  if (searchText.value.length > 3) {
-    equipmentsBackup.value = [...equipments.value];
+  api.equipments
+    .searchEquipment({ searchText: searchText.value })
+    .then(data => {
+      equipments.value = [...data];
+      filteredEquipments.value = [...data];
+      rows.value = getTableRows(filteredEquipments.value);
+    })
+    .catch(error => {
+      console.log('error >>>', error);
+    });
+}
 
-    api.equipments
-      .searchEquipment({ searchText: searchText.value })
-      .then(data => {
-        equipments.value = [...data];
-        filteredEquipments.value = [...data];
-        rows.value = getTableRows(filteredEquipments.value);
-      })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
-  } else {
-    equipments.value = [...equipmentsBackup.value];
-    filteredEquipments.value = [...equipmentsBackup.value];
-    rows.value = getTableRows(filteredEquipments.value);
-  }
-}, 1000);
-
-watch(searchText, searchTextWatcher);
+function clearSearch() {
+  equipments.value = [...equipmentsBackup.value];
+  filteredEquipments.value = [...equipmentsBackup.value];
+  rows.value = getTableRows(filteredEquipments.value);
+}
 
 onMounted(() => {
   getEquipmentsAndRowsTable();

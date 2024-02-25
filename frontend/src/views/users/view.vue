@@ -86,8 +86,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import debounce from 'debounce';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 import type { Ref } from 'vue';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
@@ -109,8 +108,12 @@ import { api } from '@/api';
 import { getTableRows } from '@/utils/adapters/usersAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
+import { useSearch } from '@/vue-features/composables/useSearch';
 
 import { columnsSettings, initialUser } from './settings';
+
+const { searchText, setSearchText: searchUser } = useSearch(requestSearch, clearSearch);
+const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
@@ -121,7 +124,6 @@ const users: Ref<IUser[]> = ref([]);
 const backupUsers: Ref<IUser[]> = ref([]);
 const filteredUsers: Ref<IUser[]> = ref([]);
 const newUser: Ref<INewUser> = ref({ ...initialUser });
-const searchText: Ref<string> = ref('');
 const currentPage: Ref<number> = ref(1);
 const visibleTableItems: Ref<number> = ref(10);
 
@@ -235,34 +237,26 @@ function keyDownEscape() {
   addModal.value?.hide();
 }
 
-function searchUser(text: string) {
-  searchText.value = text;
+function requestSearch() {
+  backupUsers.value = [...users.value];
+
+  api.users
+    .searchUser({ searchText: searchText.value })
+    .then(data => {
+      users.value = [...data];
+      filteredUsers.value = [...data];
+      rows.value = getTableRows(filteredUsers.value);
+    })
+    .catch(error => {
+      console.log('error >>>', error);
+    });
 }
 
-const searchTextWatcher = debounce(() => {
-  if (searchText.value.length > 3) {
-    backupUsers.value = [...users.value];
-
-    api.users
-      .searchUser({ searchText: searchText.value })
-      .then(data => {
-        users.value = [...data];
-        filteredUsers.value = [...data];
-        rows.value = getTableRows(filteredUsers.value);
-      })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
-  } else {
-    users.value = [...backupUsers.value];
-    filteredUsers.value = [...backupUsers.value];
-    rows.value = getTableRows(filteredUsers.value);
-  }
-}, 500);
-
-const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
-
-watch(searchText, searchTextWatcher);
+function clearSearch() {
+  users.value = [...backupUsers.value];
+  filteredUsers.value = [...backupUsers.value];
+  rows.value = getTableRows(filteredUsers.value);
+}
 
 onMounted(() => {
   getUsersAndRowsTable();
