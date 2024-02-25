@@ -1,12 +1,6 @@
 import User from '../models/user.js';
 import { compareSync, hashSync } from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
-const generateAccessToken = (id, role) => {
-  const payload = { id, role };
-
-  return jwt.sign(payload, 'secret-key', { expiresIn: "24h" } )
-}
+import { generateAccessToken } from '../helpers/auth.js';
 
 class AuthController {
   async login(request, response) {
