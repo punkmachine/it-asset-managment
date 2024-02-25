@@ -26,65 +26,24 @@
         </div>
       </div>
 
-      <UIModal ref="deleteModal">
-        <template #body>Вы точно хотите удалить сотрудника "{{ currentBranch?.title }}"?</template>
-
-        <template #footer>
-          <DeleteModalFooter
-            @cancel="deleteModal?.hide()"
-            @delete="deleteBranchClick"
-          />
-        </template>
-      </UIModal>
-
-      <UIModal ref="editModal">
-        <template #body>
-          <h2 class="modal__title">Редактирование филиала "{{ currentBranch?.title }}"</h2>
-          <!--
-            @todo: костыль с currentBranch, потому что он технически может быть null,
-            но физически в этой форме ну реально никак, а TS ругается
-          -->
-          <form v-if="currentBranch">
-            <FormEditBranch
-              :edited-branch="currentBranch"
-              @edit-branch="newBranch => (currentBranch = newBranch)"
-            />
-          </form>
-        </template>
-
-        <template #footer>
-          <EditModalFooter
-            @cancel="editModal?.hide()"
-            @save="saveEditBranchClick"
-          />
-        </template>
-      </UIModal>
-
-      <UIModal ref="addModal">
-        <template #body>
-          <h2 class="modal__title">Создание филиала</h2>
-          <form>
-            <FormAddBranch
-              :added-branch="newBranch"
-              @updateAddedBranch="branch => (newBranch = branch)"
-            />
-          </form>
-        </template>
-
-        <template #footer>
-          <AddModalFooter
-            @cancel="addModal?.hide()"
-            @add="saveAddBranchClick"
-          />
-        </template>
-      </UIModal>
+      <BranchesModal
+        :current-branch="currentBranch"
+        :add-modal="addModal"
+        :delete-modal="deleteModal"
+        :edit-modal="editModal"
+        :new-branch="newBranch"
+        :save-add-branch-click="saveAddBranchClick"
+        :save-edit-branch-click="saveEditBranchClick"
+        :update-added-branch="branch => (newBranch = branch)"
+        :edit-branch="newBranch => (currentBranch = newBranch)"
+        :delete-branch-click="deleteBranchClick"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-import debounce from 'debounce';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 import type { Ref } from 'vue';
 import type { IBranch } from '@/entities/types/backend/response/branches';
@@ -96,18 +55,18 @@ import UITable from '@/components/ui/UITable.vue';
 import UIModal from '@/components/ui/UIModal.vue';
 import HeadBranchesPage from '@/views/branches/components/HeadBranchesPage.vue';
 import SearchBranch from '@/views/branches/components/SearchBranch.vue';
-import DeleteModalFooter from '@/views/branches/components/DeleteModalFooter.vue';
-import EditModalFooter from '@/views/branches/components/EditModalFooter.vue';
-import AddModalFooter from '@/views/branches/components/AddModalFooter.vue';
-import FormEditBranch from '@/views/branches/components/FormEditBranch.vue';
-import FormAddBranch from '@/views/branches/components/FormAddBranch.vue';
+import BranchesModal from './components/BranchesModal.vue';
 
 import { api } from '@/api';
 import { getTableRows } from '@/utils/adapters/branchesAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
+import { useSearch } from '@/vue-features/composables/useSearch';
 
 import { columnsSettings, initialBranch } from '@/views/branches/settings';
+
+const { searchText, setSearchText: searchBranch } = useSearch(requestSearch, clearSearch);
+const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
@@ -118,7 +77,6 @@ const backupBranches: Ref<IBranch[]> = ref([]);
 const branches: Ref<IBranch[]> = ref([]);
 const filteredBranches: Ref<IBranch[]> = ref([]);
 const newBranch: Ref<INewBranch> = ref({ ...initialBranch });
-const searchText: Ref<string> = ref('');
 const currentPage: Ref<number> = ref(1);
 const visibleTableItems: Ref<number> = ref(10);
 
@@ -205,6 +163,7 @@ function saveEditBranchClick() {
 
           return branch;
         });
+
         filteredBranches.value = [...branches.value];
         rows.value = getTableRows(filteredBranches.value);
 
@@ -223,7 +182,6 @@ function saveAddBranchClick() {
       .createBranch(newBranch.value)
       .then(data => {
         branches.value = [...branches.value, data];
-
         rows.value = getTableRows(branches.value);
         newBranch.value = { ...initialBranch };
 
@@ -241,34 +199,26 @@ function keyDownEscape() {
   addModal.value?.hide();
 }
 
-function searchBranch(text: string) {
-  searchText.value = text;
+function requestSearch() {
+  backupBranches.value = [...branches.value];
+
+  api.branches
+    .searchBranch({ searchText: searchText.value })
+    .then(data => {
+      branches.value = [...data];
+      filteredBranches.value = [...data];
+      rows.value = getTableRows(filteredBranches.value);
+    })
+    .catch(error => {
+      console.log('error >>>', error);
+    });
 }
 
-const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
-
-const searchTextWatcher = debounce(() => {
-  if (searchText.value.length > 3) {
-    backupBranches.value = [...branches.value];
-
-    api.branches
-      .searchBranch({ searchText: searchText.value })
-      .then(data => {
-        branches.value = [...data];
-        filteredBranches.value = [...data];
-        rows.value = getTableRows(filteredBranches.value);
-      })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
-  } else {
-    branches.value = [...backupBranches.value];
-    filteredBranches.value = [...backupBranches.value];
-    rows.value = getTableRows(filteredBranches.value);
-  }
-}, 500);
-
-watch(searchText, searchTextWatcher);
+function clearSearch() {
+  branches.value = [...backupBranches.value];
+  filteredBranches.value = [...backupBranches.value];
+  rows.value = getTableRows(filteredBranches.value);
+}
 
 onMounted(() => {
   getBranchesAndRowsTable();
