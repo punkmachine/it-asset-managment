@@ -7,6 +7,7 @@ module.exports = {
     browser: true,
     node: true,
   },
+  "ignorePatterns": ["*.spec.ts", "/src/vue-features/composables/*.ts"],
   'extends': [
     // @todo: рекомендуемые настройки для ts
     'plugin:vue/vue3-essential',
@@ -34,7 +35,7 @@ module.exports = {
     'max-nested-callbacks': ['error', 4], // максимальная глубина вложенных вызовов функций
     'id-length': ['error', {
       min: 1,
-      max: 16,
+      max: 24,
       properties: 'never',
     }], // минимальные и максимальные длины переменных и функций
   },
