@@ -52,7 +52,6 @@ import type { INewBranch } from './types';
 
 import UIPagination from '@/components/ui/UIPagination.vue';
 import UITable from '@/components/ui/UITable.vue';
-import UIModal from '@/components/ui/UIModal.vue';
 import HeadBranchesPage from '@/views/branches/components/HeadBranchesPage.vue';
 import SearchBranch from '@/views/branches/components/SearchBranch.vue';
 import BranchesModal from './components/BranchesModal.vue';
@@ -62,15 +61,13 @@ import { getTableRows } from '@/utils/adapters/branchesAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
 import { useSearch } from '@/vue-features/composables/useSearch';
+import { useCRUDModals } from '@/vue-features/composables/useCRUDModals';
 
 import { columnsSettings, initialBranch } from '@/views/branches/settings';
 
 const { searchText, setSearchText: searchBranch } = useSearch(requestSearch, clearSearch);
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
-
-const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
-const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
-const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+const { addModal, editModal, deleteModal, handleModalWrapper } = useCRUDModals(handleModalCallback);
 
 const currentBranch: Ref<IBranch | null> = ref(null);
 const backupBranches: Ref<IBranch[]> = ref([]);
@@ -87,14 +84,10 @@ function getCurrentBranchById(id: string): IBranch | null {
   return branches.value.find(branch => branch._id === id) ?? null;
 }
 
-function handleModalWrapper(modal: Ref<InstanceType<typeof UIModal> | null>, id: string | null): void {
+function handleModalCallback(id: string | null) {
   if (id) {
     currentBranch.value = getCurrentBranchById(id);
-  }
-
-  if (modal.value) {
     addEventEscape();
-    modal.value.show();
   }
 }
 
