@@ -46,7 +46,6 @@
 import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 import debounce from 'debounce';
-import * as xlsx from 'xlsx';
 
 import type { Ref } from 'vue';
 import type { IEquipment } from '@/entities/types/backend/response/equipment';
@@ -158,29 +157,19 @@ function goDetailEquipment(id: string) {
 }
 
 function handleXLSXAdd(file: File) {
-  const reader = new FileReader();
+  const formData = new FormData();
+  formData.append('file', file);
 
-  reader.onload = (event: ProgressEvent<FileReader>) => {
-    const data = new Uint8Array((event.target as FileReader).result as ArrayBuffer);
-    const xlsxData = xlsx.read(data, { type: 'array' });
-    const firstSheetName = xlsxData.SheetNames[0];
-    const sheet = xlsxData.Sheets[firstSheetName];
-    const result = xlsx.utils.sheet_to_json(sheet);
-
-    // @ts-ignore-next-line
-    api.equipments
-      .createEquipments(result)
-      .then(data => {
-        equipments.value.push(...data);
-        filteredEquipments.value = [...equipments.value];
-        rows.value = getTableRows(filteredEquipments.value);
-      })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
-  };
-
-  reader.readAsArrayBuffer(file);
+  api.equipments
+    .createEquipments(formData)
+    .then(data => {
+      equipments.value.push(...data);
+      filteredEquipments.value = [...equipments.value];
+      rows.value = getTableRows(filteredEquipments.value);
+    })
+    .catch(error => {
+      console.log('error >>>', error);
+    });
 }
 
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);

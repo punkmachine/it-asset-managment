@@ -1,3 +1,5 @@
+import xlsx from 'xlsx';
+
 import Equipment from '../models/equipment.js';
 
 class EquipmentsController {
@@ -14,7 +16,10 @@ class EquipmentsController {
 
 	async createEquipments(request, response) {
 		try {
-      const data = request.body;
+      const workbook = xlsx.readFile(request.file.path);
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const data = xlsx.utils.sheet_to_json(sheet);
 
       if (!Array.isArray(data)) {
         return response.status(400).json({ error: 'Не валидная структура данных' });

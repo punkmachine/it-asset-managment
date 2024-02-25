@@ -1,7 +1,6 @@
 import type { AxiosInstance } from 'axios';
 import type { IQueryData } from '@/entities/types/backend/query';
 import type {
-  IEquipmentCreatePayload,
   IEquipmentUpdatePayload,
   ICommentPayload,
   IHistoryPayload,
@@ -19,7 +18,7 @@ export const equipments = (client: AxiosInstance) => ({
   searchEquipment: (data: IQueryData): Promise<IEquipment[]> => {
     return client.get(`equipments/search?${getQueryParams(data)}`);
   },
-  createEquipments: (payload: IEquipmentCreatePayload[]): Promise<IEquipment[]> => {
+  createEquipments: (payload: FormData): Promise<IEquipment[]> => {
     return client.post('/equipments', payload);
   },
   updateEquipment: (id: number | string, payload: IEquipmentUpdatePayload): Promise<IEquipment> => {

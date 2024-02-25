@@ -7,9 +7,6 @@ import router from '@/router';
 
 const client = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 function requestSuccess(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
@@ -21,8 +18,6 @@ function requestSuccess(config: InternalAxiosRequestConfig): InternalAxiosReques
 
     config.headers['Authorization'] = `Bearer ${token}`;
   }
-
-  // @todo: авторизацию переделать, чтобы переавторизация была и т.п.
 
   return config;
 }

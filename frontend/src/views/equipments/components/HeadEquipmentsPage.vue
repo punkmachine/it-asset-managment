@@ -14,6 +14,7 @@
       id="fileUpload"
       type="file"
       class="hidden"
+      accept=".xlsx,.xls,.csv"
       @change="handleFileChanged"
     />
 
@@ -50,6 +51,7 @@ function handleFileChanged(event: Event) {
 
   if (file.value) {
     emit('addEquipmentsXLSX', file.value);
+    target.value = '';
   }
 }
 

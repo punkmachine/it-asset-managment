@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
+import multer from 'multer';
+
 import authMiddleware from './middleware/auth.js';
 // import catchMiddleware from './middleware/catch.js'
 
@@ -11,6 +13,8 @@ import EquipmentsController from './controllers/equipment.js';
 import HistoryController from './controllers/history.js';
 
 const router = new Router();
+
+const upload = multer({ dest: 'uploads/' });
 
 router.post('/login', AuthController.login);
 router.post('/create-super-admin', AuthController.createSuperAdmin);
@@ -42,7 +46,7 @@ router.delete('/user/:id', authMiddleware, UserController.deleteById);
 router.get('/equipments', authMiddleware, EquipmentsController.getAll); // @todo: пагинация
 router.get('/equipments/search', authMiddleware, EquipmentsController.searchEquipments); // @todo: пагинация
 router.get('/equipment/:id', authMiddleware, EquipmentsController.getById);
-router.post('/equipments', authMiddleware, EquipmentsController.createEquipments);
+router.post('/equipments', [authMiddleware, upload.single('file')], EquipmentsController.createEquipments);
 router.put('/equipment/:id', authMiddleware, EquipmentsController.updateById);
 router.delete('/equipment/:id', authMiddleware, EquipmentsController.deleteById);
 
