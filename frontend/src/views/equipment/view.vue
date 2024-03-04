@@ -1,94 +1,33 @@
 <template>
   <div class="equipment">
-    <div class="equipment-col w-6/10">
-      <div class="equipment__card">
-        <div class="flex items-center justify-between px-4 pb-2">
-          <h2 class="equipment__card-header">Данные</h2>
-
-          <button
-            class="button !w-auto"
-            @click="updateRecipientClick"
-          >
-            {{ equipment?.recipient ? 'Переназначить' : 'Назначить' }}
-          </button>
-        </div>
-        <div class="equipment__card-divider"></div>
-
-        <div
-          v-if="equipment"
-          class="equipment__data"
-        >
-          <div
-            v-for="(item, index) in dataItems"
-            :key="index"
-            class="equipment__data-item"
-          >
-            <span>{{ item.title }}</span>
-            <span>{{ item.value }}</span>
-          </div>
-        </div>
-      </div>
+    <div class="flex flex-col w-6/10">
+      <EquipmentDataWrapper
+        :data-items="dataItems"
+        :equipment="equipment"
+        @update-recipient-click="updateRecipientClick"
+      />
     </div>
 
-    <div class="equipment-col w-4/10">
+    <div class="flex flex-col w-4/10">
       <div class="equipment__card">
         <h2 class="equipment__card-header px-4 pb-2">История</h2>
         <div class="equipment__card-divider"></div>
 
-        <div
+        <EquipmentHistoryList
           v-if="equipment"
-          class="equipment__history"
-        >
-          <div
-            v-for="historyItem in history"
-            :key="`h${historyItem}`"
-            class="equipment__history-item"
-          >
-            <span>{{ getFormatDate(historyItem.date, TimeFormatDict.FullDateLongMonth) }}</span>
-            <span>{{ historyItem.accepted }}</span>
-            <span>{{ `${historyItem.passedOn.firstName} ${historyItem.passedOn.lastName}` }}</span>
-          </div>
-        </div>
+          :history="history"
+        />
       </div>
 
       <div class="equipment__card mt-6">
         <h2 class="equipment__card-header px-4 pb-2">Комментарии</h2>
         <div class="equipment__card-divider"></div>
-        <div
+        <EquipmentCommentList
           v-if="equipment"
-          class="equipment__comments"
-        >
-          <div
-            v-for="(comment, index) in equipment.comments"
-            :key="`comment-${index}`"
-            class="equipment__comment"
-          >
-            <img
-              src="@/assets/icons/comment.svg"
-              alt=""
-              aria-hidden
-              class="equipment__comment-icon"
-            />
-            <span>{{ comment }}</span>
-          </div>
-        </div>
+          :comments="equipment.comments"
+        />
 
-        <div class="equipment__new-comment">
-          <UITextArea
-            v-model="newComment"
-            placeholder="Ваш комментарий"
-            height-mini
-          />
-          <button
-            class="button"
-            @click="addComment"
-          >
-            <svg class="button__icon">
-              <use xlink:href="@/assets/icons/sprites/buttons.svg#add"></use>
-            </svg>
-            Добавить
-          </button>
-        </div>
+        <EquipmentNewComment @fetch-equipment="getDataEquipment" />
       </div>
     </div>
 
@@ -125,132 +64,106 @@
 </template>
 
 <script lang="ts" setup>
-import type { Ref } from 'vue';
 import { onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
 
-import type { IEquipment, IHistoryItem } from '@/entities/types/backend/response/equipment';
+import type { Ref } from 'vue';
 import type { IDataItem } from '@/views/equipment/types';
-import { TimeFormatDict } from '@/utils/helpers/date';
 
 import { api } from '@/api';
-
-import { useUsersStore } from '@/store';
+import { useUsersStore, useEquipmentStore } from '@/store';
 
 import { generateDataItems } from '@/views/equipment/utils/getDataItems';
 
-import UITextArea from '@/components/ui/UITextArea.vue';
 import UIInput from '@/components/ui/UIInput.vue';
 import UIModal from '@/components/ui/UIModal.vue';
-
-import { getFormatDate } from '@/utils/helpers/date';
+import EquipmentNewComment from './components/EquipmentNewComment.vue'
+import EquipmentCommentList from './components/EquipmentCommentList.vue';
+import EquipmentDataWrapper from './components/EquipmentDataWrapper.vue';
+import EquipmentHistoryList from './components/EquipmentHistoryList.vue';
 
 const route = useRoute();
-
 const usersStore = useUsersStore();
+const equipmentStore = useEquipmentStore();
+
+const { equipment, history } = storeToRefs(equipmentStore)
 
 const updateRecipientModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
-
-const equipment: Ref<IEquipment | null> = ref(null);
-const history: Ref<IHistoryItem[]> = ref([]);
-
-const newComment: Ref<string> = ref('');
 const newRecipient: Ref<string> = ref('');
-
+const equipmentId: Ref<string> = ref(Array.isArray(route.params.id) ? route.params.id[0] : route.params.id);
 let dataItems: Ref<IDataItem[]> = ref([]);
 
-function fetchEquipment() {
-  // @ts-ignore-next-line
-  api.equipments
-    .getEquipmentById(route.params.id)
+function getDataEquipment() {
+  equipmentStore.fetchEquipment(equipmentId.value)
     .then(data => {
-      equipment.value = data;
-      dataItems.value = generateDataItems(equipment.value);
-    })
-    .catch(error => {
-      console.log('error >>>', error);
+      dataItems.value = generateDataItems(data);
     });
-}
-
-function fetchHistory() {
-  // @ts-ignore-next-line
-  api.equipments
-    .getEquipmentsHistory(route.params.id)
-    .then(data => {
-      history.value = data;
-    })
-    .catch(error => {
-      console.log('error >>>', error);
-    });
-}
-
-function addComment() {
-  if (newComment.value) {
-    // @ts-ignore-next-line
-    api.equipments
-      .commentEquipment(route.params.id, { text: newComment.value })
-      .then(() => {
-        fetchEquipment();
-        newComment.value = '';
-      })
-      .catch(error => {
-        console.log('error >>>', error);
-      });
-  }
 }
 
 function updateRecipientClick() {
   updateRecipientModal.value?.show();
 }
 
+function getPayloadHistItem() {
+  if (!equipment.value) return;
+
+  return {
+    assetNumber: equipment.value.assetNumber,
+    inventoryNumber: equipment.value.inventoryNumber,
+    name: equipment.value.name,
+    description: equipment.value.description,
+    serialNumber: equipment.value.serialNumber,
+    financiallyResponsiblePerson: equipment.value.financiallyResponsiblePerson._id,
+    invoiceNumber: equipment.value.invoiceNumber,
+    branch: equipment.value.branch._id,
+    state: equipment.value.state,
+    recipient: newRecipient.value,
+  };
+}
+
+function postNewItemHistory() {
+  if (!equipment.value) return;
+
+  api.equipments
+    .postEquipmentsHistory(equipment.value._id, {
+      passedOn: usersStore.currentUserId,
+      accepted: newRecipient.value,
+    })
+    .then(() => {
+      equipmentStore.fetchHistory(equipmentId.value);
+    });
+}
+
 function postNewRecipient() {
-  if (newRecipient.value) {
-    // @ts-ignore-next-line
-    api.equipments
-      .updateEquipment(route.params.id, {
-        ...equipment.value,
-        recipient: newRecipient.value,
-      })
+  const payload = getPayloadHistItem();
+
+  if (newRecipient.value && payload) {
+    api.equipments.updateEquipment(equipmentId.value, payload)
       .then(data => {
         equipment.value = data;
         dataItems.value = generateDataItems(equipment.value);
 
-        api.equipments
-          .postEquipmentsHistory(equipment.value._id, {
-            passedOn: usersStore.currentUserId,
-            accepted: newRecipient.value,
-          })
-          .then(fetchHistory)
-          .catch(error => {
-            console.log('error >>>', error);
-          });
+        postNewItemHistory();
 
         newRecipient.value = '';
         updateRecipientModal.value?.hide();
-      })
-      .catch(error => {
-        console.log('error >>>', error);
       });
   }
 }
 
 onMounted(() => {
-  fetchEquipment();
-  fetchHistory();
+  getDataEquipment();
+  equipmentStore.fetchHistory(equipmentId.value);
 });
 </script>
 
-<style scoped>
+<style>
 .equipment {
   display: flex;
   gap: 32px;
   width: calc(100vw - 128px);
   padding: 12px;
-}
-
-.equipment-col {
-  display: flex;
-  flex-direction: column;
 }
 
 .equipment__card {
@@ -271,81 +184,5 @@ onMounted(() => {
   width: 100%;
   height: 1px;
   background-color: var(--border-standard);
-}
-
-.equipment__data {
-  padding-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.equipment__data-item {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--border-secondary);
-  padding: 0 16px 4px 16px;
-  text-wrap: balance;
-}
-
-.equipment__data-item:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-
-.equipment__comments {
-  padding-top: 8px;
-}
-
-.equipment__comment {
-  padding: 4px 16px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.equipment__comment:last-child {
-  padding-bottom: 0;
-}
-
-.equipment__comment-icon {
-  width: 20px;
-  height: 20px;
-  padding-top: 4px;
-}
-
-.equipment__history {
-  padding-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.equipment__history-item {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(3, 1fr);
-  border-bottom: 1px solid var(--border-secondary);
-  padding: 0 16px 4px 16px;
-}
-
-.equipment__history-item:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-
-.equipment__new-comment {
-  padding: 16px 16px 0 16px;
-  display: flex;
-  gap: 8px;
-}
-
-.equipment__new-comment > label {
-  width: 100%;
-}
-
-.equipment__new-comment > button {
-  width: auto;
 }
 </style>
