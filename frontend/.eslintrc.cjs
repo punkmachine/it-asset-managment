@@ -7,7 +7,7 @@ module.exports = {
     browser: true,
     node: true,
   },
-  "ignorePatterns": ["*.spec.ts", "/src/vue-features/composables/*.ts"],
+  "ignorePatterns": ["*.spec.ts"],
   'extends': [
     // @todo: рекомендуемые настройки для ts
     'plugin:vue/vue3-essential',
