@@ -1,8 +1,10 @@
+import type { PiniaPluginContext } from 'pinia';
+
 const syncedStoresId = [
   'users',
 ];
 
-export function syncStorePlugin(context) {
+export function syncStorePlugin(context: PiniaPluginContext) {
   context.store.$subscribe((mutation, state) => {
     if (syncedStoresId.includes(mutation.storeId)) {
       let store = JSON.parse(localStorage.getItem('itam-store') || "{}");
