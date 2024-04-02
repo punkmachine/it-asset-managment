@@ -15,7 +15,7 @@
           required
           autocomplete="username"
           autofocus
-          pre-icon="user"
+          before-icon="user"
           data-testid="login"
         />
 
@@ -24,10 +24,14 @@
           label="Пароль"
           required
           type="password"
-          pre-icon="password"
+          before-icon="password"
           autocomplete="current-password"
           data-testid="password"
-        />
+        >
+          <template #>
+
+          </template>
+        </UIInput>
       </div>
 
       <button

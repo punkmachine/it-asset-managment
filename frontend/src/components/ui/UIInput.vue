@@ -11,17 +11,17 @@
       />
 
       <svg
-        v-if="preIcon"
-        class="input__pre-icon"
+        v-if="beforeIcon"
+        class="input__before-icon"
       >
-        <use :xlink:href="`${inputs}#${preIcon}`"></use>
+        <use :xlink:href="`${inputs}#${beforeIcon}`"></use>
       </svg>
 
       <svg
-        v-if="postIcon"
-        class="input__post-icon"
+        v-if="afterIcon"
+        class="input__after-icon"
       >
-        <use :xlink:href="`${inputs}#${postIcon}`"></use>
+        <use :xlink:href="`${inputs}#${afterIcon}`"></use>
       </svg>
     </div>
   </label>
@@ -34,8 +34,8 @@ import { defineProps, defineEmits } from 'vue';
 interface IProps {
   label: string;
   modelValue: string;
-  preIcon?: string;
-  postIcon?: string;
+  beforeIcon?: string;
+  afterIcon?: string;
 }
 
 interface IEmits {
