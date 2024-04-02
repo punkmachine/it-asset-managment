@@ -23,19 +23,35 @@
           v-model="password"
           label="Пароль"
           required
-          type="password"
+          :type="passwordVisible ? 'text' : 'password'"
           before-icon="password"
           autocomplete="current-password"
           data-testid="password"
         >
-          <template #>
+          <template #after-inner-btn>
+            <div class="flex items-center justify-center w-6 h-6">
+              <svg
+                v-if="passwordVisible"
+                class="w-5 h-5"
+                @click="toggleVisiblePassword"
+              >
+                <use xlink:href="@/assets/icons/sprites/inputs.svg#eye-open"></use>
+              </svg>
 
+              <svg
+                v-else
+                class="w-5 h-5"
+                @click="toggleVisiblePassword"
+              >
+                <use xlink:href="@/assets/icons/sprites/inputs.svg#eye-close"></use>
+              </svg>
+            </div>
           </template>
         </UIInput>
       </div>
 
       <button
-        class="button mt-5"
+        class="button mt-5 select-none"
         data-testid="btn-auth"
         @click.prevent="authorization"
       >
@@ -63,6 +79,9 @@ const usersStore = useUsersStore();
 
 const login: Ref<string> = ref('');
 const password: Ref<string> = ref('');
+const passwordVisible: Ref<boolean> = ref(false);
+
+const toggleVisiblePassword = () => passwordVisible.value = !passwordVisible.value;
 
 function successAuth(data: ILoginResponse) {
   Cookies.set('token', data.token);

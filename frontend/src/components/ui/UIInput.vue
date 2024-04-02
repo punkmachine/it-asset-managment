@@ -23,6 +23,10 @@
       >
         <use :xlink:href="`${inputs}#${afterIcon}`"></use>
       </svg>
+
+      <div class="input__after-inner-btn">
+        <slot name="after-inner-btn"></slot>
+      </div>
     </div>
   </label>
 </template>
