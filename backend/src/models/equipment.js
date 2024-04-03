@@ -56,7 +56,7 @@ const Equipment = new Schema({
 	},
   financiallyResponsiblePerson: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Admin',
 		required: true,
 	},
   recipient: {

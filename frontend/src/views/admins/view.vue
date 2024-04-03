@@ -1,13 +1,13 @@
 <template>
-  <div class="users">
-    <HeadUsersPage @addUser="handleAdd" />
+  <div class="admins">
+    <HeadAdminsPage @addAdmin="handleAdd" />
 
-    <div class="users__content">
-      <SearchUser @searchInput="searchUser" />
+    <div class="admins__content">
+      <SearchAdmin @searchInput="searchUser" />
 
       <div class="divider"></div>
 
-      <div class="users__table-wrapper">
+      <div class="admins__table-wrapper">
         <UITable
           :columns="columns"
           :rows="rows"
@@ -28,7 +28,7 @@
 
       <UIModal ref="deleteModal">
         <template #body>
-          Вы точно хотите удалить сотрудника "{{ currentUser?.lastName }} {{ currentUser?.firstName }}"?
+          Вы точно хотите удалить сотрудника "{{ currentAdmin?.lastName }} {{ currentAdmin?.firstName }}"?
         </template>
 
         <template #footer>
@@ -42,15 +42,15 @@
       <UIModal ref="editModal">
         <template #body>
           <h2 class="modal__title">
-            Редактирование пользователя "{{ currentUser?.lastName }} {{ currentUser?.firstName }}"
+            Редактирование пользователя "{{ currentAdmin?.lastName }} {{ currentAdmin?.firstName }}"
           </h2>
-          <!-- @todo: костыль с currentUser, потому что он технически может быть null,
+          <!-- @todo: костыль с currentAdmin, потому что он технически может быть null,
             но физически в этой форме ну реально никак, а TS ругается
           -->
-          <form v-if="currentUser">
-            <FormEditUser
-              :edited-user="currentUser"
-              @edit-user="newUser => (currentUser = newUser)"
+          <form v-if="currentAdmin">
+            <FormEditAdmin
+              :edited-admin="currentAdmin"
+              @edit-admin="newAdmin => (currentAdmin = newAdmin)"
             />
           </form>
         </template>
@@ -58,7 +58,7 @@
         <template #footer>
           <EditModalFooter
             @cancel="editModal?.hide()"
-            @save="saveEditUserClick"
+            @save="saveEditAdminClick"
           />
         </template>
       </UIModal>
@@ -67,9 +67,9 @@
         <template #body>
           <h2 class="modal__title">Создание админа</h2>
           <form>
-            <FormAddUser
-              :added-user="newUser"
-              @updateAddedUser="user => (newUser = user)"
+            <FormAddAdmin
+              :added-admin="newAdmin"
+              @updateAddedAdmin="admin => (newAdmin = admin)"
             />
           </form>
         </template>
@@ -90,27 +90,27 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 import type { Ref } from 'vue';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
-import type { IUser } from '@/entities/types/backend/response/user';
+import type { IAdmin } from '@/entities/types/backend/response/admin';
 import type { INewUser } from './types';
 
 import UIPagination from '@/components/ui/UIPagination.vue';
 import UITable from '@/components/ui/UITable.vue';
 import UIModal from '@/components/ui/UIModal.vue';
-import HeadUsersPage from '@/views/users/components/HeadUsersPage.vue';
-import SearchUser from '@/views/users/components/SearchUser.vue';
-import DeleteModalFooter from '@/views/users/components/DeleteModalFooter.vue';
-import EditModalFooter from '@/views/users/components/EditModalFooter.vue';
-import FormEditUser from '@/views/users/components/FormEditUser.vue';
-import FormAddUser from '@/views/users/components/FormAddUser.vue';
-import AddModalFooter from '@/views/users/components/AddModalFooter.vue';
+import HeadAdminsPage from '@/views/admins/components/HeadAdminsPage.vue';
+import SearchAdmin from '@/views/admins/components/SearchAdmin.vue';
+import DeleteModalFooter from '@/views/admins/components/DeleteModalFooter.vue';
+import EditModalFooter from '@/views/admins/components/EditModalFooter.vue';
+import FormEditAdmin from '@/views/admins/components/FormEditAdmin.vue';
+import FormAddAdmin from '@/views/admins/components/FormAddAdmin.vue';
+import AddModalFooter from '@/views/admins/components/AddModalFooter.vue';
 
 import { api } from '@/api';
-import { getTableRows } from '@/utils/adapters/usersAdapterFromTable';
+import { getTableRows } from '@/utils/adapters/adminsAdapterFromTable';
 
 import { useEscapeClick } from '@/vue-features/composables/useEscapeClick';
 import { useSearch } from '@/vue-features/composables/useSearch';
 
-import { columnsSettings, initialUser } from './settings';
+import { columnsSettings, initialAdmin } from './settings';
 
 const { searchText, setSearchText: searchUser } = useSearch(requestSearch, clearSearch);
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
@@ -119,24 +119,24 @@ const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
-const currentUser: Ref<IUser | null> = ref(null);
-const users: Ref<IUser[]> = ref([]);
-const backupUsers: Ref<IUser[]> = ref([]);
-const filteredUsers: Ref<IUser[]> = ref([]);
-const newUser: Ref<INewUser> = ref({ ...initialUser });
+const currentAdmin: Ref<IAdmin | null> = ref(null);
+const admins: Ref<IAdmin[]> = ref([]);
+const backupAdmins: Ref<IAdmin[]> = ref([]);
+const filteredAdmins: Ref<IAdmin[]> = ref([]);
+const newAdmin: Ref<INewUser> = ref({ ...initialAdmin });
 const currentPage: Ref<number> = ref(1);
 const visibleTableItems: Ref<number> = ref(10);
 
 const columns: Ref<IColumn[]> = ref(columnsSettings);
 const rows: Ref<TRows[]> = ref([]);
 
-function getCurrentUserById(id: string): IUser | null {
-  return users.value.find(user => user._id === id) ?? null;
+function getCurrentUserById(id: string): IAdmin | null {
+  return admins.value.find(admin => admin._id === id) ?? null;
 }
 
 function handleModalWrapper(modal: Ref<InstanceType<typeof UIModal> | null>, id: string | null): void {
   if (id) {
-    currentUser.value = getCurrentUserById(id);
+    currentAdmin.value = getCurrentUserById(id);
   }
 
   if (modal.value) {
@@ -157,34 +157,34 @@ function handleAdd() {
   handleModalWrapper(addModal, null);
 }
 
-function changeTargetUser(data: IUser) {
-  currentUser.value = null;
-  users.value = users.value.map(user => {
-    if (user._id === data._id) {
+function changeTargetUser(data: IAdmin) {
+  currentAdmin.value = null;
+  admins.value = admins.value.map(admin => {
+    if (admin._id === data._id) {
       return {
         ...data,
       };
     }
 
-    return user;
+    return admin;
   });
 }
 
-function setInitialData(data: IUser[]) {
-  users.value = [...data];
-  filteredUsers.value = [...data];
-  rows.value = getTableRows(filteredUsers.value);
+function setInitialData(data: IAdmin[]) {
+  admins.value = [...data];
+  filteredAdmins.value = [...data];
+  rows.value = getTableRows(filteredAdmins.value);
 }
 
-function getUsersAndRowsTable() {
-  api.users
-    .fetchUsers()
+function getAdminsAndRowsTable() {
+  api.admins
+    .fetchAdmins()
     .then(setInitialData)
 }
 
 function deleteUserClick() {
-  if (currentUser.value) {
-    api.users.deleteUser(currentUser.value._id)
+  if (currentAdmin.value) {
+    api.admins.deleteAdmin(currentAdmin.value._id)
     .then(blockedUser => {
       changeTargetUser(blockedUser);
       deleteModal.value?.hide();
@@ -192,31 +192,31 @@ function deleteUserClick() {
   }
 }
 
-function saveEditUserClick() {
-  if (currentUser.value) {
-    api.users
-      .updateUser(currentUser.value._id, currentUser.value)
+function saveEditAdminClick() {
+  if (currentAdmin.value) {
+    api.admins
+      .updateAdmin(currentAdmin.value._id, currentAdmin.value)
       .then(data => {
         changeTargetUser(data);
-        rows.value = getTableRows(users.value);
+        rows.value = getTableRows(admins.value);
 
         editModal.value?.hide();
       })
   }
 }
 
-function newUserDataIsValid() {
-  return newUser.value.firstName && newUser.value.lastName && newUser.value.login && newUser.value.password;
+function newAdminDataIsValid() {
+  return newAdmin.value.firstName && newAdmin.value.lastName && newAdmin.value.login && newAdmin.value.password;
 }
 
 function saveAddUserClick() {
-  if (newUserDataIsValid()) {
-    api.users
-      .createUser(newUser.value)
+  if (newAdminDataIsValid()) {
+    api.admins
+      .createAdmin(newAdmin.value)
       .then(data => {
-        users.value.push(data);
-        rows.value = getTableRows(users.value);
-        newUser.value = { ...initialUser };
+        admins.value.push(data);
+        rows.value = getTableRows(admins.value);
+        newAdmin.value = { ...initialAdmin };
 
         addModal.value?.hide();
       })
@@ -230,19 +230,19 @@ function keyDownEscape() {
 }
 
 function requestSearch() {
-  backupUsers.value = [...users.value];
+  backupAdmins.value = [...admins.value];
 
-  api.users
-    .searchUser({ searchText: searchText.value })
+  api.admins
+    .searchAdmin({ searchText: searchText.value })
     .then(setInitialData)
 }
 
 function clearSearch() {
-  setInitialData(backupUsers.value);
+  setInitialData(backupAdmins.value);
 }
 
 onMounted(() => {
-  getUsersAndRowsTable();
+  getAdminsAndRowsTable();
 });
 
 onBeforeUnmount(() => {
@@ -251,11 +251,11 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.users__content {
+.admins__content {
   background-color: var(--bg-main);
 }
 
-.users__table-wrapper {
+.admins__table-wrapper {
   position: relative;
   overflow-x: auto;
   padding-top: 12px;
@@ -267,4 +267,4 @@ onBeforeUnmount(() => {
   flex-direction: column;
   padding-bottom: 16px;
 }
-</style>
+</style>@/entities/types/backend/response/admins

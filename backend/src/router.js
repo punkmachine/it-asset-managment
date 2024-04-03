@@ -7,7 +7,7 @@ import authMiddleware from './middleware/auth.js';
 // import catchMiddleware from './middleware/catch.js'
 
 import AuthController from './controllers/auth.js';
-import UserController from './controllers/user.js';
+import AdminController from './controllers/admins.js';
 import BranchesController from './controllers/branch.js';
 import EquipmentsController from './controllers/equipment.js';
 import HistoryController from './controllers/history.js';
@@ -28,19 +28,19 @@ router.put('/branch/:id', authMiddleware, BranchesController.updateById);
 router.delete('/branch/:id', authMiddleware, BranchesController.deleteById);
 
 // юзеры
-router.get('/users', authMiddleware, UserController.getAll); // @todo: пагинация
-router.get('/users/search', authMiddleware, UserController.searchUsers); // @todo: пагинация
-router.get('/user/:id', authMiddleware, UserController.getById);
-router.post('/user',
+router.get('/admins', authMiddleware, AdminController.getAll); // @todo: пагинация
+router.get('/admins/search', authMiddleware, AdminController.searchAdmins); // @todo: пагинация
+router.get('/admin/:id', authMiddleware, AdminController.getById);
+router.post('/admin',
   [
     check('login', "Имя пользователя не может быть пустым").notEmpty(),
     check('password', "Пароль должен быть больше 4 символов").isLength({ min: 4 }),
     // authMiddleware
   ],
-  UserController.create
+  AdminController.create
 );
-router.put('/user/:id', authMiddleware, UserController.updateById);
-router.delete('/user/:id', authMiddleware, UserController.deleteById);
+router.put('/admin/:id', authMiddleware, AdminController.updateById);
+router.delete('/admin/:id', authMiddleware, AdminController.deleteById);
 
 // оборудование
 router.get('/equipments', authMiddleware, EquipmentsController.getAll); // @todo: пагинация

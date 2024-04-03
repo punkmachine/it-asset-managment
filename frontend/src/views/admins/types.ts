@@ -1,4 +1,4 @@
-export interface INewUser {
+export interface INewAdmin {
   firstName: string;
   lastName: string;
   login: string;

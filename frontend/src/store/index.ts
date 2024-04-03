@@ -1,4 +1,4 @@
-import { useUsersStore } from '@/store/modules/users';
+import { useAdminsStore } from '@/store/modules/admins';
 import { useEquipmentStore } from '@/store/modules/equipment';
 
-export { useUsersStore, useEquipmentStore };
+export { useAdminsStore, useEquipmentStore };

@@ -11,18 +11,18 @@
 
       <div class="profile__data">
         <div
-          v-if="localUserData"
+          v-if="localAdminData"
           class="flex flex-col gap-2"
         >
           <UIInput
-            v-model="localUserData.firstName"
+            v-model="localAdminData.firstName"
             label="Имя:"
             required
             autocomplete="name"
           />
 
           <UIInput
-            v-model="localUserData.lastName"
+            v-model="localAdminData.lastName"
             label="Фамилия:"
             required
             autocomplete="family-name"
@@ -52,51 +52,51 @@
 import { ref, onMounted } from 'vue';
 
 import type { Ref } from 'vue';
-import type { IUser } from '@/entities/types/backend/response/user';
+import type { IAdmin } from '@/entities/types/backend/response/admin';
 
 import HeadPage from '@/components/HeadPage.vue';
 import UIInput from '@/components/ui/UIInput.vue';
 
 import { api } from '@/api';
-import { useUsersStore } from '@/store';
+import { useAdminsStore } from '@/store';
 
-const userStore = useUsersStore();
+const adminStore = useAdminsStore();
 
-const localUserData: Ref<IUser | null> = ref(JSON.parse(JSON.stringify(userStore.currentUser)));
-let backupUserData: IUser | null = null;
+const localAdminData: Ref<IAdmin | null> = ref(JSON.parse(JSON.stringify(adminStore.currentAdmin)));
+let backupUserData: IAdmin | null = null;
 
 function goBackupData() {
-  localUserData.value = backupUserData;
+  localAdminData.value = backupUserData;
 }
 
 function getNewUserPayload() {
-  if (!localUserData.value) return;
+  if (!localAdminData.value) return;
 
   return {
-    firstName: localUserData.value.firstName,
-    lastName: localUserData.value.lastName,
-    login: localUserData.value.login,
-    password: localUserData.value.password,
-    state: localUserData.value.state,
-    role: localUserData.value.role,
+    firstName: localAdminData.value.firstName,
+    lastName: localAdminData.value.lastName,
+    login: localAdminData.value.login,
+    password: localAdminData.value.password,
+    state: localAdminData.value.state,
+    role: localAdminData.value.role,
   };
 }
 
 function saveNewUserData() {
-  if (localUserData.value) {
+  if (localAdminData.value) {
     const payload = getNewUserPayload();
 
-    api.users
+    api.admins
       // @ts-ignore-next-line
-      .updateUser(localUserData.value._id, payload)
+      .updateAdmin(localAdminData.value._id, payload)
       .then(() => {
-        userStore.fetchCurrentUser();
+        adminStore.fetchCurrentAdmin();
       })
   }
 }
 
 onMounted(() => {
-  backupUserData = JSON.parse(JSON.stringify(localUserData.value));
+  backupUserData = JSON.parse(JSON.stringify(localAdminData.value));
 });
 </script>
 
@@ -139,3 +139,4 @@ onMounted(() => {
   bottom: 16px;
 }
 </style>
+@/entities/types/backend/response/admins

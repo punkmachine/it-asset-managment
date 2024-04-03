@@ -67,9 +67,9 @@ const router = createRouter({
       },
     },
     {
-      path: '/users',
-      name: 'users',
-      component: () => import('@/views/users/view.vue'),
+      path: '/admins',
+      name: 'admins',
+      component: () => import('@/views/admins/view.vue'),
       meta: {
         secure: true,
         layout: 'main',

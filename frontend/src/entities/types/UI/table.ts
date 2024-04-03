@@ -13,7 +13,7 @@ export interface ICell {
 // @todo: rename to TRow
 export type TRows = ICell[];
 
-export interface IUserInTable {
+export interface IAdminInTable {
   number: string;
   fio: string;
   role: string;

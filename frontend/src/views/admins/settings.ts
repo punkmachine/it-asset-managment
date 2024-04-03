@@ -7,7 +7,7 @@ export const columnsSettings: IColumn[] = [
   { key: 'state', title: 'Состояние' },
 ];
 
-export const initialUser = {
+export const initialAdmin = {
   firstName: '',
   lastName: '',
   login: '',

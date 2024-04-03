@@ -72,7 +72,7 @@ import type { Ref } from 'vue';
 import type { IDataItem } from '@/views/equipment/types';
 
 import { api } from '@/api';
-import { useUsersStore, useEquipmentStore } from '@/store';
+import { useAdminsStore, useEquipmentStore } from '@/store';
 
 import { generateDataItems } from '@/views/equipment/utils/getDataItems';
 
@@ -84,7 +84,7 @@ import EquipmentDataWrapper from './components/EquipmentDataWrapper.vue';
 import EquipmentHistoryList from './components/EquipmentHistoryList.vue';
 
 const route = useRoute();
-const usersStore = useUsersStore();
+const adminsStore = useAdminsStore();
 const equipmentStore = useEquipmentStore();
 
 const { equipment, history } = storeToRefs(equipmentStore)
@@ -127,7 +127,7 @@ function postNewItemHistory() {
 
   api.equipments
     .postEquipmentsHistory(equipment.value._id, {
-      passedOn: usersStore.currentUserId,
+      passedOn: adminsStore.currentAdminId,
       accepted: newRecipient.value,
     })
     .then(() => {

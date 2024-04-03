@@ -1,7 +1,7 @@
 import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
 import Cookies from 'js-cookie';
 import router from '@/router';
-import { useUsersStore } from '@/store';
+import { useAdminsStore } from '@/store';
 
 export default function (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
   if (!to.meta.secure) {
@@ -11,16 +11,16 @@ export default function (to: RouteLocationNormalized, from: RouteLocationNormali
   }
 
   const token = Cookies.get('token');
-  const userStore = useUsersStore();
+  const adminStore = useAdminsStore();
 
-  if (!token || !userStore.currentUserId) {
+  if (!token || !adminStore.currentAdminId) {
     router.push('/login');
 
     return;
   }
 
-  if (!userStore.currentUser) {
-    userStore.fetchCurrentUser();
+  if (!adminStore.currentAdmin) {
+    adminStore.fetchCurrentAdmin();
   }
 
   next();

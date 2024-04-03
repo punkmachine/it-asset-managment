@@ -6,8 +6,8 @@ import 'dotenv/config'
 import router from './router.js';
 
 const PORT = 5004;
-// const DB_URL = 'mongodb://127.0.0.1:27017/it-asset-managment';
-const DB_URL = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLASTERNAME}.suvndga.mongodb.net/?retryWrites=true&w=majority`;
+const DB_URL = 'mongodb://127.0.0.1:27017/it-asset-managment';
+// const DB_URL = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLASTERNAME}.suvndga.mongodb.net/?retryWrites=true&w=majority`;
 const app = express();
 
 app.use(express.json());

@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 
-const userStateEnum = ["ACTIVE", "DELETED"];
-const userRoleEnum = ['ADMIN', 'SUPERADMIN'];
+const adminStateEnum = ["ACTIVE", "DELETED"];
+const adminRoleEnum = ['ADMIN', 'SUPERADMIN'];
 
-const User = new Schema({
+const Admin = new Schema({
 	createdDate: {
 		type: String,
 		required: true,
@@ -43,12 +43,12 @@ const User = new Schema({
 	},
   state: {
     type: String,
-    enum: userStateEnum,
+    enum: adminStateEnum,
 		required: true,
   },
   role: {
     type: String,
-    enum: userRoleEnum,
+    enum: adminRoleEnum,
 		required: true,
   },
   avatar: {
@@ -56,4 +56,4 @@ const User = new Schema({
   }
 });
 
-export default mongoose.model('User', User);
+export default mongoose.model('Admin', Admin);

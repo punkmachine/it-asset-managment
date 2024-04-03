@@ -20,7 +20,7 @@
         <span class="main-menu__item-text">Филиалы</span>
       </RouterLink>
       <RouterLink
-        to="/users"
+        to="/admins"
         class="main-menu__item"
       >
         <svg class="main-menu__item-icon">

@@ -1,13 +1,13 @@
 import { validationResult } from 'express-validator';
 import { hashSync } from 'bcrypt';
-import User from '../models/user.js';
+import Admin from '../models/admin.js';
 
-class UserController {
+class AdminController {
 	async getAll(request, response) {
 		try {
-      const users = await User.find();
+      const admins = await Admin.find();
 
-			response.status(200).json(users);
+			response.status(200).json(admins);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -22,14 +22,14 @@ class UserController {
       }
 
       const { login, password } = request.body;
-      const isCandidateExist = await User.findOne({ login });
+      const isCandidateExist = await Admin.findOne({ login });
 
       if (isCandidateExist) {
         return res.status(400).json({ message: "Пользователь с таким именем уже существует" });
       }
 
       const hashPassword = hashSync(password, 7);
-      const newUser = {
+      const newAdmin = {
         ...request.body,
         password: hashPassword,
         createdDate: new Date().toISOString(),
@@ -38,9 +38,9 @@ class UserController {
         role: 'ADMIN',
       };
 
-      const createdUser = await User.create(newUser);
+      const createdAdmin = await Admin.create(newAdmin);
 
-			response.status(201).json(createdUser);
+			response.status(201).json(createdAdmin);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -54,9 +54,9 @@ class UserController {
         return response.status(400).json({ message: 'Ошибка получения пользователя по ID. Не указан ID.' });
       }
 
-      const user = await User.findById(id);
+      const admin = await Admin.findById(id);
 
-			response.status(200).json(user);
+			response.status(200).json(admin);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -70,7 +70,7 @@ class UserController {
         return response.status(400).json({ message: 'Ошибка редактирования пользователя по ID. Не указан ID.' });
       }
 
-      const updatedUser = await User.findByIdAndUpdate(
+      const updatedAdmin = await Admin.findByIdAndUpdate(
         id,
         {
           $set: {
@@ -81,7 +81,7 @@ class UserController {
         { new: true }
       );
 
-			response.status(200).json(updatedUser);
+			response.status(200).json(updatedAdmin);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -95,22 +95,22 @@ class UserController {
         return response.status(400).json({ message: 'Ошибка удаления пользователя по ID. Не указан ID.' });
       }
 
-      const deletedUser = await User.findById(id);
-      if (!deletedUser) {
+      const deletedAdmin = await Admin.findById(id);
+      if (!deletedAdmin) {
         return response.status(404).json({ message: 'Пользователь с указанным ID не найден.' });
       }
 
-      deletedUser.state = 'DELETED';
-      deletedUser.updatedDate = new Date().toISOString();
-      const updatedUser = await deletedUser.save();
+      deletedAdmin.state = 'DELETED';
+      deletedAdmin.updatedDate = new Date().toISOString();
+      const updatedAdmin = await deletedAdmin.save();
 
-			response.status(200).json(updatedUser);
+			response.status(200).json(updatedAdmin);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
 	};
 
-  async searchUsers(request, response) {
+  async searchAdmins(request, response) {
     try {
       const { searchText } = request.query;
 
@@ -120,18 +120,18 @@ class UserController {
 
       const searchRegex = new RegExp(searchText, 'i');
 
-      const users = await User.find({
+      const admins = await Admin.find({
         $or: [
           { firstName: { $regex: searchRegex } },
           { lastName: { $regex: searchRegex } },
         ],
       });
 
-      response.status(200).json(users);
+      response.status(200).json(admins);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
   }
 }
 
-export default new UserController();
+export default new AdminController();

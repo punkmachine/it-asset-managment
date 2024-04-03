@@ -70,12 +70,12 @@ import type { Ref } from 'vue';
 import type { ILoginResponse } from '@/entities/types/backend/response/auth';
 
 import { api } from '@/api';
-import { useUsersStore } from '@/store';
+import { useAdminsStore } from '@/store';
 
 import UIInput from '@/components/ui/UIInput.vue';
 
 const router = useRouter();
-const usersStore = useUsersStore();
+const adminsStore = useAdminsStore();
 
 const login: Ref<string> = ref('');
 const password: Ref<string> = ref('');
@@ -85,8 +85,8 @@ const toggleVisiblePassword = () => passwordVisible.value = !passwordVisible.val
 
 function successAuth(data: ILoginResponse) {
   Cookies.set('token', data.token);
-  usersStore.setCurrentUserId(data.userId);
-  usersStore.fetchCurrentUser();
+  adminsStore.setCurrentAdminId(data.adminId);
+  adminsStore.fetchCurrentAdmin();
   router.push('/');
 }
 

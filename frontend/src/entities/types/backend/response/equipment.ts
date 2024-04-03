@@ -1,5 +1,5 @@
 import type { IBranch } from './branches';
-import type { IUser } from './user';
+import type { IAdmin } from './admins';
 
 export enum EquipmentState {
   active = 'ACTIVE',
@@ -9,7 +9,7 @@ export enum EquipmentState {
 export interface IHistoryItem {
   id: string;
   date: string; // когда была передана
-  passedOn: IUser; // передал
+  passedOn: IAdmin; // передал
   accepted: string; // принял
 }
 
@@ -23,7 +23,7 @@ export interface IEquipment {
   name: string; // название
   description: string; // описание
   serialNumber: string; // серийный номер
-  financiallyResponsiblePerson: IUser; // материально ответственное лицо
+  financiallyResponsiblePerson: IAdmin; // материально ответственное лицо
   recipient: string; // получатель
   comments: string[]; // комментарии
   invoiceNumber: string; // номер накладной

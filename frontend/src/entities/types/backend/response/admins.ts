@@ -4,12 +4,12 @@ interface IDataCounter {
   users: number;
 }
 
-export enum UserState {
+export enum AdminState {
   active = 'ACTIVE',
   deleted = 'DELETED',
 }
 
-export enum UserRoles {
+export enum AdminRoles {
   superAdmin = 'SUPERADMIN',
   admin = 'ADMIN',
 }
@@ -21,7 +21,7 @@ export interface IProfile {
   avatar: string;
 }
 
-export interface IUser {
+export interface IAdmin {
   _id: string;
   createdDate: string;
   updatedDate: string;
@@ -29,14 +29,14 @@ export interface IUser {
   lastName: string;
   login: string;
   password: string;
-  state: UserState;
-  role: UserRoles;
+  state: AdminState;
+  role: AdminRoles;
   avatar: string;
 }
 
-export interface ISuperUser extends IUser {
+export interface ISuperAdmin extends IAdmin {
   limits: IDataCounter;
   currentDataCounters: IDataCounter;
 }
 
-export type TUsersList = (IUser | ISuperUser)[];
+export type TAdminsList = (IAdmin | ISuperAdmin)[];
