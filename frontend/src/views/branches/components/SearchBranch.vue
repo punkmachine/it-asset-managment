@@ -1,20 +1,29 @@
 <template>
   <div class="px-5 py-4">
-    <UISearch @searchInput="handlerSearch" />
+    <UIInput
+      v-model="search"
+      label=""
+      beforeInnerIcon="search"
+      type="search"
+      class="w-64"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { defineEmits } from 'vue';
-import UISearch from '@/components/ui/UISearch.vue';
+import type { Ref } from 'vue';
+import { defineEmits, ref, watch } from 'vue';
+import UIInput from '@/components/ui/UIInput.vue';
 
 interface IEmits {
   (e: 'searchInput', searchText: string): void;
 }
 
+const search: Ref<string> = ref('');
+
 const emits = defineEmits<IEmits>();
 
-function handlerSearch(text: string) {
-  emits('searchInput', text);
-}
+watch(() => search.value, () => {
+  emits('searchInput', search.value);
+});
 </script>

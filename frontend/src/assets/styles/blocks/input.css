@@ -57,3 +57,12 @@
   max-height: 24px;
   cursor: pointer;
 }
+
+.input__before-inner-icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}

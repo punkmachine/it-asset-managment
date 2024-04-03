@@ -4,6 +4,9 @@
     <div class="relative">
       <input
         class="input"
+        :class="{
+          '!pl-8': beforeInnerIcon
+        }"
         type="text"
         v-bind="$attrs"
         :value="modelValue"
@@ -15,6 +18,13 @@
         class="input__before-icon"
       >
         <use :xlink:href="`${inputs}#${beforeIcon}`"></use>
+      </svg>
+
+      <svg
+        v-if="beforeInnerIcon"
+        class="input__before-inner-icon"
+      >
+        <use :xlink:href="`${inputs}#${beforeInnerIcon}`"></use>
       </svg>
 
       <svg
@@ -40,6 +50,7 @@ interface IProps {
   modelValue: string;
   beforeIcon?: string;
   afterIcon?: string;
+  beforeInnerIcon?: string,
 }
 
 interface IEmits {
