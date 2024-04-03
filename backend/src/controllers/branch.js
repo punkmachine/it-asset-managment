@@ -1,11 +1,14 @@
 import Branch from '../models/branch.js';
+import paginate from '../helpers/paginate.js';
 
 class BranchesController {
 	async getAll(request, response) {
 		try {
-      const branches = await Branch.find();
+      const { page, limit } = request.query;
 
-			response.status(200).json(branches);
+      const paginationResult = await paginate(Branch, {}, { page, limit });
+
+      response.status(200).json(paginationResult);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -84,22 +87,22 @@ class BranchesController {
 
   async searchBranches(request, response) {
     try {
-      const { searchText } = request.query;
+      const { searchText, page, limit } = request.query;
 
       if (!searchText) {
         return response.status(400).json({ error: 'Для поиска филиала необходимо указать параметр searchText' });
       }
 
-      const searchRegex = new RegExp(searchText, 'i');
-
-      const branches = await Branch.find({
+      const searchQuery = {
         $or: [
-          { title: { $regex: searchRegex } },
-          { description: { $regex: searchRegex } },
+          { title: { $regex: new RegExp(searchText, 'i') } },
+          { description: { $regex: new RegExp(searchText, 'i') } },
         ],
-      });
+      };
 
-      response.status(200).json(branches);
+      const paginationResult = await paginate(Branch, searchQuery, { page, limit });
+
+      response.status(200).json(paginationResult);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}

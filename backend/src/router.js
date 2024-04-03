@@ -20,16 +20,16 @@ router.post('/login', AuthController.login);
 router.post('/create-super-admin', AuthController.createSuperAdmin);
 
 // филиалы
-router.get('/branches', authMiddleware, BranchesController.getAll); // @todo: пагинация
-router.get('/branches/search', authMiddleware, BranchesController.searchBranches); // @todo: пагинация
+router.get('/branches', authMiddleware, BranchesController.getAll);
+router.get('/branches/search', authMiddleware, BranchesController.searchBranches);
 router.get('/branch/:id', authMiddleware, BranchesController.getById);
 router.post('/branch', authMiddleware, BranchesController.create);
 router.put('/branch/:id', authMiddleware, BranchesController.updateById);
 router.delete('/branch/:id', authMiddleware, BranchesController.deleteById);
 
 // юзеры
-router.get('/admins', authMiddleware, AdminController.getAll); // @todo: пагинация
-router.get('/admins/search', authMiddleware, AdminController.searchAdmins); // @todo: пагинация
+router.get('/admins', authMiddleware, AdminController.getAll);
+router.get('/admins/search', authMiddleware, AdminController.searchAdmins);
 router.get('/admin/:id', authMiddleware, AdminController.getById);
 router.post('/admin',
   [
@@ -43,8 +43,8 @@ router.put('/admin/:id', authMiddleware, AdminController.updateById);
 router.delete('/admin/:id', authMiddleware, AdminController.deleteById);
 
 // оборудование
-router.get('/equipments', authMiddleware, EquipmentsController.getAll); // @todo: пагинация
-router.get('/equipments/search', authMiddleware, EquipmentsController.searchEquipments); // @todo: пагинация
+router.get('/equipments', authMiddleware, EquipmentsController.getAll);
+router.get('/equipments/search', authMiddleware, EquipmentsController.searchEquipments);
 router.get('/equipment/:id', authMiddleware, EquipmentsController.getById);
 router.post('/equipments', [authMiddleware, upload.single('file')], EquipmentsController.createEquipments);
 router.put('/equipment/:id', authMiddleware, EquipmentsController.updateById);

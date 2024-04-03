@@ -1,13 +1,16 @@
 import { validationResult } from 'express-validator';
 import { hashSync } from 'bcrypt';
 import Admin from '../models/admin.js';
+import paginate from '../helpers/paginate.js';
 
 class AdminController {
 	async getAll(request, response) {
 		try {
-      const admins = await Admin.find();
+      const { page, limit } = request.query;
 
-			response.status(200).json(admins);
+      const paginationResult = await paginate(Admin, {}, { page, limit });
+
+      response.status(200).json(paginationResult);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -112,22 +115,23 @@ class AdminController {
 
   async searchAdmins(request, response) {
     try {
-      const { searchText } = request.query;
+      const { searchText, page, limit } = request.query;
 
       if (!searchText) {
-        return response.status(400).json({ error: 'Для поиска пользователя необходимо указать параметр searchText' });
+        return response.status(400).json({ error: 'Для поиска филиала необходимо указать параметр searchText' });
       }
 
       const searchRegex = new RegExp(searchText, 'i');
-
-      const admins = await Admin.find({
+      const searchQuery = {
         $or: [
           { firstName: { $regex: searchRegex } },
           { lastName: { $regex: searchRegex } },
         ],
-      });
+      };
 
-      response.status(200).json(admins);
+      const paginationResult = await paginate(Admin, searchQuery, { page, limit });
+
+      response.status(200).json(paginationResult);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}

@@ -1,13 +1,15 @@
 import Equipment from '../models/equipment.js';
 import { parseXLSX } from '../helpers/equipments.js';
+import paginate from '../helpers/paginate.js';
 
 class EquipmentsController {
 	async getAll(request, response) {
 		try {
-      const equipments = await Equipment.find()
-        .populate('branch').populate('financiallyResponsiblePerson');
+      const { page, limit } = request.query;
 
-			response.status(200).json(equipments);
+      const paginationResult = await paginate(Equipment, {}, { page, limit }, ['branch', 'financiallyResponsiblePerson']);
+
+      response.status(200).json(paginationResult);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
@@ -135,31 +137,30 @@ class EquipmentsController {
 
   async searchEquipments(request, response) {
     try {
-      const { searchText } = request.query;
+      const { searchText, page, limit } = request.query;
 
       if (!searchText) {
         return response.status(400).json({ error: 'Для поиска оборудования необходимо указать параметр searchText' });
       }
 
       const searchRegex = new RegExp(searchText, 'i');
+      const searchQuery = {
+        $or: [
+          { assetNumber: { $regex: searchRegex } },
+          { inventoryNumber: { $regex: searchRegex } },
+          { name: { $regex: searchRegex } },
+          { description: { $regex: searchRegex } },
+          { inventoryNumber: { $regex: searchRegex } },
+          // { financiallyResponsiblePerson: { $regex: searchRegex } },
+          { recipient: { $regex: searchRegex } },
+          { invoiceNumber: { $regex: searchRegex } },
+          { serialNumber: { $regex: searchRegex } },
+        ],
+      };
 
-      const equipments = await Equipment
-        .find({
-          $or: [
-            { assetNumber: { $regex: searchRegex } },
-            { inventoryNumber: { $regex: searchRegex } },
-            { name: { $regex: searchRegex } },
-            { description: { $regex: searchRegex } },
-            { inventoryNumber: { $regex: searchRegex } },
-            // { financiallyResponsiblePerson: { $regex: searchRegex } },
-            { recipient: { $regex: searchRegex } },
-            { invoiceNumber: { $regex: searchRegex } },
-            { serialNumber: { $regex: searchRegex } },
-          ],
-        })
-        .populate('financiallyResponsiblePerson').populate('branch');
+      const paginationResult = await paginate(Equipment, searchQuery, { page, limit }, ['branch', 'financiallyResponsiblePerson']);
 
-      response.status(200).json(equipments);
+      response.status(200).json(paginationResult);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
