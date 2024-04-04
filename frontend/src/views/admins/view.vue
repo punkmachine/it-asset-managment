@@ -3,7 +3,7 @@
     <HeadAdminsPage @addAdmin="handleAdd" />
 
     <div class="admins__content">
-      <SearchAdmin @searchInput="searchUser" />
+      <SearchAdmin @searchInput="searchAdmin" />
 
       <div class="divider"></div>
 
@@ -112,7 +112,7 @@ import { useSearch } from '@/vue-features/composables/useSearch';
 
 import { columnsSettings, initialAdmin } from './settings';
 
-const { searchText, setSearchText: searchUser } = useSearch(requestSearch, clearSearch);
+const { searchText, setSearchText: searchAdmin } = useSearch(requestSearch, clearSearch);
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
 const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
@@ -121,7 +121,6 @@ const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentAdmin: Ref<IAdmin | null> = ref(null);
 const admins: Ref<IAdmin[]> = ref([]);
-const backupAdmins: Ref<IAdmin[]> = ref([]);
 const filteredAdmins: Ref<IAdmin[]> = ref([]);
 const newAdmin: Ref<INewUser> = ref({ ...initialAdmin });
 const currentPage: Ref<number> = ref(1);
@@ -179,7 +178,7 @@ function setInitialData(data: IAdmin[]) {
 function getAdminsAndRowsTable() {
   api.admins
     .fetchAdmins()
-    .then(setInitialData)
+    .then(data => setInitialData(data.data));
 }
 
 function deleteUserClick() {
@@ -230,15 +229,13 @@ function keyDownEscape() {
 }
 
 function requestSearch() {
-  backupAdmins.value = [...admins.value];
-
   api.admins
     .searchAdmin({ searchText: searchText.value })
-    .then(setInitialData)
+    .then(data => setInitialData(data.data));
 }
 
 function clearSearch() {
-  setInitialData(backupAdmins.value);
+  getAdminsAndRowsTable();
 }
 
 onMounted(() => {

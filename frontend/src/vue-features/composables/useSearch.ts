@@ -9,10 +9,10 @@ export const useSearch = (requestSearch: () => void, clearSearch: () => void) =>
     searchText.value = text;
   }
 
-  const searchTextWatcher = debounce((newValue: string, oldValue: string) => {
-    if (newValue.length > 3) {
+  const searchTextWatcher = debounce((newValue: string) => {
+    if (newValue.length >= 1) {
       requestSearch();
-    } else if (newValue.length <= 3 && oldValue.length > 3) {
+    } else {
       clearSearch();
     }
   }, 500);

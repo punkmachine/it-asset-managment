@@ -75,7 +75,6 @@ const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
 
 const currentEquipment: Ref<IEquipment | null> = ref(null);
 const equipments: Ref<IEquipment[]> = ref([]);
-const equipmentsBackup: Ref<IEquipment[]> = ref([]);
 const filteredEquipments: Ref<IEquipment[]> = ref([]);
 const branches: Ref<IBranch[]> = ref([]);
 const currentPage: Ref<number> = ref(1);
@@ -119,7 +118,7 @@ function setInitialData(data: IEquipment[], rewriteBaseList: boolean = true) {
 function getEquipmentsRowsTable() {
   api.equipments
     .fetchEquipments()
-    .then(setInitialData)
+    .then(data => setInitialData(data.data))
 }
 
 function updateTargetEquipment(data: IEquipment) {
@@ -170,22 +169,20 @@ function handleXLSXAdd(file: File) {
 }
 
 function requestSearch() {
-  equipmentsBackup.value = [...equipments.value];
-
   api.equipments
     .searchEquipment({ searchText: searchText.value })
-    .then(setInitialData)
+    .then(data => setInitialData(data.data));
 }
 
 function clearSearch() {
-  setInitialData(equipmentsBackup.value)
+  getEquipmentsRowsTable();
 }
 
 onMounted(() => {
   getEquipmentsRowsTable();
 
   api.branches.fetchBranches().then(data => {
-    branches.value = [...data];
+    branches.value = [...data.data];
   });
 });
 

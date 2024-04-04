@@ -115,7 +115,6 @@ const { searchText, setSearchText: searchBranch } = useSearch(requestSearch, cle
 const { addModal, editModal, deleteModal, handleModalWrapper } = useCRUDModals(handleModalCallback);
 
 const currentBranch: Ref<IBranch | null> = ref(null);
-const backupBranches: Ref<IBranch[]> = ref([]);
 const branches: Ref<IBranch[]> = ref([]);
 const filteredBranches: Ref<IBranch[]> = ref([]);
 const newBranch: Ref<INewBranch> = ref({ ...initialBranch });
@@ -170,8 +169,8 @@ function getBranchesAndRowsTable() {
   api.branches
     .fetchBranches()
     .then(data => {
-      branches.value = [...data];
-      filteredBranches.value = [...data];
+      branches.value = [...data.data];
+      filteredBranches.value = [...data.data];
       rows.value = getTableRows(filteredBranches.value);
     })
 }
@@ -221,21 +220,17 @@ function keyDownEscape() {
 }
 
 function requestSearch() {
-  backupBranches.value = [...branches.value];
-
   api.branches
     .searchBranch({ searchText: searchText.value })
     .then(data => {
-      branches.value = [...data];
-      filteredBranches.value = [...data];
+      branches.value = [...data.data];
+      filteredBranches.value = [...data.data];
       rows.value = getTableRows(filteredBranches.value);
     })
 }
 
 function clearSearch() {
-  branches.value = [...backupBranches.value];
-  filteredBranches.value = [...backupBranches.value];
-  rows.value = getTableRows(filteredBranches.value);
+  getBranchesAndRowsTable();
 }
 
 onMounted(() => {
