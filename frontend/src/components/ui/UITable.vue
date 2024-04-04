@@ -36,7 +36,7 @@
         </td>
         <td class="flex justify-end gap-3">
           <button
-            v-if="editButtonVisible"
+            v-if="editButtonVisible && rows[rowIndex][4].title !== 'Заблокирован'"
             class="button button--text"
             @click="$emit('edit', rows[rowIndex][0].title)"
           >
@@ -46,7 +46,7 @@
             Редактировать
           </button>
           <button
-            v-if="deleteButtonVisible"
+            v-if="deleteButtonVisible && rows[rowIndex][4].title !== 'Заблокирован'"
             class="button button--text"
             @click="$emit('delete', rows[rowIndex][0].title)"
           >
