@@ -6,16 +6,17 @@ import type {
   IHistoryPayload,
 } from '@/entities/types/backend/payload/equipmentPayload';
 import type { IEquipment, IHistoryItem } from '@/entities/types/backend/response/equipment';
+import type { IPagination } from '@/entities/types/backend/response/pagination';
 import { getQueryParams } from '@/utils/helpers/queryParam';
 
 export const equipments = (client: AxiosInstance) => ({
-  fetchEquipments: (): Promise<IEquipment[]> => {
+  fetchEquipments: (): Promise<IPagination<IEquipment>> => {
     return client.get('/equipments');
   },
   getEquipmentById: (id: number | string): Promise<IEquipment> => {
     return client.get(`/equipment/${id}`);
   },
-  searchEquipment: (data: IQueryData): Promise<IEquipment[]> => {
+  searchEquipment: (data: IQueryData): Promise<IPagination<IEquipment>> => {
     return client.get(`equipments/search?${getQueryParams(data)}`);
   },
   createEquipments: (payload: FormData): Promise<IEquipment[]> => {

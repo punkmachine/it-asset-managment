@@ -1,6 +1,6 @@
-import type { IQueryData } from '@/entities/types/backend/query';
+import type { IPaginationQuery, ISearchQuery } from '@/entities/types/backend/payload/query';
 
-export function getQueryParams(data: IQueryData) {
+export function getQueryParams<T extends IPaginationQuery | ISearchQuery>(data: T): string {
   return Object.keys(data)
     .map(key => `${key}=${data[key]}`)
     .join('&');

@@ -39,4 +39,4 @@ export interface ISuperAdmin extends IAdmin {
   currentDataCounters: IDataCounter;
 }
 
-export type TAdminsList = (IAdmin | ISuperAdmin)[];
+export type TAdminsList = (IAdmin | ISuperAdmin);
