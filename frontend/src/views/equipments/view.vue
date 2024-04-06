@@ -19,11 +19,16 @@
           @delete="handleDelete"
         />
 
-        <div class="mr-5 mt-5 flex justify-end">
+        <div class="mx-5 mt-5 flex justify-between">
+          <p>
+            Всего: {{ totalCount }}
+          </p>
+
           <UIPagination
             v-model:current-page="currentPage"
             v-model:visible-items="visibleTableItems"
-            :count="rows.length"
+            :total-pages="totalPages"
+            :count="totalCount"
           />
         </div>
       </div>
@@ -43,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import type { Ref } from 'vue';
@@ -71,17 +76,28 @@ const router = useRouter();
 const { searchText, setSearchText: searchEquipment } = useSearch(requestSearch, clearSearch);
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
-const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+const deleteModal = ref<InstanceType<typeof UIModal> | null>(null);
 
-const currentEquipment: Ref<IEquipment | null> = ref(null);
-const equipments: Ref<IEquipment[]> = ref([]);
-const filteredEquipments: Ref<IEquipment[]> = ref([]);
-const branches: Ref<IBranch[]> = ref([]);
-const currentPage: Ref<number> = ref(1);
-const visibleTableItems: Ref<number> = ref(10);
+const currentEquipment = ref<IEquipment | null>(null);
+const equipments = ref<IEquipment[]>([]);
+const filteredEquipments = ref<IEquipment[]>([]);
+const branches = ref<IBranch[]>([]);
 
-const rows: Ref<TRows[]> = ref([]);
-const columns: Ref<IColumn[]> = ref(columnsSettings);
+const currentPage = ref<number>(1);
+const visibleTableItems = ref<number>(10);
+const totalPages = ref<number>(0);
+const totalCount = ref<number>(0);
+
+const rows = ref<TRows[]>([]);
+const columns = ref<IColumn[]>(columnsSettings);
+
+watch(() => visibleTableItems.value, () => {
+  getEquipmentsRowsTable();
+});
+
+watch(() => currentPage.value, () => {
+  getEquipmentsRowsTable();
+});
 
 function getCurrentEquipmentById(id: string): IEquipment | null {
   return equipments.value.find(equipment => equipment._id === id) ?? null;
@@ -116,9 +132,18 @@ function setInitialData(data: IEquipment[], rewriteBaseList: boolean = true) {
 }
 
 function getEquipmentsRowsTable() {
+  const query = {
+    page: currentPage.value,
+    limit: visibleTableItems.value,
+  };
+
   api.equipments
-    .fetchEquipments()
-    .then(data => setInitialData(data.data))
+    .fetchEquipments(query)
+    .then(data => {
+      setInitialData(data.data);
+      totalPages.value = data.totalPages;
+      totalCount.value = data.totalCount;
+    });
 }
 
 function updateTargetEquipment(data: IEquipment) {
@@ -169,9 +194,19 @@ function handleXLSXAdd(file: File) {
 }
 
 function requestSearch() {
+  const query = {
+    searchText: searchText.value,
+    page: currentPage.value,
+    limit: visibleTableItems.value,
+  };
+
   api.equipments
-    .searchEquipment({ searchText: searchText.value })
-    .then(data => setInitialData(data.data));
+    .searchEquipment(query)
+    .then(data => {
+      setInitialData(data.data);
+      totalPages.value = data.totalPages;
+      totalCount.value = data.totalCount;
+    });
 }
 
 function clearSearch() {

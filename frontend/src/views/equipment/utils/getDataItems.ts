@@ -8,8 +8,10 @@ const generateDataItem = (title: string, value: string) => ({ title, value });
 
 function getReadableState(state: EquipmentState) {
   const dict = {
-    [EquipmentState.active]: 'Эксплуатируется',
+    [EquipmentState.active]: 'Где-то лежит',
     [EquipmentState.deleted]: 'Списано',
+    [EquipmentState.exploited]: 'Эксплуатируется',
+    [EquipmentState.repaired]: 'Ремонтируется',
   };
 
   return dict[state];
@@ -25,7 +27,7 @@ function generateDataItems(equipment: IEquipment) {
     generateDataItem('Серийный номер устройства:', equipment.serialNumber),
     generateDataItem('Статус устройства:', getReadableState(equipment.state)),
     generateDataItem('Ассет номер устройства:', equipment.assetNumber),
-    generateDataItem('Материально-ответственное лицо:', `${FRP.firstName} ${FRP.lastName}`),
+    generateDataItem('Материально-ответственное лицо:', `${FRP?.firstName || ''} ${FRP?.lastName || ''}`),
     generateDataItem('Получатель:', equipment.recipient || '-'),
     generateDataItem('Номер накладной:', equipment.invoiceNumber),
     generateDataItem('Филиал:', equipment.branch.title),

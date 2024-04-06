@@ -21,7 +21,8 @@
           <UIPagination
             v-model:current-page="currentPage"
             v-model:visible-items="visibleTableItems"
-            :count="rows.length"
+            :total-pages="totalPages"
+            :count="totalCount"
           />
         </div>
       </div>
@@ -86,12 +87,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 
 import type { Ref } from 'vue';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
-import type { IAdmin } from '@/entities/types/backend/response/admin';
-import type { INewUser } from './types';
+import type { IAdmin } from '@/entities/types/backend/response/admins';
+import type { INewAdmin } from './types';
 
 import UIPagination from '@/components/ui/UIPagination.vue';
 import UITable from '@/components/ui/UITable.vue';
@@ -115,19 +116,31 @@ import { columnsSettings, initialAdmin } from './settings';
 const { searchText, setSearchText: searchAdmin } = useSearch(requestSearch, clearSearch);
 const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 
-const deleteModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
-const editModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
-const addModal: Ref<InstanceType<typeof UIModal> | null> = ref(null);
+// @todo: эту штуку надо убрать на useCRUDModals
+const deleteModal = ref<InstanceType<typeof UIModal> | null>(null);
+const editModal = ref<InstanceType<typeof UIModal> | null>(null);
+const addModal = ref<InstanceType<typeof UIModal> | null>(null);
 
-const currentAdmin: Ref<IAdmin | null> = ref(null);
-const admins: Ref<IAdmin[]> = ref([]);
-const filteredAdmins: Ref<IAdmin[]> = ref([]);
-const newAdmin: Ref<INewUser> = ref({ ...initialAdmin });
-const currentPage: Ref<number> = ref(1);
-const visibleTableItems: Ref<number> = ref(10);
+const currentAdmin = ref<IAdmin | null>(null);
+const admins = ref<IAdmin[]>([]);
+const filteredAdmins = ref<IAdmin[]>([]);
+const newAdmin = ref<INewAdmin>({ ...initialAdmin });
 
-const columns: Ref<IColumn[]> = ref(columnsSettings);
-const rows: Ref<TRows[]> = ref([]);
+const currentPage = ref<number>(1);
+const visibleTableItems = ref<number>(10);
+const totalPages = ref<number>(1);
+const totalCount = ref<number>(0);
+
+const columns = ref<IColumn[]>(columnsSettings);
+const rows = ref<TRows[]>([]);
+
+watch(() => visibleTableItems.value, () => {
+  getAdminsAndRowsTable();
+});
+
+watch(() => currentPage.value, () => {
+  getAdminsAndRowsTable();
+});
 
 function getCurrentUserById(id: string): IAdmin | null {
   return admins.value.find(admin => admin._id === id) ?? null;
@@ -176,9 +189,18 @@ function setInitialData(data: IAdmin[]) {
 }
 
 function getAdminsAndRowsTable() {
+  const query = {
+    page: currentPage.value,
+    limit: visibleTableItems.value,
+  };
+
   api.admins
-    .fetchAdmins()
-    .then(data => setInitialData(data.data));
+    .fetchAdmins(query)
+    .then(data => {
+      setInitialData(data.data);
+      totalPages.value = data.totalPages;
+      totalCount.value = data.totalCount;
+    });
 }
 
 function deleteUserClick() {
@@ -229,9 +251,19 @@ function keyDownEscape() {
 }
 
 function requestSearch() {
+  const query = {
+    searchText: searchText.value,
+    page: currentPage.value,
+    limit: visibleTableItems.value,
+  };
+
   api.admins
-    .searchAdmin({ searchText: searchText.value })
-    .then(data => setInitialData(data.data));
+    .searchAdmin(query)
+    .then(data => {
+      setInitialData(data.data);
+      totalPages.value = data.totalPages;
+      totalCount.value = data.totalCount;
+    });
 }
 
 function clearSearch() {
@@ -264,4 +296,4 @@ onBeforeUnmount(() => {
   flex-direction: column;
   padding-bottom: 16px;
 }
-</style>@/entities/types/backend/response/admins
+</style>

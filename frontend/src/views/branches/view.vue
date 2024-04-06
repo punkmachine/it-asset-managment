@@ -21,7 +21,8 @@
           <UIPagination
             v-model:current-page="currentPage"
             v-model:visible-items="visibleTableItems"
-            :count="rows.length"
+            :total-pages="totalPages"
+            :count="totalCount"
           />
         </div>
       </div>
@@ -83,9 +84,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 
-import type { Ref } from 'vue';
 import type { IBranch } from '@/entities/types/backend/response/branches';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
 import type { INewBranch } from './types';
@@ -114,15 +114,26 @@ const { addEventEscape, removeEventEscape } = useEscapeClick(keyDownEscape);
 const { searchText, setSearchText: searchBranch } = useSearch(requestSearch, clearSearch);
 const { addModal, editModal, deleteModal, handleModalWrapper } = useCRUDModals(handleModalCallback);
 
-const currentBranch: Ref<IBranch | null> = ref(null);
-const branches: Ref<IBranch[]> = ref([]);
-const filteredBranches: Ref<IBranch[]> = ref([]);
-const newBranch: Ref<INewBranch> = ref({ ...initialBranch });
-const currentPage: Ref<number> = ref(1);
-const visibleTableItems: Ref<number> = ref(10);
+const currentBranch = ref<IBranch | null>(null);
+const branches = ref<IBranch[]>([]);
+const filteredBranches = ref<IBranch[]>([]);
+const newBranch = ref<INewBranch>({ ...initialBranch });
 
-const rows: Ref<TRows[]> = ref([]);
-const columns: Ref<IColumn[]> = ref(columnsSettings);
+const currentPage = ref<number>(1);
+const visibleTableItems = ref<number>(10);
+const totalPages = ref<number>(1);
+const totalCount = ref<number>(0);
+
+const rows = ref<TRows[]>([]);
+const columns = ref<IColumn[]>(columnsSettings);
+
+watch(() => visibleTableItems.value, () => {
+  getBranchesAndRowsTable();
+});
+
+watch(() => currentPage.value, () => {
+  getBranchesAndRowsTable();
+});
 
 function getCurrentBranchById(id: string): IBranch | null {
   return branches.value.find(branch => branch._id === id) ?? null;
@@ -166,13 +177,20 @@ function setNewDataBranch() {
 }
 
 function getBranchesAndRowsTable() {
+  const query = {
+    page: currentPage.value,
+    limit: visibleTableItems.value,
+  };
+
   api.branches
-    .fetchBranches()
+    .fetchBranches(query)
     .then(data => {
       branches.value = [...data.data];
       filteredBranches.value = [...data.data];
       rows.value = getTableRows(filteredBranches.value);
-    })
+      totalPages.value = data.totalPages;
+      totalCount.value = data.totalCount;
+    });
 }
 
 function deleteBranchClick() {
@@ -220,13 +238,21 @@ function keyDownEscape() {
 }
 
 function requestSearch() {
+  const query = {
+    searchText: searchText.value,
+    page: currentPage.value,
+    limit: visibleTableItems.value,
+  };
+
   api.branches
-    .searchBranch({ searchText: searchText.value })
+    .searchBranch(query)
     .then(data => {
       branches.value = [...data.data];
       filteredBranches.value = [...data.data];
       rows.value = getTableRows(filteredBranches.value);
-    })
+      totalPages.value = data.totalPages;
+      totalCount.value = data.totalCount;
+    });
 }
 
 function clearSearch() {
