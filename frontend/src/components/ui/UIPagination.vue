@@ -16,7 +16,7 @@
 
     <div class="pagination__counter">
       <span
-        v-for="number in pagesCount"
+        v-for="number in totalPages"
         class="pagination__counter-item"
         :key="`pagination-${number}`"
         :class="{
@@ -31,11 +31,11 @@
     <div
       class="pagination__arrow"
       :class="{
-        'pagination__arrow--disable': currentPage === pagesCount,
+        'pagination__arrow--disable': currentPage === totalPages,
       }"
       @click="nextPage"
     >
-      <button :disabled="currentPage === pagesCount">
+      <button :disabled="currentPage === totalPages">
         <svg>
           <use xlink:href="@/assets/icons/sprites/buttons.svg#arrow-right"></use>
         </svg>
@@ -68,6 +68,7 @@ interface IProps {
   count: number;
   currentPage: number;
   visibleItems: number;
+  totalPages: number,
 }
 
 interface IEmits {
@@ -80,10 +81,6 @@ const emits = defineEmits<IEmits>();
 
 const visibleSelect = computed(() => {
   return props.count > 10;
-});
-
-const pagesCount = computed(() => {
-  return Math.ceil(props.count / 10);
 });
 
 const optionsSelect = computed(() => {
