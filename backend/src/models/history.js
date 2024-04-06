@@ -14,7 +14,7 @@ const HistoryEquipment = new Schema({
 	},
   passedOn: {
 		type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Admin',
 		required: true,
 	},
   equipmentId: {
