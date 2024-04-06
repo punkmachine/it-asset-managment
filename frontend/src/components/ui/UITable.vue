@@ -19,7 +19,7 @@
         </th>
       </tr>
     </thead>
-    <tbody>
+    <tbody v-if="rows.length">
       <tr
         v-for="(row, rowIndex) in filteredRows"
         :key="rowIndex"
@@ -36,7 +36,7 @@
         </td>
         <td class="flex justify-end gap-3">
           <button
-            v-if="editButtonVisible && rows[rowIndex][4].title !== 'Заблокирован'"
+            v-if="editButtonVisible && getRowState(rows[rowIndex]) !== 'Заблокирован'"
             class="button button--text"
             @click="$emit('edit', rows[rowIndex][0].title)"
           >
@@ -46,7 +46,7 @@
             Редактировать
           </button>
           <button
-            v-if="deleteButtonVisible && rows[rowIndex][4].title !== 'Заблокирован'"
+            v-if="deleteButtonVisible && getRowState(rows[rowIndex]) !== 'Заблокирован'"
             class="button button--text"
             @click="$emit('delete', rows[rowIndex][0].title)"
           >
@@ -59,10 +59,25 @@
       </tr>
     </tbody>
   </table>
+  <div v-if="!rows.length">
+    <div class="flex flex-col items-center justify-center">
+      <div class="mb-2">
+        <img
+          class="w-16 h-16"
+          src="@/assets/icons/db-empty.svg"
+          alt=""
+        />
+      </div>
+      <p>
+        База данных {{ readableLocation }} пуста
+      </p>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { defineProps, defineEmits, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
 
 interface IProps {
@@ -80,11 +95,23 @@ interface IEmits {
 
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
+const route = useRoute();
 
 const filteredRows = computed(() => {
   return props.rows.map(row => {
     return row.filter(cell => !cell.key.includes('_'));
   });
+});
+
+const readableLocation = computed(() => {
+  const dict = {
+    '/admins': 'администраторов',
+    '/branches': 'филиалов',
+    '/': 'оборудования',
+    default: '',
+  };
+
+  return dict[route.path] ? dict[route.path] : dict.default;
 });
 
 function rowClick(row: TRows) {
@@ -99,6 +126,10 @@ function rowClick(row: TRows) {
       }
     }
   }
+}
+
+function getRowState(row: TRows) {
+  return row.find(cell => cell.key === 'state')?.title;
 }
 </script>
 
