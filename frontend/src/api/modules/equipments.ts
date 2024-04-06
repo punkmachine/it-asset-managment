@@ -7,11 +7,18 @@ import type {
 } from '@/entities/types/backend/payload/equipmentPayload';
 import type { IEquipment, IHistoryItem } from '@/entities/types/backend/response/equipment';
 import type { IPagination } from '@/entities/types/backend/response/pagination';
+import type { IPaginationQuery } from '@/entities/types/backend/payload/query';
 import { getQueryParams } from '@/utils/helpers/queryParam';
 
 export const equipments = (client: AxiosInstance) => ({
-  fetchEquipments: (): Promise<IPagination<IEquipment>> => {
-    return client.get('/equipments');
+  fetchEquipments: (query?: IPaginationQuery): Promise<IPagination<IEquipment>> => {
+    let url = '/equipments';
+
+    if (query) {
+      url = `${url}?${getQueryParams(query)}`
+    }
+
+    return client.get(url);
   },
   getEquipmentById: (id: number | string): Promise<IEquipment> => {
     return client.get(`/equipment/${id}`);

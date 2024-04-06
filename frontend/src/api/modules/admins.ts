@@ -14,7 +14,7 @@ export const admins = (client: AxiosInstance) => ({
       url = `${url}?${getQueryParams(query)}`
     }
 
-    return client.get('/admins');
+    return client.get(url);
   },
   getAdminById: (id: number | string): Promise<IAdmin> => {
     return client.get(`/admin/${id}`);
