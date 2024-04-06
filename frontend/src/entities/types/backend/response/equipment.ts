@@ -4,6 +4,8 @@ import type { IAdmin } from './admins';
 export enum EquipmentState {
   active = 'ACTIVE',
   deleted = 'DELETED',
+  exploited = 'EXPLOITED',
+  repaired = 'BEING_REPAIRED',
 }
 
 export interface IHistoryItem {

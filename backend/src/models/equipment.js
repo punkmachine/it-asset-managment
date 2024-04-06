@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 
-const equipmentStateEnum = ["ACTIVE", "DELETED"];
+const equipmentStateEnum = [
+  "ACTIVE", "DELETED", "EXPLOITED", "BEING_REPAIRED",
+];
 
 const Equipment = new Schema({
 	createdDate: {
