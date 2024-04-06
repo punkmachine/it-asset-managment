@@ -5,6 +5,7 @@ import type { IBranch } from '@/entities/types/backend/response/branches';
 import type { IPagination } from '@/entities/types/backend/response/pagination';
 import type { IPaginationQuery } from '@/entities/types/backend/payload/query';
 import { getQueryParams } from '@/utils/helpers/queryParam';
+import type { IOptions } from '@/entities/types/UI/select';
 
 export const branches = (client: AxiosInstance) => ({
   fetchBranches: (query?: IPaginationQuery): Promise<IPagination<IBranch>> => {
@@ -15,6 +16,9 @@ export const branches = (client: AxiosInstance) => ({
     }
 
     return client.get(url);
+  },
+  fetchBranchesOptions: (): Promise<IOptions[]> => {
+    return client.get('/branches-options');
   },
   getBranchById: (id: number | string): Promise<IBranch> => {
     return client.get(`/branch/${id}`);

@@ -22,6 +22,7 @@ router.post('/create-super-admin', AuthController.createSuperAdmin);
 // филиалы
 router.get('/branches', authMiddleware, BranchesController.getAll);
 router.get('/branches/search', authMiddleware, BranchesController.searchBranches);
+router.get('/branches-options', authMiddleware, BranchesController.getBranchesOptions);
 router.get('/branch/:id', authMiddleware, BranchesController.getById);
 router.post('/branch', authMiddleware, BranchesController.create);
 router.put('/branch/:id', authMiddleware, BranchesController.updateById);

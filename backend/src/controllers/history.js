@@ -9,7 +9,7 @@ class HistoryController {
         return response.status(400).json({ message: 'Ошибка получения филиала по ID. Не указан ID.' });
       }
 
-      const historyItems = await History.find({ equipmentId }).populate('passedOn');
+      const historyItems = await History.find({ equipmentId }).populate('passedOn').populate('branch');
 
 			response.status(200).json(historyItems);
 		} catch (error) {

@@ -14,6 +14,24 @@ class BranchesController {
 		}
 	};
 
+  async getBranchesOptions(request, response) {
+    try {
+      const branches = await Branch.find();
+      const result = branches
+        .filter(branch => branch.state !== "DELETED")
+        .map(branch => {
+          return {
+            key: branch._id,
+            title: branch.title
+          };
+        });
+
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(500).json(error.message);
+    }
+  }
+
 	async create(request, response) {
 		try {
       const newBranch = {
