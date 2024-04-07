@@ -51,12 +51,14 @@ router.get('/equipment/:id', authMiddleware, EquipmentsController.getById);
 router.post('/equipments', [authMiddleware, upload.single('file')], EquipmentsController.createEquipments);
 router.put('/equipment/:id', authMiddleware, EquipmentsController.updateById);
 router.delete('/equipment/:id', authMiddleware, EquipmentsController.deleteById);
+router.get('/equipments/export', authMiddleware, EquipmentsController.getFile);
 
 // комменты оборудования
 router.post('/equipment/comment/:equipmentId', authMiddleware, EquipmentsController.createComment);
 
 // история оборудования
 router.get('/equipments/history/:equipmentId', authMiddleware, HistoryController.getHistoryByEquipmentId);
+router.get('/equipments/history/export/:equipmentId', authMiddleware, HistoryController.getFile);
 router.post('/equipments/history/:equipmentId', authMiddleware, HistoryController.createHistoryItem);
 
 

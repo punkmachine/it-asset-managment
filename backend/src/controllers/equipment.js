@@ -1,3 +1,4 @@
+import xlsx from 'xlsx';
 import Equipment from '../models/equipment.js';
 import { parseXLSX } from '../helpers/equipments.js';
 import paginate from '../helpers/paginate.js';
@@ -10,7 +11,7 @@ class EquipmentsController {
       const paginationResult = await paginate(Equipment, {}, { page, limit }, ['branch', 'financiallyResponsiblePerson']);
 
       response.status(200).json(paginationResult);
-		} catch (error) {
+    } catch (error) {
 			response.status(500).json(error.message);
 		}
 	};
@@ -165,6 +166,41 @@ class EquipmentsController {
 			response.status(500).json(error.message);
 		}
   };
+
+  async getFile(request, response) {
+    try {
+      // @todo: добавить query
+
+      const equipments = await Equipment.find().populate('branch').populate('financiallyResponsiblePerson');
+
+      const worksheet = xlsx.utils.json_to_sheet(equipments.map(equipment => ({
+        createdDate: equipment.createdDate,
+        updatedDate: equipment.updatedDate,
+        assetNumber: equipment.assetNumber,
+        inventoryNumber: equipment.inventoryNumber,
+        name: equipment.name,
+        description: equipment.description,
+        serialNumber: equipment.serialNumber,
+        financiallyResponsiblePerson: equipment.financiallyResponsiblePerson.login,
+        recipient: equipment.recipient,
+        invoiceNumber: equipment.invoiceNumber,
+        state: equipment.state,
+        branch: equipment.branch.title,
+      })));
+
+      const workbook = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(workbook, worksheet, 'Equipments');
+
+      const excelBuffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+      response.setHeader('Content-Disposition', 'attachment; filename="equipments.xlsx"');
+      response.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+      response.send(excelBuffer);
+    } catch (error) {
+      response.status(500).json(error.message);
+    }
+  }
 }
 
 export default new EquipmentsController();
