@@ -5,9 +5,17 @@ import type { InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axio
 
 import router from '@/router';
 
+import { api } from '.';
+
 const client = axios.create({
   baseURL: import.meta.env.VITE_APP_API_URL,
 });
+
+function goToLoginPage() {
+  Cookies.remove('token');
+  localStorage.removeItem('adminId');
+  router.push('/login');
+}
 
 function requestSuccess(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
   const token = Cookies.get('token');
@@ -31,9 +39,27 @@ function responseSuccess<T>(response: AxiosResponse<T>): T {
 }
 
 function responseError(error: AxiosError): Promise<never> {
-  if (error.response?.status === 403) {
-    Cookies.remove('token');
-    router.push('/login');
+  const isRefreshPath = error.response?.request.responseURL.includes('/refresh');
+
+  if (error.response?.status === 403 || error.response?.status === 401 && !isRefreshPath) {
+    const refresh = Cookies.get('refresh-token');
+
+    if (!refresh) {
+      goToLoginPage();
+    } else {
+      api.auth.refresh({ refreshToken: Cookies.get('refresh-token') })
+        .then(data => {
+          Cookies.set('token', data.token);
+
+          return axios({
+            ...error.config,
+            headers: { ...error.config.headers, Authorization: `Bearer ${data.token}` }
+          });
+        })
+        .catch(() => {
+          goToLoginPage();
+        });
+    }
   }
 
   console.error('error >>>', error);

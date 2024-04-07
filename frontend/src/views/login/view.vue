@@ -85,6 +85,7 @@ const toggleVisiblePassword = () => passwordVisible.value = !passwordVisible.val
 
 function successAuth(data: ILoginResponse) {
   Cookies.set('token', data.token);
+  Cookies.set('refresh-token', data.refreshToken);
   adminsStore.setCurrentAdminId(data.adminId);
   adminsStore.fetchCurrentAdmin();
   router.push('/');
