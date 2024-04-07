@@ -17,6 +17,7 @@ const router = new Router();
 const upload = multer({ dest: 'uploads/' });
 
 router.post('/login', AuthController.login);
+router.post('/refresh', AuthController.refresh);
 router.post('/create-super-admin', AuthController.createSuperAdmin);
 
 // филиалы

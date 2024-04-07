@@ -1,6 +1,7 @@
+import jwt from 'jsonwebtoken';
 import Admin from '../models/admin.js';
 import { compareSync, hashSync } from 'bcrypt';
-import { generateAccessToken } from '../helpers/auth.js';
+import { generateAccessToken, generateRefreshToken } from '../helpers/auth.js';
 
 class AuthController {
   async login(request, response) {
@@ -17,11 +18,31 @@ class AuthController {
         return response.status(400).json({ message: 'Введен неверный пароль' });
       }
 
-      const token = generateAccessToken(admin._id); // @todo: роль
+      const token = generateAccessToken(admin._id, admin.role);
+      const refreshToken = generateRefreshToken(admin._id, admin.role);
 
-      response.status(200).json({ token, adminId: admin._id });
+      response.status(200).json({ token, refreshToken, adminId: admin._id });
     } catch (error) {
       response.status(500).json(error.message);
+    }
+  }
+
+  async refresh(request, response) {
+    try {
+      const { refreshToken } = request.body;
+
+      const data = jwt.verify(refreshToken, 'refresh-itam');
+      const token = generateAccessToken(data.id, data.role);
+
+      response.status(200).json({ token });
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        return response.status(401).json({ message: 'Срок действия refreshToken истек. Пожалуйста, войдите снова' });
+      } else if (error instanceof jwt.JsonWebTokenError) {
+        return response.status(401).json({ message: 'Неверный refreshToken. Пожалуйста, войдите снова' });
+      } else {
+        return response.status(401).json({ message: 'Невозможно обновить токен, пожалуйста, войдите снова' });
+      }
     }
   }
 

@@ -59,7 +59,7 @@ class AdminController {
 
       const admin = await Admin.findById(id);
 
-			response.status(200).json(admin);
+      response.status(200).json(admin);
 		} catch (error) {
 			response.status(500).json(error.message);
 		}
