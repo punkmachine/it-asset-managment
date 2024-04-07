@@ -9,10 +9,14 @@ export enum EquipmentState {
 }
 
 export interface IHistoryItem {
-  id: string;
+  _id: string;
   date: string; // когда была передана
   passedOn: IAdmin; // передал
   accepted: string; // принял
+  branch: IBranch;
+  equipmentId: string;
+  equipmentState: EquipmentState;
+  invoiceNumber: string;
 }
 
 export interface IEquipment {

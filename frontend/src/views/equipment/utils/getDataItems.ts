@@ -6,7 +6,7 @@ import { getFormatDate } from '@/utils/helpers/date';
 
 const generateDataItem = (title: string, value: string) => ({ title, value });
 
-function getReadableState(state: EquipmentState) {
+export function getReadableState(state: EquipmentState) {
   const dict = {
     [EquipmentState.active]: 'Где-то лежит',
     [EquipmentState.deleted]: 'Списано',

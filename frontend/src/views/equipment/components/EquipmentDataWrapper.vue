@@ -5,9 +5,10 @@
 
       <button
         class="button !w-auto"
-        @click="$emit('updateRecipientClick')"
+        @click="$emit('updateEquipmentClick')"
       >
-        {{ equipment?.recipient ? 'Переназначить' : 'Назначить' }}
+        Редактировать
+        <!-- {{ equipment?.recipient ? 'Переназначить' : 'Назначить' }} -->
       </button>
     </div>
     <div class="equipment__card-divider"></div>
@@ -33,7 +34,7 @@ interface IProps {
 }
 
 interface IEmits {
-  (e: 'updateRecipientClick'): void;
+  (e: 'updateEquipmentClick'): void;
 }
 
 defineProps<IProps>();

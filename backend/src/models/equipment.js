@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 
-const equipmentStateEnum = [
+export const equipmentStateEnum = [
   "ACTIVE", "DELETED", "EXPLOITED", "BEING_REPAIRED",
 ];
 

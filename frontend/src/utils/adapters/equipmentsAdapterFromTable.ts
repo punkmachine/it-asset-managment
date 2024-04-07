@@ -5,8 +5,10 @@ import { getFormatDate, TimeFormatDict } from '@/utils/helpers/date';
 
 function getReadableState(key: EquipmentState | 'default') {
   const dict = {
-    ACTIVE: 'Активен',
-    DELETED: 'Заблокирован',
+    [EquipmentState.active]: 'Активен',
+    [EquipmentState.deleted]: 'Заблокирован',
+    [EquipmentState.exploited]: 'Эксплуатируется',
+    [EquipmentState.repaired]: 'Ремонтируется',
     default: '...',
   };
 

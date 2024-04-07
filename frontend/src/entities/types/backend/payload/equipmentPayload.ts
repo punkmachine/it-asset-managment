@@ -14,8 +14,11 @@ export interface IEquipmentUpdatePayload {
 }
 
 export interface IHistoryPayload {
-  passedOn: string; // id пользователя
+  passedOn: string; // id админа
   accepted: string;
+  branch: string;
+  invoiceNumber: string;
+  equipmentState: EquipmentState;
 }
 
 export interface ICommentPayload {
