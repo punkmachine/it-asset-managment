@@ -34,7 +34,10 @@
           >
             Профиль
           </RouterLink>
-          <div class="account__menu-item">
+          <div
+            class="account__menu-item"
+            @click="logout"
+          >
             <button>Выйти</button>
           </div>
         </nav>
@@ -45,13 +48,16 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
+import Cookies from 'js-cookie';
 
 import { clickOutside } from '@/vue-features/directives/clickOutside';
 import { useAdminsStore } from '@/store';
 
 const vClickOutside = clickOutside;
+
+const router = useRouter();
 
 const adminsStore = useAdminsStore();
 const { currentAdmin } = storeToRefs(adminsStore);
@@ -64,6 +70,12 @@ function hideMenuProfile() {
 
 function toggleVisibleMenuProfile() {
   showProfileMenu.value = !showProfileMenu.value;
+}
+
+function logout() {
+  localStorage.removeItem('adminId');
+  Cookies.remove('token');
+  router.push('/login');
 }
 </script>
 
