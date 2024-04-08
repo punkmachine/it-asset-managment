@@ -11,6 +11,7 @@
         <UITable
           :columns="columns"
           :rows="rows"
+          :loading="loading"
           delete-button-visible
           edit-button-visible
           @edit="handleEdit"
@@ -118,6 +119,7 @@ const currentBranch = ref<IBranch | null>(null);
 const branches = ref<IBranch[]>([]);
 const filteredBranches = ref<IBranch[]>([]);
 const newBranch = ref<INewBranch>({ ...initialBranch });
+const loading = ref<boolean>(false);
 
 const currentPage = ref<number>(1);
 const visibleTableItems = ref<number>(10);
@@ -182,6 +184,7 @@ function getBranchesAndRowsTable() {
     limit: visibleTableItems.value,
   };
 
+  loading.value = true;
   api.branches
     .fetchBranches(query)
     .then(data => {
@@ -190,6 +193,9 @@ function getBranchesAndRowsTable() {
       rows.value = getTableRows(filteredBranches.value);
       totalPages.value = data.totalPages;
       totalCount.value = data.totalCount;
+    })
+    .finally(() => {
+      loading.value = false;
     });
 }
 
@@ -244,6 +250,7 @@ function requestSearch() {
     limit: visibleTableItems.value,
   };
 
+  loading.value = true;
   api.branches
     .searchBranch(query)
     .then(data => {
@@ -252,6 +259,9 @@ function requestSearch() {
       rows.value = getTableRows(filteredBranches.value);
       totalPages.value = data.totalPages;
       totalCount.value = data.totalCount;
+    })
+    .finally(() => {
+      loading.value = false;
     });
 }
 

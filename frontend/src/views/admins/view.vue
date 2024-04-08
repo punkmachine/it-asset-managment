@@ -11,6 +11,7 @@
         <UITable
           :columns="columns"
           :rows="rows"
+          :loading="loading"
           delete-button-visible
           edit-button-visible
           @edit="handleEdit"
@@ -125,6 +126,7 @@ const currentAdmin = ref<IAdmin | null>(null);
 const admins = ref<IAdmin[]>([]);
 const filteredAdmins = ref<IAdmin[]>([]);
 const newAdmin = ref<INewAdmin>({ ...initialAdmin });
+const loading = ref<boolean>(false);
 
 const currentPage = ref<number>(1);
 const visibleTableItems = ref<number>(10);
@@ -194,12 +196,16 @@ function getAdminsAndRowsTable() {
     limit: visibleTableItems.value,
   };
 
+  loading.value = true;
   api.admins
     .fetchAdmins(query)
     .then(data => {
       setInitialData(data.data);
       totalPages.value = data.totalPages;
       totalCount.value = data.totalCount;
+    })
+    .finally(() => {
+      loading.value = false;
     });
 }
 
@@ -257,12 +263,16 @@ function requestSearch() {
     limit: visibleTableItems.value,
   };
 
+  loading.value = true;
   api.admins
     .searchAdmin(query)
     .then(data => {
       setInitialData(data.data);
       totalPages.value = data.totalPages;
       totalCount.value = data.totalCount;
+    })
+    .finally(() => {
+      loading.value = false;
     });
 }
 

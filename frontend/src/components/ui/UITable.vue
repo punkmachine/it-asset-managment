@@ -19,7 +19,7 @@
         </th>
       </tr>
     </thead>
-    <tbody v-if="rows.length">
+    <tbody v-if="rows.length && !loading">
       <tr
         v-for="(row, rowIndex) in filteredRows"
         :key="rowIndex"
@@ -59,7 +59,8 @@
       </tr>
     </tbody>
   </table>
-  <div v-if="!rows.length">
+  <UILoader v-if="loading" />
+  <div v-if="!rows.length && !loading">
     <div class="flex flex-col items-center justify-center">
       <div class="mb-2">
         <img
@@ -79,12 +80,14 @@
 import { defineProps, defineEmits, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import type { IColumn, TRows } from '@/entities/types/UI/table';
+import UILoader from '@/components/ui/UILoader.vue';
 
 interface IProps {
   columns: IColumn[];
   rows: TRows[];
   deleteButtonVisible?: boolean;
   editButtonVisible?: boolean;
+  loading: boolean,
   goDetailItem?: (id: string) => void;
 }
 

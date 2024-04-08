@@ -15,6 +15,7 @@
           :columns="columns"
           :rows="rows"
           :go-detail-item="goDetailEquipment"
+          :loading="loading"
           delete-button-visible
           @delete="handleDelete"
         />
@@ -80,6 +81,7 @@ const deleteModal = ref<InstanceType<typeof UIModal> | null>(null);
 
 const currentEquipment = ref<IEquipment | null>(null);
 const equipments = ref<IEquipment[]>([]);
+const loading = ref<boolean>(false);
 const filteredEquipments = ref<IEquipment[]>([]);
 const branches = ref<IBranch[]>([]);
 
@@ -137,12 +139,16 @@ function getEquipmentsRowsTable() {
     limit: visibleTableItems.value,
   };
 
+  loading.value = true;
   api.equipments
     .fetchEquipments(query)
     .then(data => {
       setInitialData(data.data);
       totalPages.value = data.totalPages;
       totalCount.value = data.totalCount;
+    })
+    .finally(() => {
+      loading.value = false;
     });
 }
 
@@ -200,12 +206,16 @@ function requestSearch() {
     limit: visibleTableItems.value,
   };
 
+  loading.value = true;
   api.equipments
     .searchEquipment(query)
     .then(data => {
       setInitialData(data.data);
       totalPages.value = data.totalPages;
       totalCount.value = data.totalCount;
+    })
+    .finally(() => {
+      loading.value = false;
     });
 }
 
