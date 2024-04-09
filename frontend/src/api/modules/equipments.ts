@@ -44,4 +44,10 @@ export const equipments = (client: AxiosInstance) => ({
   postEquipmentsHistory: (equipmentId: number | string, payload: IHistoryPayload): Promise<IHistoryItem> => {
     return client.post(`/equipments/history/${equipmentId}`, payload);
   },
+  downloadEquipmentsExcel: (): Promise<Blob> => {
+    return client.get('/equipments/export', { responseType: 'blob' });
+  },
+  downloadEquipmentHistoryExcel: (id: number | string): Promise<Blob> => {
+    return client.get(`/equipments/history/export/${id}`, { responseType: 'blob' });
+  },
 });

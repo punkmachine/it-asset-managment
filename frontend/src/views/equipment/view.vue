@@ -10,7 +10,19 @@
 
     <div class="flex flex-col w-1/2">
       <div class="equipment__card">
-        <h2 class="equipment__card-header px-4 pb-2">История</h2>
+        <div class="flex justify-between items-center px-4 pb-2">
+          <h2 class="equipment__card-header">История</h2>
+
+          <button
+            class="button max-w-min"
+            @click="exportHistory"
+          >
+            <svg class="button__icon">
+              <use xlink:href="@/assets/icons/sprites/buttons.svg#export"></use>
+            </svg>
+            Экспорт
+          </button>
+        </div>
         <div class="equipment__card-divider"></div>
 
         <EquipmentHistoryList
@@ -239,6 +251,22 @@ function postNewHistory() {
         updateRecipientModal.value?.hide();
       });
   }
+}
+
+async function exportHistory() {
+  if (!equipment.value?._id) return;
+
+  const response = await api.equipments.downloadEquipmentHistoryExcel(equipment.value._id);
+
+  const url = window.URL.createObjectURL(new Blob([response]));
+  const link = document.createElement('a');
+
+  link.href = url;
+  link.setAttribute('download', `hist-${equipment.value._id}.xlsx`);
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode.removeChild(link);
+  window.URL.revokeObjectURL(url);
 }
 
 onMounted(() => {
