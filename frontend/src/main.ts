@@ -11,6 +11,17 @@ import middleware from './router/middleware';
 
 import './assets/styles/main.css';
 
+const isProduction = () => false;
+
+const prepare = async () => {
+  if (!isProduction()) {
+    const { worker } = await import('./mocks');
+    return worker.start();
+  }
+
+  return;
+};
+
 const app = createApp(App);
 const pinia = createPinia();
 
@@ -21,4 +32,6 @@ router.beforeEach(middleware);
 
 app.use(router).use(pinia);
 
-app.mount('#app');
+prepare().then(() => {
+  app.mount('#app');
+});
